@@ -1,0 +1,63 @@
+/* =========================================
+   RESPONSIVE DESIGN (Media Queries)
+   ========================================= */
+@media (max-width: 992px) {
+  .menu-toggle { display: block; }
+  .sidebar {
+    transform: translateX(100%);
+    box-shadow: var(--shadow-lg);
+  }
+  .sidebar.active { transform: translateX(0); }
+  .main-content { margin-right: 0; }
+  .pos-container { grid-template-columns: 1fr 300px; }
+  .pos-cart {
+    border-radius: var(--radius-sm);
+  }
+}
+
+@media (max-width: 768px) {
+  .pos-container {
+    grid-template-columns: 1fr;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+  }
+  .pos-products {
+    height: 60vh;
+  }
+  .pos-cart {
+    height: 60vh;
+    margin-top: 10px;
+  }
+  .modal-body.grid-2, .dash-grid, .dash-main { 
+    grid-template-columns: 1fr; 
+  }
+  .products-table-container, .inventory-table-container, .reports-table-container, .customers-table-container, .debts-table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  table {
+    white-space: nowrap;
+  }
+  .header-left .header-time { display: none; }
+  .login-card { padding: 30px 20px; }
+  .page-header { flex-direction: column; align-items: stretch; gap: 10px; }
+  .page-actions { justify-content: space-between; gap: 8px; }
+  .page-actions .btn { flex: 1; text-align: center; justify-content: center; }
+  .inventory-filters, .reports-filters, .customers-filters { flex-direction: column; }
+  .inventory-filters input, .inventory-filters select, .reports-filters input, .reports-filters select, .customers-filters input { width: 100%; }
+}
+
+@media (max-width: 480px) {
+  .pos-products { height: 50vh; }
+  .pos-cart { height: 55vh; }
+  .store-info h3 { font-size: 12px; }
+  .products-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
+  .product-card { padding: 12px 8px; }
+  .product-emoji { font-size: 28px; }
+  .product-name { font-size: 12px; }
+  .product-price { font-size: 13px; }
+  .cart-item { flex-direction: column; align-items: flex-start; gap: 10px; }
+  .cart-item-controls { width: 100%; justify-content: space-between; }
+  .cart-item-price { width: 100%; text-align: left; }
+}

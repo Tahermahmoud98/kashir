@@ -9,6 +9,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <meta name="theme-color" content="#00c896">
+  <link rel="apple-touch-icon" href="icon-192.png">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link rel="stylesheet" href="styles.css">
 </head>
@@ -125,8 +127,8 @@
       <!-- Header -->
       <header class="top-header">
         <div class="header-right">
-          <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
-          <h2 class="page-title" id="page-title">الكاشير</h2>
+          <button class="btn-home-header" id="btn-back-home" onclick="showPage('home')" style="display: none;">🏠 الرئيسية</button>
+          <h2 class="page-title" id="page-title">الرئيسية</h2>
         </div>
         <div class="header-left">
           <div class="header-time" id="header-time"></div>
@@ -150,8 +152,113 @@
       </div>
 
       <!-- Pages -->
+      <!-- Home Page -->
+      <div id="page-home" class="page active">
+        <div class="home-screen-wrapper">
+          <!-- Header Panel -->
+          <div class="home-header-panel">
+            <div class="home-header-info">
+              <div class="home-header-logo">🛒</div>
+              <div class="home-header-text">
+                <h1 id="home-store-name">السوبر ماركيت</h1>
+                <p>مرحباً بك مجدداً في نظام الإدارة الذكي</p>
+              </div>
+            </div>
+            <div class="home-status-badge">
+              <span class="status-dot" style="width:8px;height:8px;background:var(--success);border-radius:50%;display:inline-block;margin-left:6px;"></span>
+              <span>النظام متصل ونشط</span>
+            </div>
+          </div>
+
+          <!-- Grid Menu -->
+          <div class="home-grid-container">
+            <!-- الكاشير -->
+            <div class="home-nav-card pos" onclick="showPage('pos')">
+              <div class="home-card-icon-wrapper">🏪</div>
+              <div class="home-card-title">الكاشير</div>
+              <div class="home-card-desc">واجهة البيع السريع ونظام الفواتير</div>
+            </div>
+
+            <!-- المنتجات -->
+            <div class="home-nav-card products" onclick="showPage('products')">
+              <div class="home-card-icon-wrapper">📦</div>
+              <div class="home-card-title">المنتجات</div>
+              <div class="home-card-desc">إضافة وتعديل المنتجات وأسعارها</div>
+            </div>
+
+            <!-- المخزون -->
+            <div class="home-nav-card inventory" onclick="showPage('inventory')">
+              <div class="home-card-icon-wrapper">📊</div>
+              <div class="home-card-title">المخزون</div>
+              <div class="home-card-desc">مراقبة كميات السلع وتنبيهات النفاذ</div>
+            </div>
+
+            <!-- العملاء -->
+            <div class="home-nav-card customers" onclick="showPage('customers')">
+              <div class="home-card-icon-wrapper">👥</div>
+              <div class="home-card-title">العملاء</div>
+              <div class="home-card-desc">دليل العملاء وبيانات الاتصال بهم</div>
+            </div>
+
+            <!-- ديون العملاء -->
+            <div class="home-nav-card debts" onclick="showPage('debts')">
+              <div class="home-card-badge-el" id="home-debt-badge" style="display:none">0</div>
+              <div class="home-card-icon-wrapper">💳</div>
+              <div class="home-card-title">ديون العملاء</div>
+              <div class="home-card-desc">إدارة السلف، الديون، وتسجيل الدفعات</div>
+            </div>
+
+            <!-- التقارير -->
+            <div class="home-nav-card reports" onclick="showPage('reports')">
+              <div class="home-card-icon-wrapper">📈</div>
+              <div class="home-card-title">التقارير</div>
+              <div class="home-card-desc">إحصائيات المبيعات، الأرباح، والفواتير</div>
+            </div>
+
+            <!-- لوحة التحكم -->
+            <div class="home-nav-card dashboard" onclick="showPage('dashboard')">
+              <div class="home-card-icon-wrapper">🎯</div>
+              <div class="home-card-title">لوحة التحكم</div>
+              <div class="home-card-desc">نظرة عامة على الأداء والمبيعات اليومية</div>
+            </div>
+
+            <!-- الإعدادات -->
+            <div class="home-nav-card settings" onclick="showPage('settings')">
+              <div class="home-card-icon-wrapper">⚙️</div>
+              <div class="home-card-title">الإعدادات</div>
+              <div class="home-card-desc">تعديل بيانات المحل وسعر صرف العملة</div>
+            </div>
+
+            <!-- الأرشيف -->
+            <div class="home-nav-card archive" onclick="showPage('archive')">
+              <div class="home-card-icon-wrapper">🗂️</div>
+              <div class="home-card-title">الأرشيف</div>
+              <div class="home-card-desc">سجل المبيعات اليومية والشهرية والسنوية</div>
+            </div>
+          </div>
+
+          <!-- Actions Panel / Footer -->
+          <div class="home-actions-panel">
+            <div class="home-action-left">
+              <div class="home-currency-card">
+                <span>💱</span>
+                <span>سعر صرف الدولار الحالي: 1$ = <strong id="home-rate-display" style="color:var(--primary-light)">1,500</strong> د.ع</span>
+              </div>
+            </div>
+            <div class="home-action-right">
+              <button id="home-install-btn" class="btn-home-action install" style="display:none">
+                ⬇️ تثبيت التطبيق على سطح المكتب
+              </button>
+              <button class="btn-home-action logout" onclick="logout()">
+                🚪 تسجيل الخروج
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- POS Page -->
-      <div id="page-pos" class="page active">
+      <div id="page-pos" class="page">
         <div class="pos-container">
           <!-- Product Search & Grid -->
           <div class="pos-products">
@@ -228,8 +335,11 @@
                   <button class="currency-btn active" onclick="selectCurrency('IQD', this)">دينار عراقي</button>
                   <button class="currency-btn" onclick="selectCurrency('USD', this)">دولار أمريكي</button>
                 </div>
-                <div class="cash-input-group">
-                  <label id="cash-label">المبلغ المدفوع (د.ع):</label>
+                <div class="cash-input-group" style="display:flex; flex-direction:column; gap:8px;">
+                  <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+                    <label id="cash-label">المبلغ المدفوع (د.ع):</label>
+                    <button type="button" class="btn-primary" style="padding:4px 10px; font-size:12px; font-weight:700; border-radius:4px; background:linear-gradient(135deg, var(--primary), var(--primary-dark)); white-space:nowrap;" onclick="setExactAmount()">💵 دفع صافي</button>
+                  </div>
                   <input type="number" id="cash-received" placeholder="0" oninput="calcChange()" min="0">
                 </div>
                 <div class="change-display" id="change-display" style="display:none;">
@@ -451,6 +561,68 @@
           </div>
         </div>
         <div class="customers-grid" id="customers-grid"></div>
+      </div>
+
+      <!-- Archive Page -->
+      <div id="page-archive" class="page">
+        <div class="archive-container">
+
+          <!-- Archive Header Bar -->
+          <div class="archive-header-bar">
+            <div class="archive-tabs-bar">
+              <button class="archive-tab active" id="archive-tab-all"    onclick="switchArchiveTab('all', this)">🗂️ الكل</button>
+              <button class="archive-tab"         id="archive-tab-daily"  onclick="switchArchiveTab('daily', this)">📅 اليوم</button>
+              <button class="archive-tab"         id="archive-tab-monthly" onclick="switchArchiveTab('monthly', this)">📆 هذا الشهر</button>
+              <button class="archive-tab"         id="archive-tab-yearly" onclick="switchArchiveTab('yearly', this)">📊 هذه السنة</button>
+            </div>
+            <input type="text" class="archive-search-input" id="archive-search"
+              placeholder="🔍 ابحث عن منتج أو رقم فاتورة..."
+              oninput="filterArchiveBySearch(this.value)">
+          </div>
+
+          <!-- Archive Stats Strip -->
+          <div class="archive-stats-strip">
+            <div class="archive-stat-item">
+              <span class="archive-stat-icon">💰</span>
+              <div>
+                <span class="archive-stat-label">إجمالي المبيعات</span>
+                <span class="archive-stat-value" id="arch-total-sales">0 د.ع</span>
+              </div>
+            </div>
+            <div class="archive-stat-item">
+              <span class="archive-stat-icon">🛒</span>
+              <div>
+                <span class="archive-stat-label">عدد السلال المكتملة</span>
+                <span class="archive-stat-value" id="arch-total-invoices">0</span>
+              </div>
+            </div>
+            <div class="archive-stat-item">
+              <span class="archive-stat-icon">📦</span>
+              <div>
+                <span class="archive-stat-label">مواد مباعة</span>
+                <span class="archive-stat-value" id="arch-total-items">0</span>
+              </div>
+            </div>
+            <div class="archive-stat-item">
+              <span class="archive-stat-icon">📊</span>
+              <div>
+                <span class="archive-stat-label">متوسط السلة</span>
+                <span class="archive-stat-value" id="arch-avg-invoice">0 د.ع</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Archive Baskets List -->
+          <div id="archive-baskets-list" class="archive-baskets-list"></div>
+
+          <!-- Empty State -->
+          <div id="archive-empty-state" style="display:none;" class="archive-empty">
+            <span>🛒</span>
+            <p>لا توجد سلال مؤرشفة</p>
+            <small>عند إتمام عمليات البيع أو الدين ستظهر هنا تلقائياً</small>
+          </div>
+
+        </div>
       </div>
 
       <!-- Reports Page -->
@@ -986,6 +1158,19 @@
         <div class="emoji-grid" id="emoji-modal-grid">
           <!-- Emojis will be injected by JS -->
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Custom Confirm Modal -->
+  <div class="modal-overlay" id="confirm-modal" style="display:none; z-index: 99999;">
+    <div class="modal modal-sm" style="max-width: 400px; padding: 24px; border-radius: var(--radius-lg); text-align: center;">
+      <div style="font-size: 50px; margin-bottom: 16px;" id="confirm-modal-icon">❓</div>
+      <h3 style="margin-bottom: 12px; font-weight: 800; font-size: 18px;" id="confirm-modal-title">تأكيد الإجراء</h3>
+      <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 24px; line-height: 1.5;" id="confirm-modal-message">هل أنت متأكد من هذا الإجراء؟</p>
+      <div style="display: flex; gap: 12px; justify-content: center;">
+        <button class="btn-primary" id="confirm-modal-yes" style="flex: 1; padding: 12px; border-radius: var(--radius-sm); font-weight: 700; font-size: 14px;">نعم، متأكد</button>
+        <button class="btn-secondary" id="confirm-modal-no" style="flex: 1; padding: 12px; border-radius: var(--radius-sm); font-weight: 700; font-size: 14px; background: rgba(255,255,255,0.05); color: var(--text-primary); border: 1px solid var(--border);">إلغاء</button>
       </div>
     </div>
   </div>

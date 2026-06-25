@@ -1,0 +1,2478 @@
+Created At: 2026-06-25T21:12:10Z
+Completed At: 2026-06-25T21:12:10Z
+File Path: `file:///c:/Users/Laptop%20Duhok/Desktop/taher1212/taher1212/app.js`
+Total Lines: 2261
+Total Bytes: 83205
+Showing lines 1 to 800
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: // ===========================
+2: // app.js - المنطق الرئيسي
+3: // نظام كاشير السوبر ماركيت
+4: // ===========================
+5: 
+6: // ========= الحالة العامة =========
+7: let state = {
+8:   cart: [],
+9:   discount: 0,
+10:   discountType: 'percent',
+11:   paymentMethod: 'cash',
+12:   paymentCurrency: 'IQD',
+13:   selectedCustomer: null,
+14:   currentPage: 'pos',
+15:   productFilter: 'all',
+16:   searchQuery: '',
+17:   charts: {},
+18: };
+19: 
+20: // ========= إعداد المظهر (Dark/Light) =========
+21: function initTheme() {
+22:   const savedTheme = localStorage.getItem('theme') || 'dark';
+23:   if (savedTheme === 'light') {
+24:     document.documentElement.setAttribute('data-theme', 'light');
+25:     const themeIcon = document.getElementById('theme-icon');
+26:     if (themeIcon) themeIcon.textContent = '🌙';
+27:   }
+28: }
+29: initTheme();
+30: 
+31: function toggleTheme() {
+32:   const root = document.documentElement;
+33:   const currentTheme = root.getAttribute('data-theme');
+34:   const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+35:   
+36:   if (newTheme === 'light') {
+37:     root.setAttribute('data-theme', 'light');
+38:     document.getElementById('theme-icon').textContent = '🌙';
+39:     localStorage.setItem('theme', 'light');
+40:   } else {
+41:     root.removeAttribute('data-theme');
+42:     document.getElementById('theme-icon').textContent = '☀️';
+43:     localStorage.setItem('theme', 'dark');
+44:   }
+45: }
+46: 
+47: // ========= PWA / تنزيل التطبيق =========
+48: let deferredPrompt;
+49: 
+50: if ('serviceWorker' in navigator) {
+51:   window.addEventListener('load', () => {
+52:     navigator.serviceWorker.register('./sw.js').then(reg => {
+53:       console.log('ServiceWorker registered');
+54:     }).catch(err => {
+55:       console.log('ServiceWorker error:', err);
+56:     });
+57:   });
+58: }
+59: 
+60: window.addEventListener('beforeinstallprompt', (e) => {
+61:   e.preventDefault();
+62:   deferredPrompt = e;
+63:   const installBtn = document.getElementById('install-app-btn');
+64:   if (installBtn) {
+65:     installBtn.style.display = 'block';
+66:     installBtn.addEventListener('click', async () => {
+67:       installBtn.style.display = 'none';
+68:       deferredPrompt.prompt();
+69:       const { outcome } = await deferredPrompt.userChoice;
+70:       console.log(`User response to the install prompt: ${outcome}`);
+71:       deferredPrompt = null;
+72:     });
+73:   }
+74: });
+75: 
+76: // ========= تهيئة التطبيق =========
+77: window.addEventListener('load', () => {
+78:   setTimeout(() => {
+79:     document.getElementById('splash-screen').style.opacity = '0';
+80:     document.getElementById('splash-screen').style.transition = 'opacity 0.5s';
+81:     setTimeout(() => {
+82:       document.getElementById('splash-screen').style.display = 'none';
+83:       document.getElementById('login-screen').style.display = 'block';
+84:     }, 500);
+85:   }, 2000);
+86: });
+87: 
+88: // تحديث الوقت
+89: setInterval(updateTime, 1000);
+90: updateTime();
+91: 
+92: function updateTime() {
+93:   const el = document.getElementById('header-time');
+94:   if (!el) return;
+95:   const now = new Date();
+96:   const time = now.toLocaleTimeString('ar-IQ', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+97:   const date = now.toLocaleDateString('ar-IQ', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+98:   el.textContent = `${date} | ${time}`;
+99: }
+100: 
+101: // ========= تسجيل الدخول =========
+102: function login() {
+103:   const username = document.getElementById('login-username').value;
+104:   const password = document.getElementById('login-password').value;
+105:   const settings = DB.getSettings();
+106: 
+107:   if (username === 'admin' && password === settings.password) {
+108:     document.getElementById('login-screen').style.display = 'none';
+109:     document.getElementById('main-app').style.display = 'flex';
+110:     document.getElementById('current-user').textContent = username;
+111:     initApp();
+112:     showToast('مرحباً بك! ' + username, 'success');
+113:   } else {
+114:     showToast('اسم المستخدم أو كلمة المرور غير صحيحة', 'error');
+115:   }
+116: }
+117: 
+118: document.addEventListener('keydown', (e) => {
+119:   if (e.key === 'Enter' && document.getElementById('login-screen').style.display !== 'none') {
+120:     login();
+121:   }
+122: });
+123: 
+124: function logout() {
+125:   if (confirm('هل تريد تسجيل الخروج؟')) {
+126:     document.getElementById('main-app').style.display = 'none';
+127:     document.getElementById('login-screen').style.display = 'block';
+128:     state.cart = [];
+129:   }
+130: }
+131: 
+132: // ========= تهيئة النظام =========
+133: function initApp() {
+134:   const settings = DB.getSettings();
+135:   document.getElementById('store-name-display').textContent = settings.storeName;
+136:   document.getElementById('rate-display').textContent = settings.exchangeRate.toLocaleString();
+137:   document.getElementById('tax-rate-display').textContent = settings.taxRate;
+138:   loadSettings();
+139:   showPage('pos');
+140:   checkLowStock();
+141:   setTimeout(updateDebtNavBadge, 100); // تحديث شارة الديون
+142: }
+143: 
+144: 
+145: // ========= التنقل بين الصفحات =========
+146: function showPage(page) {
+147:   // إخفاء جميع الصفحات
+148:   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+149:   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+150: 
+151:   // إظهار الصفحة المطلوبة
+152:   const pageEl = document.getElementById('page-' + page);
+153:   if (pageEl) pageEl.classList.add('active');
+154: 
+155:   const navEl = document.getElementById('nav-' + page);
+156:   if (navEl) navEl.classList.add('active');
+157: 
+158:   const titles = {
+159:     pos: 'الكاشير',
+160:     products: 'إدارة المنتجات',
+161:     inventory: 'إدارة المخزون',
+162:     customers: 'إدارة العملاء',
+163:     debts: 'ديون العملاء',
+164:     reports: 'التقارير',
+165:     dashboard: 'لوحة التحكم',
+166:     settings: 'الإعدادات'
+167:   };
+168: 
+169:   document.getElementById('page-title').textContent = titles[page] || page;
+170:   state.currentPage = page;
+171: 
+172:   // تحميل بيانات الصفحة
+173:   switch(page) {
+174:     case 'pos': loadPOS(); break;
+175:     case 'products': loadProductsPage(); break;
+176:     case 'inventory': loadInventoryPage(); break;
+177:     case 'customers': loadCustomersPage(); break;
+178:     case 'debts': loadDebtsPage(); break;
+179:     case 'reports': initReportDates(); loadReports(); break;
+180:     case 'dashboard': loadDashboard(); break;
+181:     case 'settings': loadSettings(); break;
+182:   }
+183: 
+184:   // إغلاق السايدبار في الموبايل
+185:   if (window.innerWidth <= 768) {
+186:     document.getElementById('sidebar').classList.remove('open');
+187:   }
+188: }
+189: 
+190: function toggleSidebar() {
+191:   document.getElementById('sidebar').classList.toggle('open');
+192: }
+193: 
+194: // ========= صفحة الكاشير =========
+195: function loadPOS() {
+196:   loadCategoryTabs();
+197:   renderProducts();
+198:   renderCart();
+199:   loadCustomerSelect();
+200:   updateQuickAmounts();
+201: }
+202: 
+203: function loadCategoryTabs() {
+204:   const cats = DB.getCategories();
+205:   const container = document.getElementById('category-tabs');
+206:   container.innerHTML = `<button class="cat-tab ${state.productFilter === 'all' ? 'active' : ''}" onclick="filterByCategory('all', this)">الكل</button>`;
+207:   cats.forEach(cat => {
+208:     const btn = document.createElement('button');
+209:     btn.className = `cat-tab ${state.productFilter === cat.id ? 'active' : ''}`;
+210:     btn.textContent = `${cat.icon} ${cat.name}`;
+211:     btn.onclick = function() { filterByCategory(cat.id, this); };
+212:     container.appendChild(btn);
+213:   });
+214: }
+215: 
+216: function filterByCategory(catId, btn) {
+217:   state.productFilter = catId;
+218:   document.querySelectorAll('.cat-tab').forEach(b => b.classList.remove('active'));
+219:   if (btn) btn.classList.add('active');
+220:   renderProducts();
+221: }
+222: 
+223: function searchProducts(query) {
+224:   state.searchQuery = query;
+225:   renderProducts();
+226: }
+227: 
+228: function renderProducts() {
+229:   const grid = document.getElementById('products-grid');
+230:   let products = DB.getProducts();
+231: 
+232:   if (state.productFilter !== 'all') {
+233:     products = products.filter(p => p.category === state.productFilter);
+234:   }
+235: 
+236:   if (state.searchQuery) {
+237:     const q = state.searchQuery.toLowerCase();
+238:     products = products.filter(p =>
+239:       p.name.toLowerCase().includes(q) ||
+240:       p.barcode.includes(q)
+241:     );
+242:   }
+243: 
+244:   if (!products.length) {
+245:     grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-muted);">🔍 لا توجد منتجات</div>';
+246:     return;
+247:   }
+248: 
+249:   grid.innerHTML = products.map(p => {
+250:     const isLow = p.stock > 0 && p.stock <= p.minStock;
+251:     const isOut = p.stock === 0;
+252:     const settings = DB.getSettings();
+253:     return `
+254:       <div class="product-card ${isOut ? 'out-of-stock' : ''}" 
+255:            onclick="${isOut ? '' : `addToCart('${p.id}')`}"
+256:            title="${p.name}">
+257:         ${isLow ? '<span class="product-stock-badge low">⚠️ منخفض</span>' : ''}
+258:         ${isOut ? '<span class="product-stock-badge out">نفد</span>' : ''}
+259:         <span class="product-emoji">${renderEmojiHTML(p.emoji)}</span>
+260:         <div class="product-name">${p.name}</div>
+261:         <div class="product-price">${formatIQD(p.priceIQD)}</div>
+262:         <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">$${p.priceUSD.toFixed(2)}</div>
+263:         <div style="font-size:11px;color:var(--text-muted);">المخزون: ${p.stock}</div>
+264:       </div>
+265:     `;
+266:   }).join('');
+267: }
+268: 
+269: function addToCart(productId) {
+270:   const product = DB.getProducts().find(p => p.id === productId);
+271:   if (!product || product.stock === 0) {
+272:     showToast('هذا المنتج غير متوفر', 'error');
+273:     return;
+274:   }
+275: 
+276:   const existing = state.cart.find(item => item.id === productId);
+277:   if (existing) {
+278:     if (existing.qty >= product.stock) {
+279:       showToast('لا يوجد مخزون كافٍ', 'warning');
+280:       return;
+281:     }
+282:     existing.qty++;
+283:   } else {
+284:     state.cart.push({
+285:       id: product.id,
+286:       name: product.name,
+287:       emoji: product.emoji || '📦',
+288:       priceIQD: product.priceIQD,
+289:       priceUSD: product.priceUSD,
+290:       qty: 1,
+291:       maxQty: product.stock,
+292:       unit: product.unit
+293:     });
+294:   }
+295: 
+296:   renderCart();
+297:   updateCartTotals();
+298:   showToast(`تمت إضافة ${product.name}`, 'success');
+299: }
+300: 
+301: function removeFromCart(index) {
+302:   state.cart.splice(index, 1);
+303:   renderCart();
+304:   updateCartTotals();
+305: }
+306: 
+307: function updateQty(index, delta) {
+308:   const item = state.cart[index];
+309:   const newQty = item.qty + delta;
+310:   if (newQty < 1) {
+311:     removeFromCart(index);
+312:     return;
+313:   }
+314:   if (newQty > item.maxQty) {
+315:     showToast('الكمية المطلوبة تتجاوز المخزون المتاح', 'warning');
+316:     return;
+317:   }
+318:   item.qty = newQty;
+319:   renderCart();
+320:   updateCartTotals();
+321: }
+322: 
+323: function renderCart() {
+324:   const container = document.getElementById('cart-items');
+325:   if (!state.cart.length) {
+326:     container.innerHTML = `
+327:       <div class="cart-empty">
+328:         <span>🛒</span>
+329:         <p>السلة فارغة</p>
+330:         <small>أضف منتجات من القائمة</small>
+331:       </div>`;
+332:     return;
+333:   }
+334: 
+335:   container.innerHTML = state.cart.map((item, idx) => `
+336:     <div class="cart-item">
+337:       <span class="cart-item-emoji">${renderEmojiHTML(item.emoji)}</span>
+338:       <div class="cart-item-info">
+339:         <div class="cart-item-name">${item.name}</div>
+340:         <div class="cart-item-price">${formatIQD(item.priceIQD)} / ${item.unit || 'قطعة'}</div>
+341:       </div>
+342:       <div class="cart-item-qty">
+343:         <button class="qty-btn" onclick="updateQty(${idx}, -1)">−</button>
+344:         <span class="qty-value">${item.qty}</span>
+345:         <button class="qty-btn" onclick="updateQty(${idx}, 1)">+</button>
+346:       </div>
+347:       <div class="cart-item-total">${formatIQD(item.priceIQD * item.qty)}</div>
+348:       <button class="btn-remove-item" onclick="removeFromCart(${idx})">✕</button>
+349:     </div>
+350:   `).join('');
+351: 
+352:   updateCartTotals();
+353: }
+354: 
+355: function updateCartTotals() {
+356:   const settings = DB.getSettings();
+357:   const subtotalIQD = state.cart.reduce((sum, item) => sum + (item.priceIQD * item.qty), 0);
+358: 
+359:   let discountAmt = 0;
+360:   const discountVal = parseFloat(document.getElementById('discount-value')?.value || 0);
+361:   const discountType = document.getElementById('discount-type')?.value || 'percent';
+362: 
+363:   if (discountType === 'percent') {
+364:     discountAmt = subtotalIQD * (discountVal / 100);
+365:   } else if (discountType === 'fixed-iqd') {
+366:     discountAmt = discountVal;
+367:   } else if (discountType === 'fixed-usd') {
+368:     discountAmt = discountVal * settings.exchangeRate;
+369:   }
+370: 
+371:   discountAmt = Math.min(discountAmt, subtotalIQD);
+372: 
+373:   const afterDiscount = subtotalIQD - discountAmt;
+374:   const taxAmt = afterDiscount * (settings.taxRate / 100);
+375:   const totalIQD = afterDiscount + taxAmt;
+376:   const totalUSD = totalIQD / settings.exchangeRate;
+377: 
+378:   document.getElementById('subtotal-iqd').textContent = formatIQD(subtotalIQD);
+379:   document.getElementById('discount-amount').textContent = '- ' + formatIQD(discountAmt);
+380:   document.getElementById('tax-amount').textContent = formatIQD(taxAmt);
+381:   document.getElementById('total-iqd').textContent = formatIQD(totalIQD);
+382:   document.getElementById('total-usd').textContent = '$' + totalUSD.toFixed(2);
+383: 
+384:   state.lastTotal = { subtotal: subtotalIQD, discount: discountAmt, tax: taxAmt, total: totalIQD, totalUSD };
+385: 
+386:   // تحديث مبلغ البطاقة/التحويل إذا كانت محددة
+387:   if (state.paymentMethod === 'card' || state.paymentMethod === 'transfer') {
+388:     const displayId = state.paymentMethod === 'card' ? 'card-amount-display' : 'transfer-amount-display';
+389:     const el = document.getElementById(displayId);
+390:     if (el) el.textContent = formatIQD(totalIQD);
+391:   }
+392: 
+393:   updateQuickAmounts();
+394: }
+395: 
+396: 
+397: function applyDiscount() {
+398:   updateCartTotals();
+399: }
+400: 
+401: function clearCart() {
+402:   if (state.cart.length > 0 && !confirm('هل تريد مسح سلة المشتريات؟')) return;
+403:   state.cart = [];
+404:   document.getElementById('discount-value').value = '';
+405:   renderCart();
+406:   updateCartTotals();
+407: }
+408: 
+409: function loadCustomerSelect() {
+410:   const customers = DB.getCustomers();
+411:   const sel = document.getElementById('cart-customer');
+412:   sel.innerHTML = '<option value="">-- عميل زائر --</option>';
+413:   customers.forEach(c => {
+414:     const opt = document.createElement('option');
+415:     opt.value = c.id;
+416:     opt.textContent = `${c.name} - ${c.phone}`;
+417:     sel.appendChild(opt);
+418:   });
+419: }
+420: 
+421: function selectCustomer(id) {
+422:   state.selectedCustomer = id || null;
+423: }
+424: 
+425: function selectPayMethod(method, btn) {
+426:   state.paymentMethod = method;
+427:   document.querySelectorAll('.pay-method').forEach(b => b.classList.remove('active'));
+428:   if (btn) btn.classList.add('active');
+429: 
+430:   // إخفاء جميع أقسام الدفع
+431:   ['cash-payment-section', 'card-payment-section', 'transfer-payment-section', 'debt-payment-section']
+432:     .forEach(id => {
+433:       const el = document.getElementById(id);
+434:       if (el) el.style.display = 'none';
+435:     });
+436: 
+437:   const btnCheckout = document.getElementById('btn-checkout');
+438:   const btnDebtSell = document.getElementById('btn-debt-sell');
+439: 
+440:   if (method === 'debt') {
+441:     const s = document.getElementById('debt-payment-section');
+442:     if (s) s.style.display = 'block';
+443:     btnCheckout.style.display = 'none';
+444:     btnDebtSell.style.display = 'block';
+445:   } else {
+446:     // إظهار القسم المناسب
+447:     const sectionMap = { cash: 'cash-payment-section', card: 'card-payment-section', transfer: 'transfer-payment-section' };
+448:     const s = document.getElementById(sectionMap[method] || 'cash-payment-section');
+449:     if (s) s.style.display = 'block';
+450: 
+451:     btnCheckout.style.display = 'block';
+452:     btnDebtSell.style.display = 'none';
+453: 
+454:     // تحديث عرض المبلغ في البطاقة/التحويل
+455:     if (method === 'card' || method === 'transfer') {
+456:       const total = state.lastTotal?.total || 0;
+457:       const displayId = method === 'card' ? 'card-amount-display' : 'transfer-amount-display';
+458:       const el = document.getElementById(displayId);
+459:       if (el) el.textContent = formatIQD(total);
+460:     }
+461:   }
+462: }
+463: 
+464: 
+465: function selectCurrency(currency, btn) {
+466:   state.paymentCurrency = currency;
+467:   document.querySelectorAll('.currency-btn').forEach(b => b.classList.remove('active'));
+468:   if (btn) btn.classList.add('active');
+469: 
+470:   const settings = DB.getSettings();
+471:   const label = document.getElementById('cash-label');
+472:   if (currency === 'IQD') {
+473:     label.textContent = 'المبلغ المدفوع (د.ع):';
+474:   } else {
+475:     label.textContent = 'المبلغ المدفوع ($):';
+476:   }
+477: 
+478:   document.getElementById('cash-received').value = '';
+479:   document.getElementById('change-display').style.display = 'none';
+480:   updateQuickAmounts();
+481: }
+482: 
+483: function updateQuickAmounts() {
+484:   const container = document.getElementById('quick-amounts');
+485:   if (!container || !state.lastTotal) return;
+486:   const settings = DB.getSettings();
+487:   const total = state.lastTotal.total;
+488: 
+489:   let amounts;
+490:   if (state.paymentCurrency === 'IQD') {
+491:     const base = Math.ceil(total / 1000) * 1000;
+492:     amounts = [base, base + 5000, base + 10000, base + 25000, 50000, 100000].filter(a => a >= total);
+493:     amounts = [...new Set(amounts)].slice(0, 5);
+494:     container.innerHTML = amounts.map(a =>
+495:       `<button class="quick-amount-btn" onclick="setQuickAmount(${a})">${formatIQD(a)}</button>`
+496:     ).join('');
+497:   } else {
+498:     const totalUSD = total / settings.exchangeRate;
+499:     const base = Math.ceil(totalUSD);
+500:     amounts = [base, base + 5, base + 10, 50, 100].filter(a => a >= totalUSD);
+501:     amounts = [...new Set(amounts)].slice(0, 5);
+502:     container.innerHTML = amounts.map(a =>
+503:       `<button class="quick-amount-btn" onclick="setQuickAmount(${a})">$${a}</button>`
+504:     ).join('');
+505:   }
+506: }
+507: 
+508: function setQuickAmount(amount) {
+509:   document.getElementById('cash-received').value = amount;
+510:   calcChange();
+511: }
+512: 
+513: function calcChange() {
+514:   if (!state.lastTotal) return;
+515:   const settings = DB.getSettings();
+516:   const received = parseFloat(document.getElementById('cash-received').value || 0);
+517:   let totalIQD = state.lastTotal.total;
+518:   let change = 0;
+519: 
+520:   if (state.paymentCurrency === 'USD') {
+521:     const receivedIQD = received * settings.exchangeRate;
+522:     change = receivedIQD - totalIQD;
+523:   } else {
+524:     change = received - totalIQD;
+525:   }
+526: 
+527:   const changeEl = document.getElementById('change-display');
+528:   const changeAmt = document.getElementById('change-amount');
+529: 
+530:   if (received > 0) {
+531:     changeEl.style.display = 'flex';
+532:     if (change >= 0) {
+533:       changeAmt.textContent = formatIQD(change) + (state.paymentCurrency === 'USD' ? ` ($${(change / settings.exchangeRate).toFixed(2)})` : '');
+534:       changeAmt.style.color = 'var(--success)';
+535:     } else {
+536:       changeAmt.textContent = '⚠️ مبلغ غير كافٍ';
+537:       changeAmt.style.color = 'var(--danger)';
+538:     }
+539:   } else {
+540:     changeEl.style.display = 'none';
+541:   }
+542: }
+543: 
+544: function processPayment() {
+545:   if (!state.cart.length) {
+546:     showToast('السلة فارغة! أضف منتجات أولاً', 'warning');
+547:     return;
+548:   }
+549: 
+550:   // إعادة حساب المجموع لضمان صحة البيانات
+551:   updateCartTotals();
+552: 
+553:   const settings = DB.getSettings();
+554:   const total = state.lastTotal;
+555: 
+556:   if (!total || !total.total) {
+557:     showToast('خطأ في حساب المجموع، حاول مرة أخرى', 'error');
+558:     return;
+559:   }
+560: 
+561:   let receivedIQD = 0;
+562:   let changeIQD = 0;
+563: 
+564:   // التحقق حسب طريقة الدفع
+565:   if (state.paymentMethod === 'cash') {
+566:     const receivedRaw = parseFloat(document.getElementById('cash-received').value || 0);
+567: 
+568:     if (receivedRaw <= 0) {
+569:       showToast('الرجاء إدخال المبلغ المدفوع', 'warning');
+570:       document.getElementById('cash-received').focus();
+571:       return;
+572:     }
+573: 
+574:     receivedIQD = state.paymentCurrency === 'USD'
+575:       ? receivedRaw * settings.exchangeRate
+576:       : receivedRaw;
+577: 
+578:     if (receivedIQD < total.total) {
+579:       showToast('المبلغ المدفوع غير كافٍ', 'error');
+580:       return;
+581:     }
+582: 
+583:     changeIQD = receivedIQD - total.total;
+584: 
+585:   } else if (state.paymentMethod === 'card') {
+586:     // الدفع ببطاقة - يتم مباشرة
+587:     receivedIQD = total.total;
+588:     changeIQD = 0;
+589: 
+590:   } else if (state.paymentMethod === 'transfer') {
+591:     // الدفع بتحويل - يتم مباشرة
+592:     receivedIQD = total.total;
+593:     changeIQD = 0;
+594:   }
+595: 
+596:   // خصم من المخزون
+597:   const products = DB.getProducts();
+598:   state.cart.forEach(item => {
+599:     const prod = products.find(p => p.id === item.id);
+600:     if (prod) prod.stock = Math.max(0, prod.stock - item.qty);
+601:   });
+602:   DB.saveProducts(products);
+603: 
+604:   // إنشاء الفاتورة
+605:   const invoice = DB.addInvoice({
+606:     items: state.cart.map(i => ({ ...i })),
+607:     subtotal: total.subtotal,
+608:     discount: total.discount,
+609:     tax: total.tax,
+610:     total: total.total,
+611:     totalUSD: total.totalUSD,
+612:     paymentMethod: state.paymentMethod,
+613:     paymentCurrency: state.paymentCurrency,
+614:     received: receivedIQD,
+615:     change: changeIQD,
+616:     customerId: state.selectedCustomer,
+617:     cashier: document.getElementById('current-user').textContent,
+618:     discountType: document.getElementById('discount-type')?.value || 'percent',
+619:     discountValue: parseFloat(document.getElementById('discount-value')?.value || 0)
+620:   });
+621: 
+622:   // تحديث بيانات العميل
+623:   if (state.selectedCustomer) {
+624:     const customer = DB.getCustomers().find(c => c.id === state.selectedCustomer);
+625:     if (customer) {
+626:       DB.updateCustomer(state.selectedCustomer, {
+627:         totalPurchases: (customer.totalPurchases || 0) + 1,
+628:         totalSpent: (customer.totalSpent || 0) + total.total
+629:       });
+630:     }
+631:   }
+632: 
+633:   // عرض الفاتورة
+634:   showReceipt(invoice);
+635: 
+636:   // إعادة تعيين واجهة الدفع
+637:   document.getElementById('cash-received').value = '';
+638:   document.getElementById('change-display').style.display = 'none';
+639: 
+640:   clearCart();
+641:   renderProducts();
+642: 
+643:   const payLabels = {
+644:     cash: '💵 نقداً',
+645:     card: '💳 بطاقة ائتمان',
+646:     transfer: '📱 تحويل إلكتروني'
+647:   };
+648:   showToast(`✅ تمت عملية البيع بنجاح! ${payLabels[state.paymentMethod] || ''}`, 'success');
+649: }
+650: 
+651: 
+652: function showReceipt(invoice) {
+653:   const settings = DB.getSettings();
+654:   const customer = state.selectedCustomer ? DB.getCustomers().find(c => c.id === state.selectedCustomer) : null;
+655:   const date = new Date(invoice.date);
+656: 
+657:   const content = document.getElementById('receipt-content');
+658:   content.innerHTML = `
+659:     <div class="receipt" id="printable-receipt">
+660:       <div class="receipt-header">
+661:         <h2>${settings.storeName}</h2>
+662:         <p>${settings.storeAddress}</p>
+663:         <p>📞 ${settings.storePhone}</p>
+664:         <p style="margin-top:6px;font-size:11px;color:#888">
+665:           رقم الفاتورة: #${invoice.invoiceNumber}<br>
+666:           ${date.toLocaleString('ar-IQ')}<br>
+667:           كاشير: ${invoice.cashier}${customer ? '<br>العميل: ' + customer.name : ''}
+668:         </p>
+669:       </div>
+670: 
+671:       <div class="receipt-items">
+672:         <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px dashed var(--border);font-size:11px;color:var(--text-muted);">
+673:           <span style="flex:1">المنتج</span>
+674:           <span style="width:40px;text-align:center">الكمية</span>
+675:           <span style="width:90px;text-align:left">السعر</span>
+676:         </div>
+677:         ${invoice.items.map(item => `
+678:           <div class="receipt-item">
+679:             <span class="receipt-item-name"><span style="display:inline-block;width:14px;height:14px;vertical-align:middle;margin-left:4px;">${renderEmojiHTML(item.emoji)}</span> ${item.name}</span>
+680:             <span class="receipt-item-qty">${item.qty}</span>
+681:             <span class="receipt-item-price">${formatIQD(item.priceIQD * item.qty)}</span>
+682:           </div>
+683:         `).join('')}
+684:       </div>
+685: 
+686:       <div class="receipt-totals">
+687:         <div class="receipt-total-row">
+688:           <span>المجموع الفرعي:</span>
+689:           <span>${formatIQD(invoice.subtotal)}</span>
+690:         </div>
+691:         ${invoice.discount > 0 ? `
+692:           <div class="receipt-total-row" style="color:var(--danger)">
+693:             <span>الخصم:</span>
+694:             <span>- ${formatIQD(invoice.discount)}</span>
+695:           </div>
+696:         ` : ''}
+697:         ${invoice.tax > 0 ? `
+698:           <div class="receipt-total-row" style="color:var(--warning)">
+699:             <span>الضريبة (${settings.taxRate}%):</span>
+700:             <span>${formatIQD(invoice.tax)}</span>
+701:           </div>
+702:         ` : ''}
+703:         <div class="receipt-total-row receipt-grand-total">
+704:           <span>الإجمالي:</span>
+705:           <div>
+706:             <div>${formatIQD(invoice.total)}</div>
+707:             <div style="font-size:13px;color:var(--info)">$${invoice.totalUSD.toFixed(2)}</div>
+708:           </div>
+709:         </div>
+710:         ${invoice.paymentMethod === 'cash' ? `
+711:           <div class="receipt-total-row" style="margin-top:4px">
+712:             <span>المدفوع:</span>
+713:             <span>${formatIQD(invoice.received)}</span>
+714:           </div>
+715:           <div class="receipt-total-row" style="color:var(--success)">
+716:             <span>الباقي:</span>
+717:             <span>${formatIQD(invoice.change)}</span>
+718:           </div>
+719:         ` : `
+720:           <div class="receipt-total-row">
+721:             <span>طريقة الدفع:</span>
+722:             <span>${invoice.paymentMethod === 'card' ? '💳 بطاقة' : '📱 تحويل'}</span>
+723:           </div>
+724:         `}
+725:       </div>
+726: 
+727:       <div class="receipt-footer">
+728:         <p>${settings.invoiceNote}</p>
+729:         <p style="margin-top:4px">⭐⭐⭐⭐⭐</p>
+730:       </div>
+731:     </div>
+732:   `;
+733: 
+734:   openModal('receipt-modal');
+735: }
+736: 
+737: function printReceipt() {
+738:   window.print();
+739: }
+740: 
+741: function simulateBarcode() {
+742:   const barcode = prompt('أدخل الباركود:');
+743:   if (!barcode) return;
+744:   const product = DB.getProducts().find(p => p.barcode === barcode);
+745:   if (product) {
+746:     addToCart(product.id);
+747:     document.getElementById('pos-search').value = '';
+748:     showToast(`تم العثور على: ${product.name}`, 'success');
+749:   } else {
+750:     showToast('المنتج غير موجود بهذا الباركود', 'error');
+751:   }
+752: }
+753: 
+754: // ========= صفحة المنتجات =========
+755: let filteredProducts = [];
+756: 
+757: function loadProductsPage() {
+758:   loadCategoryFilterSelect();
+759:   filteredProducts = DB.getProducts();
+760:   renderProductsTable(filteredProducts);
+761: }
+762: 
+763: function loadCategoryFilterSelect() {
+764:   const cats = DB.getCategories();
+765:   const sels = document.querySelectorAll('#page-products .filter-select, #pm-category');
+766:   sels.forEach(sel => {
+767:     const currentVal = sel.value;
+768:     sel.innerHTML = sel.id === 'pm-category'
+769:       ? '<option value="">-- اختر الفئة --</option>'
+770:       : '<option value="">كل الفئات</option>';
+771:     cats.forEach(c => {
+772:       const opt = document.createElement('option');
+773:       opt.value = c.id;
+774:       opt.textContent = `${c.icon} ${c.name}`;
+775:       sel.appendChild(opt);
+776:     });
+777:     if (currentVal) sel.value = currentVal;
+778:   });
+779: }
+780: 
+781: function searchProductsPage(query) {
+782:   const products = DB.getProducts();
+783:   filteredProducts = products.filter(p =>
+784:     p.name.toLowerCase().includes(query.toLowerCase()) ||
+785:     p.barcode.includes(query)
+786:   );
+787:   renderProductsTable(filteredProducts);
+788: }
+789: 
+790: function filterProductsPage(catId) {
+791:   const products = DB.getProducts();
+792:   filteredProducts = catId ? products.filter(p => p.category === catId) : products;
+793:   renderProductsTable(filteredProducts);
+794: }
+795: 
+796: function renderProductsTable(products) {
+797:   const tbody = document.getElementById('products-tbody');
+798:   const cats = DB.getCategories();
+799:   const settings = DB.getSettings();
+800: 
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.
+
+
+---END---
+
+Created At: 2026-06-25T21:12:17Z
+Completed At: 2026-06-25T21:12:17Z
+File Path: `file:///c:/Users/Laptop%20Duhok/Desktop/taher1212/taher1212/app.js`
+Total Lines: 2261
+Total Bytes: 83205
+Showing lines 800 to 1599
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+800: 
+801:   tbody.innerHTML = products.map(p => {
+802:     const cat = cats.find(c => c.id === p.category);
+803:     const isLow = p.stock > 0 && p.stock <= p.minStock;
+804:     const isOut = p.stock === 0;
+805:     return `
+806:       <tr>
+807:         <td><code style="color:var(--info);font-size:11px">${p.barcode}</code></td>
+808:         <td><span style="font-size:18px">${p.emoji || '📦'}</span> ${p.name}</td>
+809:         <td><span class="status-badge active">${cat ? cat.icon + ' ' + cat.name : '-'}</span></td>
+810:         <td><strong style="color:var(--success)">${formatIQD(p.priceIQD)}</strong></td>
+811:         <td style="color:var(--info)">$${p.priceUSD.toFixed(2)}</td>
+812:         <td><strong style="color:${isOut ? 'var(--danger)' : isLow ? 'var(--warning)' : 'var(--text-primary)'}">${p.stock}</strong></td>
+813:         <td>
+814:           <span class="status-badge ${isOut ? 'out' : isLow ? 'low' : 'active'}">
+815:             ${isOut ? '🚫 نفد' : isLow ? '⚠️ منخفض' : '✅ متوفر'}
+816:           </span>
+817:         </td>
+818:         <td>
+819:           <button class="btn-icon edit" onclick="editProduct('${p.id}')">✏️</button>
+820:           <button class="btn-icon delete" onclick="deleteProduct('${p.id}')">🗑️</button>
+821:         </td>
+822:       </tr>
+823:     `;
+824:   }).join('');
+825: }
+826: 
+827: function openProductModal(productId = null) {
+828:   loadCategoryFilterSelect();
+829:   const modal = document.getElementById('product-modal');
+830:   const settings = DB.getSettings();
+831: 
+832:   if (productId) {
+833:     const p = DB.getProducts().find(p => p.id === productId);
+834:     document.getElementById('product-modal-title').textContent = 'تعديل المنتج';
+835:     document.getElementById('pm-id').value = p.id;
+836:     document.getElementById('pm-barcode').value = p.barcode;
+837:     document.getElementById('pm-name').value = p.name;
+838:     document.getElementById('pm-category').value = p.category;
+839:     document.getElementById('pm-unit').value = p.unit || 'قطعة';
+840:     document.getElementById('pm-price-iqd').value = p.priceIQD;
+841:     document.getElementById('pm-price-usd').value = p.priceUSD;
+842:     document.getElementById('pm-cost').value = p.cost || '';
+843:     document.getElementById('pm-stock').value = p.stock;
+844:     document.getElementById('pm-min-stock').value = p.minStock || 5;
+845:     document.getElementById('pm-emoji').value = p.emoji || '';
+846:     document.getElementById('emoji-preview').innerHTML = renderEmojiHTML(p.emoji || '');
+847:     document.getElementById('pm-notes').value = p.notes || '';
+848:   } else {
+849:     document.getElementById('product-modal-title').textContent = 'إضافة منتج جديد';
+850:     document.getElementById('pm-id').value = '';
+851:     document.getElementById('pm-barcode').value = '';
+852:     document.getElementById('pm-name').value = '';
+853:     document.getElementById('pm-category').value = '';
+854:     document.getElementById('pm-unit').value = 'قطعة';
+855:     document.getElementById('pm-price-iqd').value = '';
+856:     document.getElementById('pm-price-usd').value = '';
+857:     document.getElementById('pm-cost').value = '';
+858:     document.getElementById('pm-stock').value = '';
+859:     document.getElementById('pm-min-stock').value = 5;
+860:     document.getElementById('pm-emoji').value = '📦';
+861:     document.getElementById('emoji-preview').innerHTML = '📦';
+862:     document.getElementById('pm-notes').value = '';
+863:   }
+864: 
+865:   openModal('product-modal');
+866: }
+867: 
+868: function editProduct(id) { openProductModal(id); }
+869: 
+870: function deleteProduct(id) {
+871:   const p = DB.getProducts().find(p => p.id === id);
+872:   if (!p) return;
+873:   if (!confirm(`هل تريد حذف المنتج "${p.name}"؟`)) return;
+874:   DB.deleteProduct(id);
+875:   loadProductsPage();
+876:   showToast('تم حذف المنتج', 'success');
+877: }
+878: 
+879: function saveProduct() {
+880:   const id = document.getElementById('pm-id').value;
+881:   const barcode = document.getElementById('pm-barcode').value.trim();
+882:   const name = document.getElementById('pm-name').value.trim();
+883:   const category = document.getElementById('pm-category').value;
+884:   const priceIQD = parseFloat(document.getElementById('pm-price-iqd').value || 0);
+885: 
+886:   if (!barcode || !name || !category || !priceIQD) {
+887:     showToast('يرجى ملء جميع الحقول المطلوبة', 'warning');
+888:     return;
+889:   }
+890: 
+891:   const settings = DB.getSettings();
+892:   const data = {
+893:     barcode,
+894:     name,
+895:     category,
+896:     unit: document.getElementById('pm-unit').value,
+897:     priceIQD,
+898:     priceUSD: parseFloat(document.getElementById('pm-price-usd').value || (priceIQD / settings.exchangeRate).toFixed(2)),
+899:     cost: parseFloat(document.getElementById('pm-cost').value || 0),
+900:     stock: parseInt(document.getElementById('pm-stock').value || 0),
+901:     minStock: parseInt(document.getElementById('pm-min-stock').value || 5),
+902:     emoji: document.getElementById('pm-emoji').value.trim() || '📦',
+903:     notes: document.getElementById('pm-notes').value.trim()
+904:   };
+905: 
+906:   if (id) {
+907:     DB.updateProduct(id, data);
+908:     showToast('تم تحديث المنتج بنجاح', 'success');
+909:   } else {
+910:     const newProduct = DB.addProduct(data);
+911:     if (data.stock > 0) {
+912:       DB.addStockLog({ productId: newProduct.id, productName: data.name, qty: data.stock, cost: data.cost * data.stock, note: 'رصيد افتتاحي (منتج جديد)' });
+913:     }
+914:     showToast('تمت إضافة المنتج بنجاح', 'success');
+915:   }
+916: 
+917:   closeModal('product-modal');
+918:   loadProductsPage();
+919:   checkLowStock();
+920: }
+921: 
+922: function generateBarcode() {
+923:   const code = '6001' + Date.now().toString().slice(-9);
+924:   document.getElementById('pm-barcode').value = code;
+925: }
+926: 
+927: function syncPriceFromIQD() {
+928:   const settings = DB.getSettings();
+929:   const iqd = parseFloat(document.getElementById('pm-price-iqd').value || 0);
+930:   document.getElementById('pm-price-usd').value = (iqd / settings.exchangeRate).toFixed(2);
+931: }
+932: 
+933: function syncPriceFromUSD() {
+934:   const settings = DB.getSettings();
+935:   const usd = parseFloat(document.getElementById('pm-price-usd').value || 0);
+936:   document.getElementById('pm-price-iqd').value = Math.round(usd * settings.exchangeRate);
+937: }
+938: 
+939: // ========= إدارة الفئات =========
+940: function openCategoryManager() {
+941:   renderCategoriesList();
+942:   openModal('category-modal');
+943: }
+944: 
+945: function renderCategoriesList() {
+946:   const cats = DB.getCategories();
+947:   const list = document.getElementById('categories-list');
+948:   list.innerHTML = cats.map(c => `
+949:     <div class="category-item">
+950:       <span>${c.icon} ${c.name}</span>
+951:       <button class="btn-icon delete" onclick="deleteCategory('${c.id}')">🗑️</button>
+952:     </div>
+953:   `).join('');
+954: }
+955: 
+956: function addCategory() {
+957:   const name = document.getElementById('new-category-name').value.trim();
+958:   const icon = document.getElementById('new-category-icon').value.trim() || '📁';
+959:   if (!name) { showToast('أدخل اسم الفئة', 'warning'); return; }
+960: 
+961:   const cats = DB.getCategories();
+962:   cats.push({ id: 'cat' + Date.now(), name, icon });
+963:   DB.saveCategories(cats);
+964:   document.getElementById('new-category-name').value = '';
+965:   document.getElementById('new-category-icon').value = '';
+966:   renderCategoriesList();
+967:   loadCategoryFilterSelect();
+968:   showToast('تمت إضافة الفئة', 'success');
+969: }
+970: 
+971: function deleteCategory(id) {
+972:   const cats = DB.getCategories().filter(c => c.id !== id);
+973:   DB.saveCategories(cats);
+974:   renderCategoriesList();
+975:   loadCategoryFilterSelect();
+976:   showToast('تم حذف الفئة', 'success');
+977: }
+978: 
+979: // ========= صفحة المخزون =========
+980: function loadInventoryPage() {
+981:   const products = DB.getProducts();
+982:   const settings = DB.getSettings();
+983:   const lowStock = products.filter(p => p.stock > 0 && p.stock <= (p.minStock || settings.minStock));
+984:   const outOfStock = products.filter(p => p.stock === 0);
+985: 
+986:   document.getElementById('total-products-count').textContent = products.length;
+987:   document.getElementById('low-stock-count').textContent = lowStock.length;
+988:   document.getElementById('out-of-stock-count').textContent = outOfStock.length;
+989: 
+990:   const cats = DB.getCategories();
+991:   const tbody = document.getElementById('inventory-tbody');
+992:   tbody.innerHTML = products.map(p => {
+993:     const cat = cats.find(c => c.id === p.category);
+994:     const isLow = p.stock > 0 && p.stock <= (p.minStock || settings.minStock);
+995:     const isOut = p.stock === 0;
+996:     return `
+997:       <tr>
+998:         <td><span style="font-size:18px;display:inline-block;width:24px;height:24px;vertical-align:middle;">${renderEmojiHTML(p.emoji)}</span> ${p.name}</td>
+999:         <td>${cat ? cat.icon + ' ' + cat.name : '-'}</td>
+1000:         <td>
+1001:           <strong style="font-size:18px;color:${isOut ? 'var(--danger)' : isLow ? 'var(--warning)' : 'var(--success)'}">
+1002:             ${p.stock}
+1003:           </strong>
+1004:         </td>
+1005:         <td>${p.minStock || settings.minStock}</td>
+1006:         <td>
+1007:           <span class="status-badge ${isOut ? 'out' : isLow ? 'low' : 'active'}">
+1008:             ${isOut ? '🚫 نفد المخزون' : isLow ? '⚠️ منخفض' : '✅ طبيعي'}
+1009:           </span>
+1010:         </td>
+1011:         <td>
+1012:           <div style="display:flex;gap:6px;align-items:center">
+1013:             <input type="number" id="stock-input-${p.id}" placeholder="0" min="1" 
+1014:                    style="width:70px;padding:5px;background:var(--bg-dark);border:1px solid var(--border);border-radius:6px;color:var(--text-primary);text-align:center;font-family:Cairo,sans-serif">
+1015:             <button class="btn-primary" style="padding:5px 10px;font-size:12px" 
+1016:                     onclick="addStockInline('${p.id}')">➕</button>
+1017:           </div>
+1018:         </td>
+1019:       </tr>
+1020:     `;
+1021:   }).join('');
+1022: }
+1023: 
+1024: function addStockInline(productId) {
+1025:   const input = document.getElementById(`stock-input-${productId}`);
+1026:   const qty = parseInt(input.value || 0);
+1027:   if (qty <= 0) { showToast('أدخل كمية صحيحة', 'warning'); return; }
+1028: 
+1029:   const products = DB.getProducts();
+1030:   const p = products.find(p => p.id === productId);
+1031:   if (!p) return;
+1032: 
+1033:   p.stock += qty;
+1034:   DB.saveProducts(products);
+1035:   DB.addStockLog({ productId, productName: p.name, qty, cost: (p.cost || 0) * qty, note: 'إضافة مخزون' });
+1036:   input.value = '';
+1037:   loadInventoryPage();
+1038:   showToast(`تمت إضافة ${qty} ${p.unit} إلى ${p.name}`, 'success');
+1039:   checkLowStock();
+1040: }
+1041: 
+1042: function openStockModal() {
+1043:   const products = DB.getProducts();
+1044:   const sel = document.getElementById('sm-product');
+1045:   sel.innerHTML = products.map(p => `<option value="${p.id}">${(p.emoji && p.emoji.startsWith('data:image')) ? '🖼️' : (p.emoji || '📦')} ${p.name} (${p.stock} متوفر)</option>`).join('');
+1046:   document.getElementById('sm-qty').value = '';
+1047:   document.getElementById('sm-note').value = '';
+1048:   openModal('stock-modal');
+1049: }
+1050: 
+1051: function addStock() {
+1052:   const productId = document.getElementById('sm-product').value;
+1053:   const qty = parseInt(document.getElementById('sm-qty').value || 0);
+1054:   const note = document.getElementById('sm-note').value;
+1055: 
+1056:   if (!qty || qty <= 0) { showToast('أدخل كمية صحيحة', 'warning'); return; }
+1057: 
+1058:   const products = DB.getProducts();
+1059:   const p = products.find(p => p.id === productId);
+1060:   if (!p) return;
+1061: 
+1062:   p.stock += qty;
+1063:   DB.saveProducts(products);
+1064:   DB.addStockLog({ productId, productName: p.name, qty, cost: (p.cost || 0) * qty, note });
+1065:   closeModal('stock-modal');
+1066:   loadInventoryPage();
+1067:   showToast(`تمت إضافة ${qty} ${p.unit} إلى ${p.name}`, 'success');
+1068: }
+1069: 
+1070: // ========= صفحة العملاء =========
+1071: function loadCustomersPage() {
+1072:   renderCustomersGrid(DB.getCustomers());
+1073: }
+1074: 
+1075: function searchCustomers(query) {
+1076:   const customers = DB.getCustomers().filter(c =>
+1077:     c.name.toLowerCase().includes(query.toLowerCase()) ||
+1078:     c.phone.includes(query)
+1079:   );
+1080:   renderCustomersGrid(customers);
+1081: }
+1082: 
+1083: function renderCustomersGrid(customers) {
+1084:   const grid = document.getElementById('customers-grid');
+1085:   if (!customers.length) {
+1086:     grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-muted)">👥 لا يوجد عملاء</div>';
+1087:     return;
+1088:   }
+1089:   grid.innerHTML = customers.map(c => `
+1090:     <div class="customer-card">
+1091:       <div class="customer-card-header">
+1092:         <div class="customer-avatar">${c.name.charAt(0)}</div>
+1093:         <div class="customer-card-info">
+1094:           <h4>${c.name}</h4>
+1095:           <p>📞 ${c.phone}</p>
+1096:         </div>
+1097:       </div>
+1098:       <div style="font-size:13px;color:var(--text-muted);margin-bottom:8px">
+1099:         📍 ${c.address || 'غير محدد'}
+1100:       </div>
+1101:       <div class="customer-card-stats">
+1102:         <span>🛒 ${c.totalPurchases || 0} مشتريات</span>
+1103:         <span>💰 ${formatIQD(c.totalSpent || 0)}</span>
+1104:       </div>
+1105:       <div style="font-size:11px;color:var(--text-muted);margin-top:6px">📅 منذ ${c.joinDate}</div>
+1106:       <div class="customer-card-actions">
+1107:         <button class="btn-icon edit" onclick="editCustomer('${c.id}')">✏️ تعديل</button>
+1108:         <button class="btn-icon delete" onclick="deleteCustomer('${c.id}')">🗑️ حذف</button>
+1109:       </div>
+1110:     </div>
+1111:   `).join('');
+1112: }
+1113: 
+1114: function openCustomerModal() {
+1115:   document.getElementById('customer-modal-title').textContent = 'إضافة عميل جديد';
+1116:   document.getElementById('cm-id').value = '';
+1117:   document.getElementById('cm-name').value = '';
+1118:   document.getElementById('cm-phone').value = '';
+1119:   document.getElementById('cm-address').value = '';
+1120:   document.getElementById('cm-notes').value = '';
+1121:   openModal('customer-modal');
+1122: }
+1123: 
+1124: function editCustomer(id) {
+1125:   const c = DB.getCustomers().find(c => c.id === id);
+1126:   if (!c) return;
+1127:   document.getElementById('customer-modal-title').textContent = 'تعديل العميل';
+1128:   document.getElementById('cm-id').value = c.id;
+1129:   document.getElementById('cm-name').value = c.name;
+1130:   document.getElementById('cm-phone').value = c.phone;
+1131:   document.getElementById('cm-address').value = c.address || '';
+1132:   document.getElementById('cm-notes').value = c.notes || '';
+1133:   openModal('customer-modal');
+1134: }
+1135: 
+1136: function saveCustomer() {
+1137:   const id = document.getElementById('cm-id').value;
+1138:   const name = document.getElementById('cm-name').value.trim();
+1139:   const phone = document.getElementById('cm-phone').value.trim();
+1140:   if (!name) { showToast('أدخل اسم العميل', 'warning'); return; }
+1141: 
+1142:   const data = {
+1143:     name,
+1144:     phone,
+1145:     address: document.getElementById('cm-address').value.trim(),
+1146:     notes: document.getElementById('cm-notes').value.trim()
+1147:   };
+1148: 
+1149:   if (id) {
+1150:     DB.updateCustomer(id, data);
+1151:     showToast('تم تحديث العميل', 'success');
+1152:   } else {
+1153:     DB.addCustomer(data);
+1154:     showToast('تمت إضافة العميل', 'success');
+1155:   }
+1156: 
+1157:   closeModal('customer-modal');
+1158:   loadCustomersPage();
+1159: }
+1160: 
+1161: function deleteCustomer(id) {
+1162:   const c = DB.getCustomers().find(c => c.id === id);
+1163:   if (!c) return;
+1164:   if (!confirm(`هل تريد حذف العميل "${c.name}"؟`)) return;
+1165:   DB.deleteCustomer(id);
+1166:   loadCustomersPage();
+1167:   showToast('تم حذف العميل', 'success');
+1168: }
+1169: 
+1170: // ========= صفحة التقارير =========
+1171: function initReportDates() {
+1172:   const today = new Date().toISOString().split('T')[0];
+1173:   const firstDay = today.slice(0, 8) + '01';
+1174:   document.getElementById('report-from').value = firstDay;
+1175:   document.getElementById('report-to').value = today;
+1176: }
+1177: 
+1178: function loadReports() {
+1179:   const from = document.getElementById('report-from').value;
+1180:   const to = document.getElementById('report-to').value;
+1181: 
+1182:   const invoices = DB.getInvoices().filter(inv => {
+1183:     const d = inv.date.split('T')[0];
+1184:     return d >= from && d <= to;
+1185:   });
+1186: 
+1187:   const totalSales = invoices.reduce((s, inv) => s + inv.total, 0);
+1188:   const itemsSold = invoices.reduce((s, inv) => s + inv.items.reduce((q, i) => q + i.qty, 0), 0);
+1189:   const avgInvoice = invoices.length ? totalSales / invoices.length : 0;
+1190: 
+1191:   document.getElementById('report-total-sales').textContent = formatIQD(totalSales);
+1192:   document.getElementById('report-invoices-count').textContent = invoices.length;
+1193:   document.getElementById('report-items-sold').textContent = itemsSold;
+1194:   document.getElementById('report-avg-invoice').textContent = formatIQD(avgInvoice);
+1195: 
+1196:   // رسم بياني للمبيعات
+1197:   renderSalesChart(invoices);
+1198:   renderCategoryChart(invoices);
+1199: 
+1200:   // أكثر المنتجات مبيعاً
+1201:   const productSales = {};
+1202:   invoices.forEach(inv => {
+1203:     inv.items.forEach(item => {
+1204:       if (!productSales[item.id]) productSales[item.id] = { name: item.name, emoji: item.emoji, qty: 0, revenue: 0 };
+1205:       productSales[item.id].qty += item.qty;
+1206:       productSales[item.id].revenue += item.priceIQD * item.qty;
+1207:     });
+1208:   });
+1209: 
+1210:   const topProducts = Object.values(productSales).sort((a, b) => b.qty - a.qty).slice(0, 10);
+1211:   document.getElementById('top-products-tbody').innerHTML = topProducts.map((p, i) => `
+1212:     <tr>
+1213:       <td><span style="color:var(--warning)">#${i + 1}</span> <span style="display:inline-block;width:20px;height:20px;vertical-align:middle;margin-left:4px;">${renderEmojiHTML(p.emoji)}</span> ${p.name}</td>
+1214:       <td><strong>${p.qty}</strong></td>
+1215:       <td style="color:var(--success)">${formatIQD(p.revenue)}</td>
+1216:     </tr>
+1217:   `).join('');
+1218: 
+1219:   // آخر الفواتير
+1220:   const recentInvoices = [...invoices].reverse().slice(0, 15);
+1221:   const customers = DB.getCustomers();
+1222:   document.getElementById('recent-invoices-tbody').innerHTML = recentInvoices.map(inv => {
+1223:     const cust = customers.find(c => c.id === inv.customerId);
+1224:     return `
+1225:       <tr>
+1226:         <td><strong style="color:var(--primary)">#${inv.invoiceNumber}</strong></td>
+1227:         <td style="font-size:12px">${new Date(inv.date).toLocaleString('ar-IQ')}</td>
+1228:         <td>${cust ? cust.name : 'زائر'}</td>
+1229:         <td style="color:var(--success);font-weight:700">${formatIQD(inv.total)}</td>
+1230:         <td>${inv.paymentMethod === 'cash' ? '💵 نقداً' : inv.paymentMethod === 'card' ? '💳 بطاقة' : '📱 تحويل'}</td>
+1231:       </tr>
+1232:     `;
+1233:   }).join('');
+1234: 
+1235:   // المشتريات وإضافة المخزون
+1236:   const stockLog = DB.getStockLog().filter(log => {
+1237:     const d = log.date.split('T')[0];
+1238:     return d >= from && d <= to;
+1239:   });
+1240: 
+1241:   const totalPurchasesCost = stockLog.reduce((s, log) => s + (log.cost || 0), 0);
+1242:   document.getElementById('total-purchases-cost').textContent = formatIQD(totalPurchasesCost);
+1243: 
+1244:   const recentStockLog = [...stockLog].reverse().slice(0, 15);
+1245:   document.getElementById('purchases-tbody').innerHTML = recentStockLog.map(log => `
+1246:     <tr>
+1247:       <td>${log.productName}</td>
+1248:       <td><strong style="color:var(--primary)">+${log.qty}</strong></td>
+1249:       <td style="color:var(--danger)">${formatIQD(log.cost || 0)}</td>
+1250:       <td style="font-size:12px">${new Date(log.date).toLocaleString('ar-IQ')}</td>
+1251:     </tr>
+1252:   `).join('');
+1253: }
+1254: 
+1255: function renderSalesChart(invoices) {
+1256:   const ctx = document.getElementById('sales-chart');
+1257:   if (!ctx) return;
+1258: 
+1259:   // تجميع حسب اليوم
+1260:   const byDay = {};
+1261:   invoices.forEach(inv => {
+1262:     const day = inv.date.split('T')[0];
+1263:     byDay[day] = (byDay[day] || 0) + inv.total;
+1264:   });
+1265: 
+1266:   const labels = Object.keys(byDay).sort().slice(-14);
+1267:   const data = labels.map(d => Math.round((byDay[d] || 0) / 1000));
+1268: 
+1269:   if (state.charts.sales) state.charts.sales.destroy();
+1270:   state.charts.sales = new Chart(ctx, {
+1271:     type: 'line',
+1272:     data: {
+1273:       labels,
+1274:       datasets: [{
+1275:         label: 'المبيعات (بالألف دينار)',
+1276:         data,
+1277:         borderColor: '#6c63ff',
+1278:         backgroundColor: 'rgba(108, 99, 255, 0.1)',
+1279:         borderWidth: 2,
+1280:         fill: true,
+1281:         tension: 0.4,
+1282:         pointBackgroundColor: '#6c63ff',
+1283:       }]
+1284:     },
+1285:     options: {
+1286:       responsive: true,
+1287:       plugins: { legend: { labels: { color: '#8b949e', font: { family: 'Cairo' } } } },
+1288:       scales: {
+1289:         x: { ticks: { color: '#8b949e' }, grid: { color: '#21262d' } },
+1290:         y: { ticks: { color: '#8b949e' }, grid: { color: '#21262d' } }
+1291:       }
+1292:     }
+1293:   });
+1294: }
+1295: 
+1296: function renderCategoryChart(invoices) {
+1297:   const ctx = document.getElementById('category-chart');
+1298:   if (!ctx) return;
+1299: 
+1300:   const cats = DB.getCategories();
+1301:   const byCat = {};
+1302:   invoices.forEach(inv => {
+1303:     inv.items.forEach(item => {
+1304:       const prod = DB.getProducts().find(p => p.id === item.id);
+1305:       const catId = prod?.category || 'other';
+1306:       byCat[catId] = (byCat[catId] || 0) + item.priceIQD * item.qty;
+1307:     });
+1308:   });
+1309: 
+1310:   const labels = Object.keys(byCat).map(id => {
+1311:     const cat = cats.find(c => c.id === id);
+1312:     return cat ? cat.icon + ' ' + cat.name : 'أخرى';
+1313:   });
+1314:   const data = Object.values(byCat).map(v => Math.round(v / 1000));
+1315: 
+1316:   if (state.charts.category) state.charts.category.destroy();
+1317:   state.charts.category = new Chart(ctx, {
+1318:     type: 'doughnut',
+1319:     data: {
+1320:       labels,
+1321:       datasets: [{
+1322:         data,
+1323:         backgroundColor: ['#6c63ff','#00c896','#ff6584','#ffb547','#17a2b8','#ff4d6d','#8b85ff','#4ecdc4'],
+1324:       }]
+1325:     },
+1326:     options: {
+1327:       responsive: true,
+1328:       plugins: {
+1329:         legend: {
+1330:           position: 'right',
+1331:           labels: { color: '#8b949e', font: { family: 'Cairo' }, padding: 8, boxWidth: 14 }
+1332:         }
+1333:       }
+1334:     }
+1335:   });
+1336: }
+1337: 
+1338: function exportReport() {
+1339:   const from = document.getElementById('report-from').value;
+1340:   const to = document.getElementById('report-to').value;
+1341:   const invoices = DB.getInvoices().filter(inv => {
+1342:     const d = inv.date.split('T')[0];
+1343:     return d >= from && d <= to;
+1344:   });
+1345: 
+1346:   let csv = 'رقم الفاتورة,التاريخ,العميل,الإجمالي (د.ع),طريقة الدفع\n';
+1347:   const customers = DB.getCustomers();
+1348:   invoices.forEach(inv => {
+1349:     const cust = customers.find(c => c.id === inv.customerId);
+1350:     csv += `#${inv.invoiceNumber},${new Date(inv.date).toLocaleDateString('ar-IQ')},${cust ? cust.name : 'زائر'},${inv.total},${inv.paymentMethod}\n`;
+1351:   });
+1352: 
+1353:   const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+1354:   const url = URL.createObjectURL(blob);
+1355:   const a = document.createElement('a');
+1356:   a.href = url;
+1357:   a.download = `تقرير_${from}_${to}.csv`;
+1358:   a.click();
+1359:   showToast('تم تصدير التقرير', 'success');
+1360: }
+1361: 
+1362: // ========= لوحة التحكم =========
+1363: function loadDashboard() {
+1364:   const settings = DB.getSettings();
+1365:   const today = new Date().toISOString().split('T')[0];
+1366:   const thisMonth = today.slice(0, 7);
+1367:   const invoices = DB.getInvoices();
+1368: 
+1369:   const todayInvoices = invoices.filter(inv => inv.date.startsWith(today));
+1370:   const monthInvoices = invoices.filter(inv => inv.date.startsWith(thisMonth));
+1371: 
+1372:   const todaySales = todayInvoices.reduce((s, inv) => s + inv.total, 0);
+1373:   const monthSales = monthInvoices.reduce((s, inv) => s + inv.total, 0);
+1374: 
+1375:   const products = DB.getProducts();
+1376:   const lowStock = products.filter(p => p.stock <= (p.minStock || settings.minStock) && p.stock > 0);
+1377:   const customers = DB.getCustomers();
+1378: 
+1379:   document.getElementById('dash-today-sales').textContent = formatIQD(todaySales);
+1380:   document.getElementById('dash-today-usd').textContent = '$' + (todaySales / settings.exchangeRate).toFixed(2);
+1381:   document.getElementById('dash-today-invoices').textContent = todayInvoices.length;
+1382:   document.getElementById('dash-products').textContent = products.length;
+1383:   document.getElementById('dash-customers').textContent = customers.length;
+1384:   document.getElementById('dash-low-stock').textContent = lowStock.length;
+1385:   document.getElementById('dash-month-sales').textContent = formatIQD(monthSales);
+1386: 
+1387:   // رسم بياني آخر 7 أيام
+1388:   renderWeekChart(invoices);
+1389:   renderPaymentChart(invoices);
+1390: 
+1391:   // أكثر منتجات مبيعاً اليوم
+1392:   const productSales = {};
+1393:   todayInvoices.forEach(inv => {
+1394:     inv.items.forEach(item => {
+1395:       if (!productSales[item.id]) productSales[item.id] = { name: item.name, emoji: item.emoji, qty: 0 };
+1396:       productSales[item.id].qty += item.qty;
+1397:     });
+1398:   });
+1399: 
+1400:   const topToday = Object.values(productSales).sort((a, b) => b.qty - a.qty).slice(0, 5);
+1401:   const topEl = document.getElementById('dash-top-products');
+1402:   topEl.innerHTML = topToday.length ? topToday.map((p, i) => `
+1403:     <div class="product-rank-item">
+1404:       <span>${['🥇','🥈','🥉','4️⃣','5️⃣'][i]} ${p.emoji} ${p.name}</span>
+1405:       <strong>${p.qty} مبيع</strong>
+1406:     </div>
+1407:   `).join('') : '<p style="color:var(--text-muted);font-size:13px;text-align:center;padding:20px">لا توجد مبيعات اليوم</p>';
+1408: 
+1409:   // تنبيهات المخزون
+1410:   const alertsEl = document.getElementById('dash-stock-alerts');
+1411:   alertsEl.innerHTML = lowStock.length ? lowStock.map(p => `
+1412:     <div class="stock-alert-item">
+1413:       <span>⚠️ ${p.emoji} ${p.name}</span>
+1414:       <span style="color:var(--warning)">${p.stock} متبقي</span>
+1415:     </div>
+1416:   `).join('') : '<p style="color:var(--success);font-size:13px;text-align:center;padding:20px">✅ المخزون جيد</p>';
+1417: }
+1418: 
+1419: function renderWeekChart(invoices) {
+1420:   const ctx = document.getElementById('dash-week-chart');
+1421:   if (!ctx) return;
+1422: 
+1423:   const days = [];
+1424:   const labels = [];
+1425:   for (let i = 6; i >= 0; i--) {
+1426:     const d = new Date();
+1427:     d.setDate(d.getDate() - i);
+1428:     const day = d.toISOString().split('T')[0];
+1429:     days.push(day);
+1430:     labels.push(d.toLocaleDateString('ar-IQ', { weekday: 'short', month: 'short', day: 'numeric' }));
+1431:   }
+1432: 
+1433:   const data = days.map(day => {
+1434:     const dayInvoices = invoices.filter(inv => inv.date.startsWith(day));
+1435:     return Math.round(dayInvoices.reduce((s, inv) => s + inv.total, 0) / 1000);
+1436:   });
+1437: 
+1438:   if (state.charts.week) state.charts.week.destroy();
+1439:   state.charts.week = new Chart(ctx, {
+1440:     type: 'bar',
+1441:     data: {
+1442:       labels,
+1443:       datasets: [{
+1444:         label: 'المبيعات (بالألف دينار)',
+1445:         data,
+1446:         backgroundColor: 'rgba(108, 99, 255, 0.7)',
+1447:         borderColor: '#6c63ff',
+1448:         borderWidth: 2,
+1449:         borderRadius: 8,
+1450:       }]
+1451:     },
+1452:     options: {
+1453:       responsive: true,
+1454:       plugins: { legend: { labels: { color: '#8b949e', font: { family: 'Cairo' } } } },
+1455:       scales: {
+1456:         x: { ticks: { color: '#8b949e', font: { family: 'Cairo' } }, grid: { color: '#21262d' } },
+1457:         y: { ticks: { color: '#8b949e' }, grid: { color: '#21262d' } }
+1458:       }
+1459:     }
+1460:   });
+1461: }
+1462: 
+1463: function renderPaymentChart(invoices) {
+1464:   const ctx = document.getElementById('dash-payment-chart');
+1465:   if (!ctx) return;
+1466: 
+1467:   const byMethod = { cash: 0, card: 0, transfer: 0 };
+1468:   invoices.forEach(inv => byMethod[inv.paymentMethod] = (byMethod[inv.paymentMethod] || 0) + 1);
+1469: 
+1470:   if (state.charts.payment) state.charts.payment.destroy();
+1471:   state.charts.payment = new Chart(ctx, {
+1472:     type: 'pie',
+1473:     data: {
+1474:       labels: ['💵 نقداً', '💳 بطاقة', '📱 تحويل'],
+1475:       datasets: [{
+1476:         data: [byMethod.cash, byMethod.card, byMethod.transfer],
+1477:         backgroundColor: ['#00c896','#6c63ff','#ffb547'],
+1478:       }]
+1479:     },
+1480:     options: {
+1481:       responsive: true,
+1482:       plugins: {
+1483:         legend: {
+1484:           labels: { color: '#8b949e', font: { family: 'Cairo' } }
+1485:         }
+1486:       }
+1487:     }
+1488:   });
+1489: }
+1490: 
+1491: // ========= الإعدادات =========
+1492: function loadSettings() {
+1493:   const s = DB.getSettings();
+1494:   const el = id => document.getElementById(id);
+1495:   if (el('s-store-name')) el('s-store-name').value = s.storeName;
+1496:   if (el('s-store-address')) el('s-store-address').value = s.storeAddress;
+1497:   if (el('s-store-phone')) el('s-store-phone').value = s.storePhone;
+1498:   if (el('s-exchange-rate')) el('s-exchange-rate').value = s.exchangeRate;
+1499:   if (el('s-default-currency')) el('s-default-currency').value = s.defaultCurrency;
+1500:   if (el('s-tax-rate')) el('s-tax-rate').value = s.taxRate;
+1501:   if (el('s-min-stock')) el('s-min-stock').value = s.minStock;
+1502:   if (el('s-invoice-note')) el('s-invoice-note').value = s.invoiceNote;
+1503: }
+1504: 
+1505: function saveSettings() {
+1506:   const s = DB.getSettings();
+1507:   const el = id => document.getElementById(id);
+1508: 
+1509:   const newPassword = el('s-new-password').value;
+1510:   const confirmPassword = el('s-confirm-password').value;
+1511: 
+1512:   if (newPassword) {
+1513:     if (newPassword !== confirmPassword) {
+1514:       showToast('كلمات المرور غير متطابقة', 'error');
+1515:       return;
+1516:     }
+1517:     s.password = newPassword;
+1518:   }
+1519: 
+1520:   s.storeName = el('s-store-name').value || s.storeName;
+1521:   s.storeAddress = el('s-store-address').value || s.storeAddress;
+1522:   s.storePhone = el('s-store-phone').value || s.storePhone;
+1523:   s.exchangeRate = parseFloat(el('s-exchange-rate').value) || s.exchangeRate;
+1524:   s.defaultCurrency = el('s-default-currency').value;
+1525:   s.taxRate = parseFloat(el('s-tax-rate').value) || 0;
+1526:   s.minStock = parseInt(el('s-min-stock').value) || 5;
+1527:   s.invoiceNote = el('s-invoice-note').value || s.invoiceNote;
+1528: 
+1529:   DB.saveSettings(s);
+1530: 
+1531:   // تحديث الواجهة
+1532:   document.getElementById('store-name-display').textContent = s.storeName;
+1533:   document.getElementById('rate-display').textContent = s.exchangeRate.toLocaleString();
+1534:   document.getElementById('tax-rate-display').textContent = s.taxRate;
+1535: 
+1536:   showToast('تم حفظ الإعدادات بنجاح', 'success');
+1537: }
+1538: 
+1539: function resetData() {
+1540:   if (!confirm('⚠️ هذا الإجراء سيمسح جميع البيانات! هل أنت متأكد؟')) return;
+1541:   if (!confirm('مسح جميع البيانات نهائياً؟ لا يمكن التراجع!')) return;
+1542:   localStorage.removeItem('pos_products');
+1543:   localStorage.removeItem('pos_customers');
+1544:   localStorage.removeItem('pos_invoices');
+1545:   localStorage.removeItem('pos_stock_log');
+1546:   localStorage.removeItem('pos_categories');
+1547:   localStorage.removeItem('pos_settings');
+1548:   location.reload();
+1549: }
+1550: 
+1551: // ========= التنبيهات =========
+1552: function checkLowStock() {
+1553:   const products = DB.getProducts();
+1554:   const settings = DB.getSettings();
+1555:   const lowStockItems = products.filter(p => p.stock <= (p.minStock || settings.minStock));
+1556: 
+1557:   document.getElementById('notif-count').textContent = lowStockItems.length;
+1558: 
+1559:   const list = document.getElementById('notifications-list');
+1560:   if (list) {
+1561:     list.innerHTML = lowStockItems.length ? lowStockItems.map(p => `
+1562:       <div class="notif-item">
+1563:         <span>${p.emoji || '📦'}</span>
+1564:         <div>
+1565:           <strong>${p.name}</strong>
+1566:           <p>${p.stock === 0 ? '🚫 نفد المخزون' : `⚠️ المخزون: ${p.stock} فقط`}</p>
+1567:         </div>
+1568:       </div>
+1569:     `).join('') : '<p style="color:var(--text-muted);font-size:13px">✅ لا توجد تنبيهات</p>';
+1570:   }
+1571: }
+1572: 
+1573: function toggleNotifications() {
+1574:   const panel = document.getElementById('notifications-panel');
+1575:   panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+1576: }
+1577: 
+1578: // ========= أدوات مساعدة =========
+1579: function formatIQD(amount) {
+1580:   return new Intl.NumberFormat('ar-IQ', { style: 'decimal', minimumFractionDigits: 0 }).format(Math.round(amount)) + ' د.ع';
+1581: }
+1582: 
+1583: function openModal(id) {
+1584:   document.getElementById(id).style.display = 'flex';
+1585: }
+1586: 
+1587: function closeModal(id) {
+1588:   document.getElementById(id).style.display = 'none';
+1589: }
+1590: 
+1591: function showToast(message, type = 'info') {
+1592:   const container = document.getElementById('toast-container');
+1593:   const toast = document.createElement('div');
+1594:   toast.className = `toast ${type}`;
+1595:   const icons = { success: '✅', error: '❌', warning: '⚠️', info: 'ℹ️' };
+1596:   toast.innerHTML = `<span>${icons[type]}</span><span>${message}</span>`;
+1597:   container.appendChild(toast);
+1598: 
+1599:   setTimeout(() => {
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.
+
+
+---END---
+
+Created At: 2026-06-25T21:12:22Z
+Completed At: 2026-06-25T21:12:22Z
+File Path: `file:///c:/Users/Laptop%20Duhok/Desktop/taher1212/taher1212/app.js`
+Total Lines: 2261
+Total Bytes: 83205
+Showing lines 1600 to 2261
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1600:     toast.style.animation = 'toastOut 0.4s ease forwards';
+1601:     setTimeout(() => toast.remove(), 400);
+1602:   }, 3000);
+1603: }
+1604: 
+1605: // إغلاق الإشعارات عند النقر خارجها
+1606: document.addEventListener('click', (e) => {
+1607:   const panel = document.getElementById('notifications-panel');
+1608:   const btn = document.querySelector('.notifications-btn');
+1609:   if (panel && !panel.contains(e.target) && !btn?.contains(e.target)) {
+1610:     panel.style.display = 'none';
+1611:   }
+1612: });
+1613: 
+1614: // إغلاق المودال عند النقر خارجه
+1615: document.querySelectorAll('.modal-overlay').forEach(overlay => {
+1616:   overlay.addEventListener('click', (e) => {
+1617:     if (e.target === overlay) {
+1618:       overlay.style.display = 'none';
+1619:     }
+1620:   });
+1621: });
+1622: 
+1623: // =============================================
+1624: // ======== نظام ديون العملاء ========
+1625: // =============================================
+1626: 
+1627: // --------- البيع بالدين من الكاشير ---------
+1628: function processDebtSale() {
+1629:   if (!state.cart.length) {
+1630:     showToast('السلة فارغة! أضف منتجات أولاً', 'warning');
+1631:     return;
+1632:   }
+1633:   if (!state.selectedCustomer) {
+1634:     showToast('⚠️ يجب اختيار عميل لتسجيل الدين', 'error');
+1635:     document.getElementById('cart-customer').focus();
+1636:     return;
+1637:   }
+1638: 
+1639:   const settings = DB.getSettings();
+1640:   const customer = DB.getCustomers().find(c => c.id === state.selectedCustomer);
+1641:   if (!customer) { showToast('العميل غير موجود', 'error'); return; }
+1642: 
+1643:   const debtNote = document.getElementById('debt-note').value.trim();
+1644: 
+1645:   // خصم من المخزون
+1646:   const products = DB.getProducts();
+1647:   state.cart.forEach(item => {
+1648:     const prod = products.find(p => p.id === item.id);
+1649:     if (prod) prod.stock -= item.qty;
+1650:   });
+1651:   DB.saveProducts(products);
+1652: 
+1653:   // إنشاء سجل الدين
+1654:   const debt = DB.addDebt({
+1655:     customerId: state.selectedCustomer,
+1656:     customerName: customer.name,
+1657:     customerPhone: customer.phone,
+1658:     items: state.cart.map(i => ({ ...i })),
+1659:     subtotal: state.lastTotal.subtotal,
+1660:     discount: state.lastTotal.discount,
+1661:     tax: state.lastTotal.tax,
+1662:     totalIQD: state.lastTotal.total,
+1663:     totalUSD: state.lastTotal.totalUSD,
+1664:     note: debtNote,
+1665:     cashier: document.getElementById('current-user').textContent,
+1666:   });
+1667: 
+1668:   // تحديث بيانات العميل
+1669:   DB.updateCustomer(state.selectedCustomer, {
+1670:     totalPurchases: (customer.totalPurchases || 0) + 1,
+1671:     totalSpent: (customer.totalSpent || 0) + state.lastTotal.total
+1672:   });
+1673: 
+1674:   updateDebtNavBadge();
+1675:   showToast(`✅ تم تسجيل دين على ${customer.name} بقيمة ${formatIQD(state.lastTotal.total)}`, 'warning');
+1676: 
+1677:   // إعادة تعيين الكاشير
+1678:   selectPayMethod('cash', document.getElementById('pay-cash'));
+1679:   document.getElementById('debt-note').value = '';
+1680:   clearCart();
+1681:   renderProducts();
+1682: }
+1683: 
+1684: // --------- تحديث شارة الديون في الشريط الجانبي ---------
+1685: function updateDebtNavBadge() {
+1686:   const debts = DB.getDebts().filter(d => d.status !== 'paid');
+1687:   const badge = document.getElementById('debt-nav-count');
+1688:   if (!badge) return;
+1689:   if (debts.length > 0) {
+1690:     badge.textContent = debts.length;
+1691:     badge.style.display = 'inline-block';
+1692:   } else {
+1693:     badge.style.display = 'none';
+1694:   }
+1695: }
+1696: 
+1697: // --------- صفحة الديون ---------
+1698: let debtSearchQuery = '';
+1699: let selectedDebtorId = null;
+1700: 
+1701: function loadDebtsPage() {
+1702:   updateDebtNavBadge();
+1703:   renderDebtsSummary();
+1704:   renderDebtorsList(debtSearchQuery);
+1705:   if (selectedDebtorId) {
+1706:     showDebtorDetail(selectedDebtorId);
+1707:   }
+1708: }
+1709: 
+1710: function renderDebtsSummary() {
+1711:   const debts = DB.getDebts();
+1712:   const settings = DB.getSettings();
+1713: 
+1714:   const totalIQD = debts.reduce((s, d) => s + Math.max(0, d.totalIQD - d.paidAmount), 0);
+1715:   const totalPaid = debts.reduce((s, d) => s + d.paidAmount, 0);
+1716:   const debtors = new Set(debts.filter(d => d.status !== 'paid').map(d => d.customerId)).size;
+1717:   const txns = debts.filter(d => d.status !== 'paid').length;
+1718: 
+1719:   const el = id => document.getElementById(id);
+1720:   if (el('total-debts-iqd')) {
+1721:     el('total-debts-iqd').textContent = formatIQD(totalIQD);
+1722:     el('total-debtors').textContent = debtors;
+1723:     el('total-debt-transactions').textContent = txns;
+1724:     el('total-paid-debts').textContent = formatIQD(totalPaid);
+1725:   }
+1726: }
+1727: 
+1728: function searchDebts(query) {
+1729:   debtSearchQuery = query;
+1730:   renderDebtorsList(query);
+1731: }
+1732: 
+1733: function renderDebtorsList(query = '') {
+1734:   const debts = DB.getDebts();
+1735:   const customers = DB.getCustomers();
+1736:   const container = document.getElementById('debtors-list');
+1737:   if (!container) return;
+1738: 
+1739:   // تجميع الديون حسب العميل
+1740:   const debtorMap = {};
+1741:   debts.forEach(d => {
+1742:     if (!debtorMap[d.customerId]) {
+1743:       debtorMap[d.customerId] = {
+1744:         customerId: d.customerId,
+1745:         customerName: d.customerName,
+1746:         customerPhone: d.customerPhone,
+1747:         totalDebt: 0,
+1748:         pendingCount: 0,
+1749:         debts: []
+1750:       };
+1751:     }
+1752:     const remaining = Math.max(0, d.totalIQD - d.paidAmount);
+1753:     debtorMap[d.customerId].totalDebt += remaining;
+1754:     if (d.status !== 'paid') debtorMap[d.customerId].pendingCount++;
+1755:     debtorMap[d.customerId].debts.push(d);
+1756:   });
+1757: 
+1758:   let debtors = Object.values(debtorMap).filter(d => d.totalDebt > 0 || d.pendingCount > 0);
+1759: 
+1760:   if (query) {
+1761:     debtors = debtors.filter(d =>
+1762:       d.customerName.includes(query) || d.customerPhone?.includes(query)
+1763:     );
+1764:   }
+1765: 
+1766:   if (!debtors.length) {
+1767:     container.innerHTML = `
+1768:       <div style="text-align:center;padding:40px;color:var(--text-muted)">
+1769:         <div style="font-size:40px;margin-bottom:10px">✅</div>
+1770:         <p style="font-size:14px;font-weight:600">${query ? 'لا توجد نتائج' : 'لا توجد ديون مسجلة'}</p>
+1771:       </div>`;
+1772:     return;
+1773:   }
+1774: 
+1775:   // ترتيب حسب أكبر دين
+1776:   debtors.sort((a, b) => b.totalDebt - a.totalDebt);
+1777: 
+1778:   container.innerHTML = debtors.map(d => `
+1779:     <div class="debtor-item ${selectedDebtorId === d.customerId ? 'active' : ''}"
+1780:          onclick="showDebtorDetail('${d.customerId}')">
+1781:       <div class="debtor-avatar">${d.customerName.charAt(0)}</div>
+1782:       <div class="debtor-info">
+1783:         <div class="debtor-name">${d.customerName}</div>
+1784:         <div class="debtor-phone">📞 ${d.customerPhone || 'غير محدد'}</div>
+1785:       </div>
+1786:       <div class="debtor-debt-amount">
+1787:         <span class="debtor-debt-iqd">${formatIQD(d.totalDebt)}</span>
+1788:         <span class="debtor-debt-count">${d.pendingCount} عملية</span>
+1789:       </div>
+1790:     </div>
+1791:   `).join('');
+1792: }
+1793: 
+1794: function showDebtorDetail(customerId) {
+1795:   selectedDebtorId = customerId;
+1796: 
+1797:   // تحديث التحديد في القائمة
+1798:   document.querySelectorAll('.debtor-item').forEach(el => el.classList.remove('active'));
+1799:   const activeItem = [...document.querySelectorAll('.debtor-item')]
+1800:     .find(el => el.onclick?.toString().includes(customerId));
+1801:   if (activeItem) activeItem.classList.add('active');
+1802: 
+1803:   const debts = DB.getDebts().filter(d => d.customerId === customerId);
+1804:   const customer = DB.getCustomers().find(c => c.id === customerId);
+1805:   const settings = DB.getSettings();
+1806: 
+1807:   const totalDebt = debts.reduce((s, d) => s + Math.max(0, d.totalIQD - d.paidAmount), 0);
+1808:   const totalOriginal = debts.reduce((s, d) => s + d.totalIQD, 0);
+1809:   const totalPaid = debts.reduce((s, d) => s + d.paidAmount, 0);
+1810: 
+1811:   const panel = document.getElementById('debt-detail-panel');
+1812: 
+1813:   panel.innerHTML = `
+1814:     <!-- رأس العميل -->
+1815:     <div class="debt-detail-header">
+1816:       <div class="debt-detail-customer">
+1817:         <div class="debt-detail-avatar">${(customer?.name || debts[0]?.customerName || '؟').charAt(0)}</div>
+1818:         <div class="debt-detail-customer-info">
+1819:           <h3>${customer?.name || debts[0]?.customerName}</h3>
+1820:           <p>📞 ${customer?.phone || debts[0]?.customerPhone || 'غير محدد'} | 📍 ${customer?.address || ''}</p>
+1821:         </div>
+1822:       </div>
+1823:       <div class="debt-detail-totals">
+1824:         <div class="debt-total-pill red">
+1825:           <span class="debt-total-pill-label">إجمالي المتبقي</span>
+1826:           ${formatIQD(totalDebt)}
+1827:           <div style="font-size:11px;margin-top:2px;opacity:0.8">$${(totalDebt / settings.exchangeRate).toFixed(2)}</div>
+1828:         </div>
+1829:         <div class="debt-total-pill green">
+1830:           <span class="debt-total-pill-label">المسدد</span>
+1831:           ${formatIQD(totalPaid)}
+1832:         </div>
+1833:         <div class="debt-total-pill orange">
+1834:           <span class="debt-total-pill-label">الإجمالي الأصلي</span>
+1835:           ${formatIQD(totalOriginal)}
+1836:         </div>
+1837:       </div>
+1838:       ${totalDebt > 0 ? `
+1839:       <div style="margin-top:15px;text-align:center;">
+1840:         <button class="btn-success" style="width:100%;padding:12px;font-weight:bold;border-radius:8px;font-size:14px;background:var(--success);color:white;border:none;cursor:pointer;" onclick="openGlobalDebtPayModal('${customerId}')">
+1841:           💰 دفع جزئي أو كلي من إجمالي الديون (${formatIQD(totalDebt)})
+1842:         </button>
+1843:       </div>
+1844:       ` : ''}
+1845:     </div>
+1846: 
+1847:     <!-- قائمة عمليات الدين -->
+1848:     <div class="debt-transactions-list">
+1849:       ${debts.length === 0 ? '<div class="debt-detail-empty"><span>✅</span><p>لا توجد ديون</p></div>' :
+1850:         [...debts].reverse().map((debt, idx) => renderDebtTransactionCard(debt, idx)).join('')}
+1851:     </div>
+1852:   `;
+1853: }
+1854: 
+1855: function renderDebtTransactionCard(debt, idx) {
+1856:   const settings = DB.getSettings();
+1857:   const date = new Date(debt.date);
+1858:   const dateStr = date.toLocaleDateString('ar-IQ', {
+1859:     weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+1860:   });
+1861:   const timeStr = date.toLocaleTimeString('ar-IQ', { hour: '2-digit', minute: '2-digit' });
+1862:   const remaining = Math.max(0, debt.totalIQD - debt.paidAmount);
+1863:   const statusLabels = { pending: '🔴 غير مسدد', partial: '🟡 مسدد جزئياً', paid: '✅ مسدد بالكامل' };
+1864:   const statusClass = debt.status;
+1865: 
+1866:   return `
+1867:     <div class="debt-transaction-card" id="debt-card-${debt.id}">
+1868:       <div class="debt-txn-header" onclick="toggleDebtCard('${debt.id}')">
+1869:         <div class="debt-txn-date-group">
+1870:           <div class="debt-txn-date-icon">📅</div>
+1871:           <div>
+1872:             <div class="debt-txn-date">${dateStr}</div>
+1873:             <div class="debt-txn-time">🕐 ${timeStr} | كاشير: ${debt.cashier || '-'}</div>
+1874:           </div>
+1875:         </div>
+1876:         <div class="debt-txn-status-group">
+1877:           <div>
+1878:             <div class="debt-txn-amount">${formatIQD(debt.totalIQD)}</div>
+1879:             ${debt.status !== 'paid' ? `<div class="debt-txn-remaining">متبقي: ${formatIQD(remaining)}</div>` : ''}
+1880:           </div>
+1881:           <span class="debt-status-pill ${statusClass}">${statusLabels[debt.status] || ''}</span>
+1882:           <span class="debt-txn-expand-icon" id="expand-icon-${debt.id}">▼</span>
+1883:         </div>
+1884:       </div>
+1885: 
+1886:       <div class="debt-txn-body" id="debt-body-${debt.id}">
+1887:         <!-- ملاحظة الدين -->
+1888:         ${debt.note ? `<div class="debt-txn-note">📝 ${debt.note}</div>` : ''}
+1889: 
+1890:         <!-- المنتجات المشتراة -->
+1891:         <div class="debt-txn-items-title">🛒 المنتجات المشتراة</div>
+1892:         ${debt.items.map(item => `
+1893:           <div class="debt-txn-item">
+1894:             <div class="debt-txn-item-name">
+1895:               <span class="debt-txn-item-emoji">${item.emoji || '📦'}</span>
+1896:               <span>${item.name}</span>
+1897:             </div>
+1898:             <span class="debt-txn-item-qty">${item.qty} × ${item.unit || 'قطعة'}</span>
+1899:             <span class="debt-txn-item-price">${formatIQD(item.priceIQD * item.qty)}</span>
+1900:           </div>
+1901:         `).join('')}
+1902: 
+1903:         <!-- إجمالي الفاتورة -->
+1904:         <div class="debt-txn-items-total">
+1905:           <span>إجمالي الفاتورة:</span>
+1906:           <div>
+1907:             <div>${formatIQD(debt.totalIQD)}</div>
+1908:             <div style="font-size:11px;color:var(--info)">$${debt.totalUSD ? debt.totalUSD.toFixed(2) : (debt.totalIQD / settings.exchangeRate).toFixed(2)}</div>
+1909:           </div>
+1910:         </div>
+1911: 
+1912:         <!-- سجل الدفعات -->
+1913:         ${debt.payments && debt.payments.length > 0 ? `
+1914:           <div class="debt-payments-section">
+1915:             <div class="debt-payments-title">✅ سجل الدفعات</div>
+1916:             ${debt.payments.map(p => `
+1917:               <div class="debt-payment-item">
+1918:                 <span class="debt-payment-date">📅 ${new Date(p.date).toLocaleDateString('ar-IQ')}</span>
+1919:                 <span class="debt-payment-note">${p.note || ''}</span>
+1920:                 <span class="debt-payment-amount">+ ${formatIQD(p.amountIQD)}</span>
+1921:               </div>
+1922:             `).join('')}
+1923:           </div>
+1924:         ` : ''}
+1925: 
+1926:         <!-- الأزرار -->
+1927:         <div class="debt-txn-actions">
+1928:           ${debt.status !== 'paid' ? `
+1929:             <button class="btn-pay-debt" onclick="openDebtPayModal('${debt.id}')">
+1930:               💰 تسجيل دفعة (متبقي: ${formatIQD(remaining)})
+1931:             </button>
+1932:           ` : `
+1933:             <div style="flex:1;text-align:center;color:var(--success);font-weight:700;font-size:13px">
+1934:               ✅ تم السداد الكامل
+1935:             </div>
+1936:           `}
+1937:           <button class="btn-delete-debt" onclick="deleteDebtEntry('${debt.id}')">🗑️</button>
+1938:         </div>
+1939:       </div>
+1940:     </div>
+1941:   `;
+1942: }
+1943: 
+1944: function toggleDebtCard(debtId) {
+1945:   const body = document.getElementById(`debt-body-${debtId}`);
+1946:   const icon = document.getElementById(`expand-icon-${debtId}`);
+1947:   if (!body) return;
+1948:   const isOpen = body.classList.contains('open');
+1949:   body.classList.toggle('open', !isOpen);
+1950:   if (icon) icon.classList.toggle('open', !isOpen);
+1951: }
+1952: 
+1953: function deleteDebtEntry(debtId) {
+1954:   if (!confirm('هل تريد حذف هذا السجل؟ لا يمكن التراجع!')) return;
+1955:   DB.deleteDebt(debtId);
+1956:   showToast('تم حذف سجل الدين', 'success');
+1957:   updateDebtNavBadge();
+1958:   loadDebtsPage();
+1959: }
+1960: 
+1961: function openGlobalDebtPayModal(preselectedId = null) {
+1962:   const debts = DB.getDebts().filter(d => d.status !== 'paid');
+1963:   if (debts.length === 0) {
+1964:     showToast('لا توجد ديون مسجلة', 'info');
+1965:     return;
+1966:   }
+1967:   
+1968:   const debtorIds = [...new Set(debts.map(d => d.customerId))];
+1969:   const customers = DB.getCustomers();
+1970:   
+1971:   const selectEl = document.getElementById('bdpm-customer-select');
+1972:   selectEl.innerHTML = debtorIds.map(id => {
+1973:     const c = customers.find(c => c.id === id);
+1974:     const cName = c ? c.name : debts.find(d => d.customerId === id).customerName;
+1975:     return `<option value="${id}">${cName}</option>`;
+1976:   }).join('');
+1977:   
+1978:   if (preselectedId && debtorIds.includes(preselectedId)) {
+1979:     selectEl.value = preselectedId;
+1980:   }
+1981:   
+1982:   updateBulkDebtRemaining();
+1983:   
+1984:   document.getElementById('bdpm-amount').value = '';
+1985:   document.getElementById('bdpm-note').value = 'تسديد من إجمالي الحساب';
+1986:   document.getElementById('bdpm-result').style.display = 'none';
+1987: 
+1988:   openModal('bulk-debt-pay-modal');
+1989: }
+1990: 
+1991: function updateBulkDebtRemaining() {
+1992:   const customerId = document.getElementById('bdpm-customer-select').value;
+1993:   if (!customerId) return;
+1994:   const debts = DB.getDebts().filter(d => d.customerId === customerId && d.status !== 'paid');
+1995:   const totalRemaining = debts.reduce((sum, d) => sum + Math.max(0, d.totalIQD - d.paidAmount), 0);
+1996:   
+1997:   document.getElementById('bdpm-remaining').textContent = formatIQD(totalRemaining);
+1998:   calcBulkDebtRemaining();
+1999: }
+2000: 
+2001: function calcBulkDebtRemaining() {
+2002:   const customerId = document.getElementById('bdpm-customer-select').value;
+2003:   const debts = DB.getDebts().filter(d => d.customerId === customerId && d.status !== 'paid');
+2004:   const totalRemaining = debts.reduce((sum, d) => sum + Math.max(0, d.totalIQD - d.paidAmount), 0);
+2005:   const inputVal = parseFloat(document.getElementById('bdpm-amount').value || 0);
+2006:   const afterPay = totalRemaining - inputVal;
+2007: 
+2008:   const resultEl = document.getElementById('bdpm-result');
+2009:   if (inputVal > 0) {
+2010:     resultEl.style.display = 'block';
+2011:     if (afterPay <= 0) {
+2012:       resultEl.className = 'debt-pay-result success';
+2013:       resultEl.innerHTML = '✅ سيتم سداد ديون العميل بالكامل!';
+2014:     } else {
+2015:       resultEl.className = 'debt-pay-result';
+2016:       resultEl.style.cssText = 'display:block;padding:10px;border-radius:6px;background:rgba(255,181,71,0.1);border:1px solid rgba(255,181,71,0.2);color:var(--warning);font-size:13px;font-weight:700;text-align:center;margin-top:8px';
+2017:       resultEl.innerHTML = `⚠️ سيبقى متبقٍ للعميل: ${formatIQD(afterPay)}`;
+2018:     }
+2019:   } else {
+2020:     resultEl.style.display = 'none';
+2021:   }
+2022: }
+2023: 
+2024: function submitBulkDebtPayment() {
+2025:   const customerId = document.getElementById('bdpm-customer-select').value;
+2026:   let amount = parseFloat(document.getElementById('bdpm-amount').value || 0);
+2027:   const note = document.getElementById('bdpm-note').value;
+2028: 
+2029:   if (amount <= 0) {
+2030:     showToast('أدخل مبلغاً صحيحاً', 'warning');
+2031:     return;
+2032:   }
+2033: 
+2034:   const debts = DB.getDebts().filter(d => d.customerId === customerId && d.status !== 'paid');
+2035:   debts.sort((a, b) => new Date(a.date) - new Date(b.date)); // الأقدم أولاً
+2036: 
+2037:   let paidTotal = 0;
+2038:   for (let debt of debts) {
+2039:     if (amount <= 0) break;
+2040:     const remaining = Math.max(0, debt.totalIQD - debt.paidAmount);
+2041:     if (remaining > 0) {
+2042:       const payAmount = Math.min(remaining, amount);
+2043:       DB.addDebtPayment(debt.id, { amountIQD: payAmount, note: note });
+2044:       amount -= payAmount;
+2045:       paidTotal += payAmount;
+2046:     }
+2047:   }
+2048: 
+2049:   showToast(`تم سداد ${formatIQD(paidTotal)} بنجاح`, 'success');
+2050:   closeModal('bulk-debt-pay-modal');
+2051:   updateDebtNavBadge();
+2052:   loadDebtsPage();
+2053:   showDebtorDetail(customerId);
+2054: }
+2055: 
+2056: // --------- نافذة تسجيل الدفعة ---------
+2057: let debtPayCurrency = 'IQD';
+2058: 
+2059: function openDebtPayModal(debtId) {
+2060:   const debt = DB.getDebts().find(d => d.id === debtId);
+2061:   if (!debt) return;
+2062: 
+2063:   const remaining = Math.max(0, debt.totalIQD - debt.paidAmount);
+2064:   const settings = DB.getSettings();
+2065: 
+2066:   document.getElementById('dpm-debt-id').value = debtId;
+2067:   document.getElementById('dpm-remaining').textContent = formatIQD(remaining);
+2068:   document.getElementById('dpm-amount').value = '';
+2069:   document.getElementById('dpm-note').value = '';
+2070:   document.getElementById('dpm-result').style.display = 'none';
+2071:   document.getElementById('dpm-usd-equiv').style.display = 'none';
+2072: 
+2073:   // معلومات العميل
+2074:   document.getElementById('dpm-customer-info').innerHTML = `
+2075:     <span style="font-size:24px">👤</span>
+2076:     <div>
+2077:       <strong>${debt.customerName}</strong>
+2078:       <div style="font-size:12px;color:var(--text-muted)">${debt.customerPhone || ''}</div>
+2079:     </div>
+2080:   `;
+2081: 
+2082:   // إعادة ضبط العملة
+2083:   debtPayCurrency = 'IQD';
+2084:   document.querySelectorAll('#dpm-iqd-btn, #dpm-usd-btn').forEach(b => b.classList.remove('active'));
+2085:   document.getElementById('dpm-iqd-btn').classList.add('active');
+2086: 
+2087:   openModal('debt-pay-modal');
+2088: }
+2089: 
+2090: function selectDebtCurrency(currency, btn) {
+2091:   debtPayCurrency = currency;
+2092:   document.querySelectorAll('#dpm-iqd-btn, #dpm-usd-btn').forEach(b => b.classList.remove('active'));
+2093:   if (btn) btn.classList.add('active');
+2094: 
+2095:   const usdEquiv = document.getElementById('dpm-usd-equiv');
+2096:   usdEquiv.style.display = currency === 'USD' ? 'block' : 'none';
+2097:   calcDebtRemaining();
+2098: }
+2099: 
+2100: function calcDebtRemaining() {
+2101:   const debtId = document.getElementById('dpm-debt-id').value;
+2102:   const debt = DB.getDebts().find(d => d.id === debtId);
+2103:   if (!debt) return;
+2104: 
+2105:   const settings = DB.getSettings();
+2106:   const inputVal = parseFloat(document.getElementById('dpm-amount').value || 0);
+2107:   let amountIQD = debtPayCurrency === 'USD' ? inputVal * settings.exchangeRate : inputVal;
+2108: 
+2109:   if (debtPayCurrency === 'USD' && inputVal > 0) {
+2110:     document.getElementById('dpm-iqd-equiv').textContent = formatIQD(amountIQD);
+2111:   }
+2112: 
+2113:   const remaining = Math.max(0, debt.totalIQD - debt.paidAmount);
+2114:   const afterPay = remaining - amountIQD;
+2115: 
+2116:   const resultEl = document.getElementById('dpm-result');
+2117:   if (inputVal > 0) {
+2118:     resultEl.style.display = 'block';
+2119:     if (afterPay <= 0) {
+2120:       resultEl.className = 'debt-pay-result success';
+2121:       resultEl.innerHTML = '✅ سيتم سداد الدين بالكامل!';
+2122:     } else {
+2123:       resultEl.className = 'debt-pay-result';
+2124:       resultEl.style.cssText = 'display:block;padding:10px;border-radius:6px;background:rgba(255,181,71,0.1);border:1px solid rgba(255,181,71,0.2);color:var(--warning);font-size:13px;font-weight:700;text-align:center;margin-top:8px';
+2125:       resultEl.innerHTML = `⚠️ سيبقى متبقٍ: ${formatIQD(afterPay)}`;
+2126:     }
+2127:   } else {
+2128:     resultEl.style.display = 'none';
+2129:   }
+2130: }
+2131: 
+2132: function submitDebtPayment() {
+2133:   const debtId = document.getElementById('dpm-debt-id').value;
+2134:   const inputVal = parseFloat(document.getElementById('dpm-amount').value || 0);
+2135:   const note = document.getElementById('dpm-note').value.trim();
+2136:   const settings = DB.getSettings();
+2137: 
+2138:   if (!inputVal || inputVal <= 0) {
+2139:     showToast('أدخل مبلغ الدفعة', 'warning');
+2140:     return;
+2141:   }
+2142: 
+2143:   const debt = DB.getDebts().find(d => d.id === debtId);
+2144:   if (!debt) return;
+2145: 
+2146:   const remaining = Math.max(0, debt.totalIQD - debt.paidAmount);
+2147:   let amountIQD = debtPayCurrency === 'USD' ? inputVal * settings.exchangeRate : inputVal;
+2148: 
+2149:   if (amountIQD > remaining) {
+2150:     if (!confirm(`المبلغ المدخل (${formatIQD(amountIQD)}) أكبر من المتبقي (${formatIQD(remaining)}). هل تريد تسجيل الدفعة بالمبلغ المتبقي فقط؟`)) return;
+2151:     amountIQD = remaining;
+2152:   }
+2153: 
+2154:   const updatedDebt = DB.addDebtPayment(debtId, {
+2155:     amountIQD,
+2156:     currency: debtPayCurrency,
+2157:     note,
+2158:     cashier: document.getElementById('current-user').textContent
+2159:   });
+2160: 
+2161:   closeModal('debt-pay-modal');
+2162:   updateDebtNavBadge();
+2163:   showToast(`✅ تم تسجيل دفعة ${formatIQD(amountIQD)} على ${debt.customerName}`, 'success');
+2164:   loadDebtsPage();
+2165:   showDebtorDetail(debt.customerId);
+2166: }
+2167: 
+2168: // --------- طباعة تفاصيل الدين ---------
+2169: function printDebtDetail() {
+2170:   window.print();
+2171: }
+2172: 
+2173: // ==========================================
+2174: // EMOJI & IMAGE PICKER LOGIC
+2175: // ==========================================
+2176: 
+2177: const EMOJI_LIST = [
+2178:   '📦','🍞','🥛','🥤','🍎','🍊','🍌','🍉','🍇','🍓','🫐','🍒',
+2179:   '🥑','🥦','🥬','🥒','🥩','🍗','🍔','🍟','🍕','🌭','🥪','🌮',
+2180:   '🥚','🍳','🍿','🍩','🍪','🍫','🍬','🍭','🍮','🍯','🍼','☕',
+2181:   '🍵','🧃','🥫','🧂','🧴','🧼','🧻','🧹','🛒','🛍️','🎁','🧊',
+2182:   '🧅','🧄','🥔','🥕','🌽','🌶️','🫑','🍄','🥜','🌰','🍋','🍈',
+2183:   '🍍','🥭','🍑','🍐','🍏','🥥','🥝','🍅','🧀','🥓','🍖','🍤',
+2184:   '🍣','🥟','🍚','🍝','🍜','🍲','🍛','🍱','🥗','🥘','🥙','🧆',
+2185:   '🌯','🫔','🍦','🍧','🍨','🥧','🧁','🍰','🎂','🧉','🍾','🍷',
+2186:   '🍺','🍻','🥂','🥃','🍸','🍹','🧽','🪣','🧺','💊','🩹','🩺',
+2187:   '🥖','🥨','🥐','🥯','🥞','🧇','🫓','🫙','🫘','🫒','🧋','🥡',
+2188:   '🥮','🍡','🍢','🍘','🍙','🥠','🍥','🐟','🐠','🐡','🐙','🦀',
+2189:   '🦞','🦑','🦪','🍽️','🍴','🥄','🔪','🏺','🫖','🫗','🥢','🪴',
+2190:   '🧸','🔋','💡','🔌','🚬','📰','🪒','🪥','🚿','🛁','🚽','🧷',
+2191:   '🧵','🧶'
+2192: ];
+2193: 
+2194: function openEmojiModal() {
+2195:   renderEmojiGrid();
+2196:   openModal('emoji-modal');
+2197: }
+2198: 
+2199: function renderEmojiGrid() {
+2200:   const grid = document.getElementById('emoji-modal-grid');
+2201:   grid.innerHTML = EMOJI_LIST.map(emoji => 
+2202:     `<div class="emoji-item" onclick="selectEmoji('${emoji}')">${emoji}</div>`
+2203:   ).join('');
+2204: }
+2205: 
+2206: function selectEmoji(emoji) {
+2207:   document.getElementById('pm-emoji').value = emoji;
+2208:   document.getElementById('emoji-preview').innerHTML = emoji;
+2209:   closeModal('emoji-modal');
+2210: }
+2211: 
+2212: function handleImageUpload(event) {
+2213:   const file = event.target.files[0];
+2214:   if (!file) return;
+2215: 
+2216:   const reader = new FileReader();
+2217:   reader.onload = function(e) {
+2218:     const img = new Image();
+2219:     img.onload = function() {
+2220:       // Create a canvas to resize the image
+2221:       const canvas = document.createElement('canvas');
+2222:       const MAX_SIZE = 120;
+2223:       let width = img.width;
+2224:       let height = img.height;
+2225: 
+2226:       if (width > height) {
+2227:         if (width > MAX_SIZE) {
+2228:           height *= MAX_SIZE / width;
+2229:           width = MAX_SIZE;
+2230:         }
+2231:       } else {
+2232:         if (height > MAX_SIZE) {
+2233:           width *= MAX_SIZE / height;
+2234:           height = MAX_SIZE;
+2235:         }
+2236:       }
+2237:       canvas.width = width;
+2238:       canvas.height = height;
+2239: 
+2240:       const ctx = canvas.getContext('2d');
+2241:       ctx.drawImage(img, 0, 0, width, height);
+2242: 
+2243:       // Compress to base64 (JPEG format, 0.7 quality)
+2244:       const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+2245:       
+2246:       document.getElementById('pm-emoji').value = dataUrl;
+2247:       document.getElementById('emoji-preview').innerHTML = `<img src="${dataUrl}">`;
+2248:     };
+2249:     img.src = e.target.result;
+2250:   };
+2251:   reader.readAsDataURL(file);
+2252: }
+2253: 
+2254: function renderEmojiHTML(emojiStr) {
+2255:   if (!emojiStr) return '📦';
+2256:   if (emojiStr.startsWith('data:image')) {
+2257:     return `<img src="${emojiStr}">`;
+2258:   }
+2259:   return emojiStr;
+2260: }
+2261: 
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.
+
+
+---END---
+
+Created At: 2026-06-25T21:17:52Z
+Completed At: 2026-06-25T21:17:52Z
+File Path: `file:///c:/Users/Laptop%20Duhok/Desktop/taher1212/taher1212/app.js`
+Total Lines: 2261
+Total Bytes: 83750
+Showing lines 100 to 150
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+100: 
+101: // ========= تسجيل الدخول =========
+102: function login() {
+103:   const username = document.getElementById('login-username').value;
+104:   const password = document.getElementById('login-password').value;
+105:   const settings = DB.getSettings();
+106: 
+107:   if (username === 'admin' && password === settings.password) {
+108:     document.getElementById('login-screen').style.display = 'none';
+109:     document.getElementById('main-app').style.display = 'flex';
+110:     document.getElementById('current-user').textContent = username;
+111:     initApp();
+112:     showToast('مرحباً بك! ' + username, 'success');
+113:   } else {
+114:     showToast('اسم المستخدم أو كلمة المرور غير صحيحة', 'error');
+115:   }
+116: }
+117: 
+118: document.addEventListener('keydown', (e) => {
+119:   if (e.key === 'Enter' && document.getElementById('login-screen').style.display !== 'none') {
+120:     login();
+121:   }
+122: });
+123: 
+124: function logout() {
+125:   if (confirm('هل تريد تسجيل الخروج؟')) {
+126:     document.getElementById('main-app').style.display = 'none';
+127:     document.getElementById('login-screen').style.display = 'block';
+128:     state.cart = [];
+129:   }
+130: }
+131: 
+132: // ========= تهيئة النظام =========
+133: function initApp() {
+134:   const settings = DB.getSettings();
+135:   document.getElementById('store-name-display').textContent = settings.storeName;
+136:   document.getElementById('rate-display').textContent = settings.exchangeRate.toLocaleString();
+137:   document.getElementById('tax-rate-display').textContent = settings.taxRate;
+138:   loadSettings();
+139:   showPage('pos');
+140:   checkLowStock();
+141:   setTimeout(updateDebtNavBadge, 100); // تحديث شارة الديون
+142: }
+143: 
+144: 
+145: // ========= التنقل بين الصفحات =========
+146: function showPage(page) {
+147:   // إخفاء جميع الصفحات
+148:   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+149:   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+150: 
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.
+
+
+---END---
+
+Created At: 2026-06-25T21:21:45Z
+Completed At: 2026-06-25T21:21:45Z
+File Path: `file:///c:/Users/Laptop%20Duhok/Desktop/taher1212/taher1212/sw.js`
+Total Lines: 27
+Total Bytes: 519
+Showing lines 1 to 27
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: const CACHE_NAME = 'supermarket-v1';
+2: const ASSETS = [
+3:   './index.html',
+4:   './styles.css',
+5:   './app.js',
+6:   './data.js',
+7:   './manifest.json',
+8:   './icon-192.png',
+9:   './icon-512.png'
+10: ];
+11: 
+12: self.addEventListener('install', event => {
+13:   event.waitUntil(
+14:     caches.open(CACHE_NAME).then(cache => {
+15:       return cache.addAll(ASSETS);
+16:     })
+17:   );
+18: });
+19: 
+20: self.addEventListener('fetch', event => {
+21:   event.respondWith(
+22:     caches.match(event.request).then(response => {
+23:       return response || fetch(event.request);
+24:     })
+25:   );
+26: });
+27: 
+The above content shows the entire, complete file contents of the requested file.
+
+
+---END---
+
+Created At: 2026-06-25T21:32:43Z
+Completed At: 2026-06-25T21:32:43Z
+File Path: `file:///c:/Users/Laptop%20Duhok/Desktop/taher1212/taher1212/sw.js`
+Total Lines: 27
+Total Bytes: 519
+Showing lines 1 to 27
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: const CACHE_NAME = 'supermarket-v1';
+2: const ASSETS = [
+3:   './index.html',
+4:   './styles.css',
+5:   './app.js',
+6:   './data.js',
+7:   './manifest.json',
+8:   './icon-192.png',
+9:   './icon-512.png'
+10: ];
+11: 
+12: self.addEventListener('install', event => {
+13:   event.waitUntil(
+14:     caches.open(CACHE_NAME).then(cache => {
+15:       return cache.addAll(ASSETS);
+16:     })
+17:   );
+18: });
+19: 
+20: self.addEventListener('fetch', event => {
+21:   event.respondWith(
+22:     caches.match(event.request).then(response => {
+23:       return response || fetch(event.request);
+24:     })
+25:   );
+26: });
+27: 
+The above content shows the entire, complete file contents of the requested file.
+
+
+---END---
+
+Created At: 2026-06-25T21:46:30Z
+Completed At: 2026-06-25T21:46:30Z
+File Path: `file:///c:/Users/Laptop%20Duhok/Desktop/taher1212/taher1212/app.js`
+Total Lines: 2362
+Total Bytes: 87670
+Showing lines 120 to 150
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+120: 
+121: document.addEventListener('keydown', (e) => {
+122:   // شاشة تسجيل الدخول
+123:   if (document.getElementById('login-screen').style.display !== 'none') {
+124:     if (e.key === 'Enter') login();
+125:     return;
+126:   }
+127: 
+128:   // إذا كان التركيز على حقل إدخال (نسمح للباركود بالكتابة، لكن لا نشغل الكاشير إلا في حقول البحث)
+129:   if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+130:     if (e.target.id !== 'pos-search' && !e.target.classList.contains('search-input')) {
+131:       return; // نتركه يكتب الباركود بشكل طبيعي كأنه كيبورد في الحقول الأخرى (مثل إضافة منتج جديد)
+132:     }
+133:   }
+134: 
+135:   if (e.key === 'Enter') {
+136:     if (barcodeBuffer.length >= 3) {
+137:       handleScannedBarcode(barcodeBuffer.trim());
+138:       barcodeBuffer = '';
+139:       
+140:       // تفريغ حقل البحث إذا كان التركيز عليه، لمنع تصفية المنتجات في الكاشير
+141:       if (e.target.id === 'pos-search') {
+142:          e.target.value = '';
+143:          searchProducts('');
+144:       }
+145:       e.preventDefault();
+146:     }
+147:   } else if (e.key.length === 1 && !e.ctrlKey && !e.altKey && !e.metaKey) {
+148:     barcodeBuffer += e.key;
+149:     clearTimeout(barcodeTimeout);
+150:     barcodeTimeout = setTimeout(() => {
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.
