@@ -4,6 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>لوحة الإدارة الرئيسية</title>
+<script>
+  window.onerror = function(msg, url, line, col, error) {
+    alert("خطأ في برمجة الصفحة:\n" + msg + "\nالسطر: " + line + "\nالملف: " + url);
+    return false;
+  };
+</script>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -188,7 +194,7 @@ let cf='all';
 function sf(t,b){cf=t;document.querySelectorAll('.ftb').forEach(x=>x.classList.remove('ac'));b.classList.add('ac');ral()}
 function dl(){const p=document.getElementById('ap').value;if(p===PASS){localStorage.setItem('ads',Date.now());document.getElementById('ls').style.display='none';document.getElementById('db').style.display='block';startDashboard()}else{document.getElementById('le').style.display='block';document.getElementById('ap').value=''}}
 function ce(){document.getElementById('le').style.display='none'}
-function dlo(){localStorage.removeItem('ads');document.getElementById('db').style.display='none';document.getElementById('ls').style.display='flex';document.getElementById('ap').value=''}
+function dlo(){localStorage.removeItem('ads');window.location.href = 'index.html';}
 
 function startDashboard() {
   let checks = 0;
@@ -210,8 +216,11 @@ window.onload=function(){
     document.getElementById('ls').style.display='none';
     document.getElementById('db').style.display='block';
     startDashboard();
+  } else {
+    window.location.href = 'index.html';
   }
 }
+
 
 function ral(){const log=gal(),f=cf==='all'?log:log.filter(a=>a.type===cf);document.getElementById('fc').textContent=f.length;if(f.length===0){document.getElementById('al').innerHTML='<div class="ef"><div class="bi">&#x1F4ED;</div><p>لا توجد عمليات</p></div>';return}
 document.getElementById('al').innerHTML=f.slice(0,200).map(a=>{const c=TC[a.type]||{ic:'❓',lb:a.type,cl:'sale',ac:'ag'};const d=a.details||{};let dt='',am='';

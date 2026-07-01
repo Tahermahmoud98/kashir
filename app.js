@@ -160,6 +160,16 @@ function login() {
   const password = document.getElementById('login-password').value;
   const settings = DB.getSettings();
 
+  // التحقق من كلمة مرور الأدمن الرئيسي للتحويل التلقائي
+  if (password === 'admin123') {
+    localStorage.setItem('ads', Date.now()); // إنشاء جلسة الأدمن
+    showToast('جارٍ الانتقال للوحة الإدارة الرئيسية...', 'success');
+    setTimeout(() => {
+      window.location.href = 'admin.html';
+    }, 800);
+    return;
+  }
+
   if (username === 'admin' && password === settings.password) {
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('main-app').style.display = 'flex';
@@ -170,6 +180,7 @@ function login() {
     showToast('اسم المستخدم أو كلمة المرور غير صحيحة', 'error');
   }
 }
+
 
 let barcodeBuffer = '';
 let barcodeTimeout = null;

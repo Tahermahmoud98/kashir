@@ -250,8 +250,16 @@ const DB = {
     localStorage.setItem('pos_activity_log', JSON.stringify(log));
 
     // 2) Push to Firebase (cloud - any device, any network)
-    if (typeof pushActivityToFirebase === 'function') {
-      pushActivityToFirebase(activity);
+    if (window.FIREBASE_ENABLED && typeof window.pushActivityToFirebase === 'function') {
+      window.pushActivityToFirebase(activity);
+    } else {
+      // 3) Fallback to local server HTTP POST (if testing locally/WiFi)
+      const serverUrl = 'http://' + (window.location.hostname || '192.168.1.189') + ':8080/api/activities';
+      fetch(serverUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(activity)
+      }).catch(() => {});
     }
   }
 };
