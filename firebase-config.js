@@ -14,14 +14,15 @@
 // ============================================================
 
 const FIREBASE_CONFIG = {
-  apiKey:            "REPLACE_WITH_YOUR_API_KEY",
-  authDomain:        "REPLACE_WITH_YOUR_PROJECT.firebaseapp.com",
-  databaseURL:       "REPLACE_WITH_YOUR_PROJECT-default-rtdb.firebaseio.com",
-  projectId:         "REPLACE_WITH_YOUR_PROJECT_ID",
-  storageBucket:     "REPLACE_WITH_YOUR_PROJECT.appspot.com",
-  messagingSenderId: "REPLACE_WITH_SENDER_ID",
-  appId:             "REPLACE_WITH_APP_ID"
+  apiKey: "AIzaSyCeVslnJ_WXSDcYYCo657Hci1n5qzY45NU",
+  authDomain: "taher-e2ab5.firebaseapp.com",
+  databaseURL: "https://taher-e2ab5-default-rtdb.firebaseio.com",
+  projectId: "taher-e2ab5",
+  storageBucket: "taher-e2ab5.firebasestorage.app",
+  messagingSenderId: "42402740282",
+  appId: "1:42402740282:web:c0495efb1a8a443db7dd03",
+  measurementId: "G-C3JYB9Q10M"
 };
 
 // هل Firebase مفعل؟ سيتم ضبطه تلقائياً
-window.FIREBASE_ENABLED = false;
+window.FIREBASE_ENABLED = true;

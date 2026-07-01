@@ -1,0 +1,93 @@
+[
+  {
+    "id": "ACT-1782909730214",
+    "type": "sale",
+    "details": {
+      "invoiceId": "INV-1782909730198",
+      "total": 26000,
+      "items": [
+        {
+          "id": "p5",
+          "name": "دجاج مجمد",
+          "emoji": "🐔",
+          "priceIQD": 8000,
+          "priceUSD": 5.33,
+          "cost": 5500,
+          "qty": 1,
+          "maxQty": 35,
+          "unit": "كيلو"
+        },
+        {
+          "id": "p4",
+          "name": "تفاح أحمر",
+          "emoji": "🍎",
+          "priceIQD": 3000,
+          "priceUSD": 1.92,
+          "cost": 2500,
+          "qty": 1,
+          "maxQty": 38,
+          "unit": "كيلو"
+        },
+        {
+          "id": "p3",
+          "name": "عصير برتقال",
+          "emoji": "🍊",
+          "priceIQD": 3000,
+          "priceUSD": 2,
+          "cost": 2000,
+          "qty": 1,
+          "maxQty": 23,
+          "unit": "لتر"
+        },
+        {
+          "id": "p2",
+          "name": "حليب كامل الدسم",
+          "emoji": "🥛",
+          "priceIQD": 2500,
+          "priceUSD": 1.67,
+          "cost": 1800,
+          "qty": 1,
+          "maxQty": 19,
+          "unit": "لتر"
+        },
+        {
+          "id": "p1",
+          "name": "خبز عيش",
+          "emoji": "🍞",
+          "priceIQD": 2000,
+          "priceUSD": 1.33,
+          "cost": 1000,
+          "qty": 1,
+          "maxQty": 46,
+          "unit": "قطعة"
+        },
+        {
+          "id": "p9",
+          "name": "مياه معدنية",
+          "emoji": "💧",
+          "priceIQD": 1500,
+          "priceUSD": 1,
+          "cost": 800,
+          "qty": 1,
+          "maxQty": 91,
+          "unit": "لتر"
+        },
+        {
+          "id": "p10",
+          "name": "زيت نباتي",
+          "emoji": "🫙",
+          "priceIQD": 6000,
+          "priceUSD": 4,
+          "cost": 4500,
+          "qty": 1,
+          "maxQty": 13,
+          "unit": "لتر"
+        }
+      ],
+      "cashier": "admin",
+      "paymentMethod": "cash"
+    },
+    "timestamp": "2026-07-01T12:42:10.214Z",
+    "cashier": "admin"
+  }
+]
