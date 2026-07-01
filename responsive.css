@@ -41,11 +41,14 @@
   }
   .header-left .header-time { display: none; }
   .login-card { padding: 30px 20px; }
-  .page-header { flex-direction: column; align-items: stretch; gap: 10px; }
-  .page-actions { justify-content: space-between; gap: 8px; }
-  .page-actions .btn { flex: 1; text-align: center; justify-content: center; }
-  .inventory-filters, .reports-filters, .customers-filters { flex-direction: column; }
-  .inventory-filters input, .inventory-filters select, .reports-filters input, .reports-filters select, .customers-filters input { width: 100%; }
+  .page-header-bar { flex-direction: column !important; align-items: stretch !important; gap: 12px !important; }
+  .page-actions { flex-direction: column !important; align-items: stretch !important; width: 100% !important; gap: 8px !important; }
+  .page-actions input, .page-actions select, .page-actions button, .page-actions .date-picker-group { width: 100% !important; box-sizing: border-box !important; }
+  .date-picker-group { justify-content: space-between !important; }
+  .products-table-container, .inventory-table-container, .reports-tables, .report-table-card, .customers-table-container, .debts-table-container {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
 }
 
 @media (max-width: 480px) {
@@ -60,4 +63,214 @@
   .cart-item { flex-direction: column; align-items: flex-start; gap: 10px; }
   .cart-item-controls { width: 100%; justify-content: space-between; }
   .cart-item-price { width: 100%; text-align: left; }
+  .reports-stats,
+  .debts-summary-bar {
+    grid-template-columns: 1fr !important;
+  }
 }
+
+@media (max-width: 600px) {
+  .form-row {
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+  }
+}
+
+
+/* ===========================
+   POS View Switcher (Tabs)
+   =========================== */
+.pos-view-switcher {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  margin: 0 0 20px 0;
+  background: linear-gradient(135deg, #f0f4ff 0%, #e8f5e9 100%);
+  padding: 6px;
+  border-radius: 18px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.08), inset 0 1px 3px rgba(255,255,255,0.9);
+  border: 1px solid rgba(255,255,255,0.8);
+}
+
+.pos-view-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 10px 15px;
+  border: none;
+  background: transparent;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  color: #7b8ca0;
+  font-family: inherit;
+}
+
+.pos-view-btn .pvb-icon {
+  font-size: 22px;
+  line-height: 1;
+  transition: transform 0.3s ease;
+}
+
+.pos-view-btn .pvb-label {
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  letter-spacing: 0.3px;
+}
+
+.pos-view-btn:hover {
+  color: #00c896;
+  background: rgba(0, 200, 150, 0.07);
+}
+
+.pos-view-btn:hover .pvb-icon {
+  transform: scale(1.15);
+}
+
+.pos-view-btn.active {
+  background: white;
+  color: #00c896;
+  box-shadow: 0 4px 14px rgba(0, 200, 150, 0.25), 0 2px 6px rgba(0,0,0,0.06);
+  transform: translateY(-1px);
+}
+
+.pos-view-btn.active .pvb-icon {
+  transform: scale(1.1);
+}
+
+.pos-cart-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+  color: white;
+  border-radius: 50%;
+  font-size: 10px;
+  font-weight: 700;
+  width: 18px;
+  height: 18px;
+  vertical-align: middle;
+  margin-right: 2px;
+  box-shadow: 0 2px 6px rgba(255, 107, 107, 0.5);
+  animation: badge-pulse 2s infinite;
+}
+
+@keyframes badge-pulse {
+  0%, 100% { box-shadow: 0 2px 6px rgba(255, 107, 107, 0.5); }
+  50% { box-shadow: 0 2px 12px rgba(255, 107, 107, 0.8); }
+}
+
+/* On large screens hide the switcher unless both panels shown */
+@media (min-width: 992px) {
+  .pos-view-switcher {
+    display: none;
+  }
+}
+
+
+/* Old mobile tabs (removed) */
+.pos-mobile-tabs { display: none !important; }
+
+
+/* ===========================
+   Premium Debt Payment Buttons
+   =========================== */
+
+/* Header button: تسديد ديون عميل */
+.btn-pay-debt-main {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 22px;
+  border: none;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+  color: white;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(17, 153, 142, 0.4);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-pay-debt-main::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+  transition: left 0.5s ease;
+}
+
+.btn-pay-debt-main:hover::before { left: 100%; }
+
+.btn-pay-debt-main:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(17, 153, 142, 0.55);
+}
+
+.btn-pay-debt-main:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 10px rgba(17, 153, 142, 0.3);
+}
+
+.btn-pay-icon {
+  font-size: 18px;
+  animation: icon-bounce 2s infinite;
+}
+
+@keyframes icon-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+/* Full-width inner button: بلغ جزئي */
+.btn-pay-debt-full {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 16px 20px;
+  border: none;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 40%, #0f3460 100%);
+  color: white;
+  font-family: inherit;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(15, 52, 96, 0.45), inset 0 1px 0 rgba(255,255,255,0.1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  text-align: right;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.btn-pay-debt-full::after {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 4px; height: 100%;
+  background: linear-gradient(180deg, #38ef7d, #11998e);
+  border-radius: 0 16px 16px 0;
+}
+
+.btn-pay-debt-full:hover {
+  transform: translateY(-3px) scale(1.01);
+  box-shadow: 0 12px 30px rgba(15, 52, 96, 0.6);
+  background: linear-gradient(135deg, #16213e 0%, #0f3460 50%, #533483 100%);
+}
+
+.btn-pay-debt-full:active {
+  transform: translateY(-1px);
+}
+

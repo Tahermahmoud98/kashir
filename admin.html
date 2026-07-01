@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>لوحة الإدارة الرئيسية</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--p:#00c896;--danger:#ff4757;--warn:#ffa502;--dark:#0f0f1a;--dark2:#1a1a2e;--dark3:#16213e;--card:#1e1e35;--card2:#252545;--brd:rgba(255,255,255,0.07);--txt:#e8e8f0;--muted:#7b7b9a;--r:16px}
+body{font-family:'Cairo',sans-serif;background:var(--dark);color:var(--txt);min-height:100vh;overflow-x:hidden}
+#ls{display:flex;align-items:center;justify-content:center;min-height:100vh;background:radial-gradient(ellipse at top,#1a1a3e 0%,#0f0f1a 60%)}
+.lb{background:var(--card);border-radius:24px;padding:48px 40px;width:90%;max-width:400px;border:1px solid var(--brd);box-shadow:0 30px 80px rgba(0,0,0,0.6);text-align:center;animation:fu .5s ease}
+@keyframes fu{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+.ll{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--p),#00e5b0);display:flex;align-items:center;justify-content:center;font-size:36px;margin:0 auto 24px;box-shadow:0 8px 30px rgba(0,200,150,.4);animation:pu 2s infinite}
+@keyframes pu{0%,100%{box-shadow:0 8px 30px rgba(0,200,150,.4)}50%{box-shadow:0 8px 50px rgba(0,200,150,.7)}}
+.lb h1{font-size:22px;font-weight:800;margin-bottom:6px}
+.lb p{color:var(--muted);font-size:14px;margin-bottom:32px}
+.li{width:100%;background:var(--dark3);border:1px solid var(--brd);border-radius:12px;padding:14px 18px;color:var(--txt);font-size:16px;font-family:inherit;margin-bottom:16px;outline:none;transition:border-color .3s;text-align:center;letter-spacing:4px}
+.li:focus{border-color:var(--p)}
+.bl{width:100%;padding:15px;background:linear-gradient(135deg,var(--p),#00e5b0);color:#0f0f1a;border:none;border-radius:12px;font-size:17px;font-weight:800;font-family:inherit;cursor:pointer;transition:all .3s;box-shadow:0 6px 20px rgba(0,200,150,.4)}
+.bl:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(0,200,150,.6)}
+.le{color:var(--danger);font-size:13px;margin-top:12px;display:none}
+#db{display:none}
+.ah{background:linear-gradient(135deg,var(--dark2),var(--dark3));border-bottom:1px solid var(--brd);padding:16px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 4px 20px rgba(0,0,0,.4)}
+.al{display:flex;align-items:center;gap:12px}
+.ai{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,var(--p),#00e5b0);display:flex;align-items:center;justify-content:center;font-size:20px}
+.al h2{font-size:17px;font-weight:800}
+.al span{font-size:12px;color:var(--p);display:block}
+.lv{display:flex;align-items:center;gap:6px;background:rgba(0,200,150,.12);border:1px solid rgba(0,200,150,.3);border-radius:20px;padding:6px 14px;font-size:12px;font-weight:700;color:var(--p)}
+.ld{width:8px;height:8px;border-radius:50%;background:var(--p);animation:bl 1.5s infinite}
+@keyframes bl{0%,100%{opacity:1}50%{opacity:.2}}
+.br{background:var(--card2);border:1px solid var(--brd);color:var(--txt);border-radius:10px;padding:8px 14px;font-size:14px;cursor:pointer;font-family:inherit;transition:all .2s}
+.br:hover{background:var(--p);color:#000}
+.bx{background:rgba(255,71,87,.12);border:1px solid rgba(255,71,87,.3);color:var(--danger);border-radius:10px;padding:8px 14px;font-size:13px;cursor:pointer;font-family:inherit}
+.sb{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:16px 20px;background:var(--dark2)}
+.sc{background:var(--card);border-radius:var(--r);padding:16px;border:1px solid var(--brd);text-align:center;position:relative;overflow:hidden}
+.sc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.sc.g::before{background:linear-gradient(90deg,var(--p),#00e5b0)}
+.sc.r::before{background:linear-gradient(90deg,#ff4757,#ff6b81)}
+.sc.b::before{background:linear-gradient(90deg,#3742fa,#2ed573)}
+.sc.o::before{background:linear-gradient(90deg,#ffa502,#ff6348)}
+.si{font-size:26px;margin-bottom:6px}
+.sv{font-size:20px;font-weight:900}
+.sl{font-size:11px;color:var(--muted);margin-top:4px}
+.ss{font-size:11px;color:var(--p);margin-top:2px;font-weight:600}
+.mg{display:grid;grid-template-columns:1fr 360px;gap:16px;padding:16px 20px}
+.fc{background:var(--card);border-radius:var(--r);border:1px solid var(--brd);overflow:hidden}
+.fh{padding:16px 20px;border-bottom:1px solid var(--brd);display:flex;align-items:center;justify-content:space-between;background:var(--card2)}
+.fh h3{font-size:15px;font-weight:700}
+.fn{background:var(--p);color:#000;border-radius:20px;padding:3px 12px;font-size:12px;font-weight:700}
+.ft{display:flex;gap:6px;padding:12px 20px;background:var(--card2);border-bottom:1px solid var(--brd);overflow-x:auto}
+.ftb{padding:6px 14px;border-radius:20px;border:1px solid var(--brd);background:transparent;color:var(--muted);font-size:12px;font-weight:600;font-family:inherit;cursor:pointer;white-space:nowrap;transition:all .2s}
+.ftb.ac,.ftb:hover{background:var(--p);color:#000;border-color:var(--p)}
+.al2{max-height:60vh;overflow-y:auto}
+.al2::-webkit-scrollbar{width:4px}
+.al2::-webkit-scrollbar-thumb{background:var(--brd);border-radius:4px}
+.ai2{display:flex;align-items:flex-start;gap:14px;padding:14px 20px;border-bottom:1px solid var(--brd);animation:si2 .4s ease;transition:background .2s}
+.ai2:hover{background:rgba(255,255,255,.02)}
+@keyframes si2{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:translateX(0)}}
+.aic{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.aic.sale{background:rgba(0,200,150,.15)}.aic.ret{background:rgba(255,71,87,.15)}.aic.debt{background:rgba(255,165,2,.15)}.aic.pay{background:rgba(55,66,250,.15)}.aic.prod{background:rgba(0,200,255,.15)}.aic.stk{background:rgba(150,100,255,.15)}.aic.cust{background:rgba(255,100,150,.15)}
+.ab{flex:1;min-width:0}
+.at{font-size:14px;font-weight:700;margin-bottom:4px}
+.ad{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.atm{font-size:11px;color:var(--muted);margin-top:4px}
+.aa{font-size:14px;font-weight:800;white-space:nowrap}
+.ag{color:var(--p)}.ard{color:var(--danger)}.ao{color:var(--warn)}.abu{color:#7986ff}
+.ef{text-align:center;padding:60px 20px;color:var(--muted)}
+.ef .bi{font-size:50px;margin-bottom:16px}
+.rp{display:flex;flex-direction:column;gap:14px}
+.dc{background:var(--card);border-radius:var(--r);border:1px solid var(--brd);overflow:hidden}
+.dh{padding:14px 18px;background:linear-gradient(135deg,#0f3460,#1a1a4e);border-bottom:1px solid var(--brd);display:flex;align-items:center;gap:10px}
+.dh h3{font-size:14px;font-weight:700}
+.dr{padding:12px}
+.drw{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-radius:10px;margin-bottom:6px;background:var(--card2)}
+.drl{display:flex;align-items:center;gap:10px;font-size:13px}
+.drv{font-size:14px;font-weight:800}
+.drv.g{color:var(--p)}.drv.r{color:var(--danger)}.drv.o{color:var(--warn)}.drv.b{color:#7986ff}
+.dn{background:linear-gradient(135deg,rgba(0,200,150,.15),rgba(0,200,150,.05));border:1px solid rgba(0,200,150,.3);border-radius:12px;padding:14px 16px;margin:8px 12px 12px;text-align:center}
+.dnl{font-size:12px;color:var(--muted);margin-bottom:6px}
+.dnv{font-size:22px;font-weight:900;color:var(--p)}
+.dbr{padding:12px 20px;background:rgba(255,255,255,.02);border-bottom:1px solid var(--brd);display:flex;align-items:center;justify-content:space-between}
+.dbr span{font-size:13px;color:var(--muted)}.dbr strong{font-size:13px;color:var(--p)}
+@media(max-width:768px){.sb{grid-template-columns:repeat(2,1fr)}.mg{grid-template-columns:1fr}.rp{order:-1}.ah{padding:12px 14px}}
+@media(max-width:480px){.sb{padding:12px;gap:8px}.sv{font-size:16px}.mg{padding:12px}}
+</style>
+</head>
+<body>
+<div id="ls">
+  <div class="lb">
+    <div class="ll">&#x1F451;</div>
+    <h1>لوحة الإدارة الرئيسية</h1>
+    <p>هذه الصفحة للمسؤول الرئيسي فقط</p>
+    <input class="li" type="password" id="ap" placeholder="كلمة المرور" oninput="ce()" onkeydown="if(event.key==='Enter')dl()">
+    <button class="bl" onclick="dl()">&#x1F513; دخول</button>
+    <div class="le" id="le">&#x274C; كلمة المرور غير صحيحة</div>
+  </div>
+</div>
+<div id="db">
+  <div class="ah">
+    <div class="al">
+      <div class="ai">&#x1F451;</div>
+      <div><h2>لوحة الإدارة</h2><span>مرحباً، المسؤول الرئيسي</span></div>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <div class="lv"><div class="ld"></div>مباشر</div>
+      <button class="br" onclick="ra()">&#x1F504; تحديث</button>
+      <button class="bx" onclick="dlo()">خروج</button>
+    </div>
+  </div>
+  <div class="dbr"><span id="dd">اليوم</span><strong id="sn">المتجر</strong></div>
+  <div class="sb">
+    <div class="sc g"><div class="si">&#x1F6D2;</div><div class="sv" id="s1">0</div><div class="sl">مبيعات اليوم</div><div class="ss" id="s1t">0 د.ع</div></div>
+    <div class="sc r"><div class="si">&#x21A9;&#xFE0F;</div><div class="sv" id="s2">0</div><div class="sl">استرجاعات</div><div class="ss" id="s2t">0 د.ع</div></div>
+    <div class="sc o"><div class="si">&#x1F4CB;</div><div class="sv" id="s3">0</div><div class="sl">ديون جديدة</div><div class="ss" id="s3t">0 د.ع</div></div>
+    <div class="sc b"><div class="si">&#x1F4B3;</div><div class="sv" id="s4">0</div><div class="sl">تسديدات</div><div class="ss" id="s4t">0 د.ع</div></div>
+  </div>
+  <div class="mg">
+    <div class="fc">
+      <div class="fh"><h3>&#x1F4CB; سجل العمليات الحية</h3><span class="fn" id="fc">0</span></div>
+      <div class="ft">
+        <button class="ftb ac" onclick="sf('all',this)">الكل</button>
+        <button class="ftb" onclick="sf('sale',this)">&#x1F6D2; مبيعات</button>
+        <button class="ftb" onclick="sf('return',this)">&#x21A9;&#xFE0F; استرجاع</button>
+        <button class="ftb" onclick="sf('debt_sale',this)">&#x1F4CB; ديون</button>
+        <button class="ftb" onclick="sf('debt_pay',this)">&#x1F4B3; تسديد</button>
+        <button class="ftb" onclick="sf('product_add',this)">&#x1F4E6; منتجات</button>
+        <button class="ftb" onclick="sf('stock_add',this)">&#x1F4E5; مخزون</button>
+        <button class="ftb" onclick="sf('customer_add',this)">&#x1F464; عملاء</button>
+      </div>
+      <div class="al2" id="al"></div>
+    </div>
+    <div class="rp">
+      <div class="dc">
+        <div class="dh"><span style="font-size:20px">&#x1F4CA;</span><h3>تقرير اليوم</h3></div>
+        <div class="dr" id="dr"><div style="text-align:center;padding:30px;color:var(--muted)">لا توجد بيانات</div></div>
+        <div class="dn" id="dn" style="display:none"><div class="dnl">&#x1F4B0; صافي الخزينة اليوم</div><div class="dnv" id="dnv">0 د.ع</div></div>
+      </div>
+      <div class="dc" id="lsc" style="display:none">
+        <div class="dh" style="background:linear-gradient(135deg,#7f0000,#cc0000)"><span style="font-size:20px">&#x26A0;&#xFE0F;</span><h3>تنبيهات المخزون</h3></div>
+        <div id="lsl" style="padding:10px"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="firebase-config.js"></script>
+<script src="firebase-sync.js" type="module"></script>
+<script>
+const PASS='admin123';
+
+function gs(){try{return Object.assign({storeName:'المتجر',currency:'د.ع',exchangeRate:1500},JSON.parse(localStorage.getItem('pos_settings')||'{}'))}catch(e){return{storeName:'المتجر',currency:'د.ع',exchangeRate:1500}}}
+
+let cachedLog = [];
+let cachedProducts = [];
+
+async function fetchActivities() {
+  if (window.FIREBASE_ENABLED && typeof window.listenToFirebaseActivities === 'function') {
+    return;
+  }
+  const SERVER = window.location.hostname === 'localhost' || window.location.hostname === '' 
+    ? 'http://192.168.1.189:8080'
+    : window.location.origin;
+  try {
+    const r = await fetch(SERVER + '/api/activities', { cache: 'no-store' });
+    if (r.ok) cachedLog = await r.json();
+  } catch(e) {
+    try { cachedLog = JSON.parse(localStorage.getItem('pos_activity_log') || '[]'); } catch(e2) { cachedLog = []; }
+  }
+}
+
+async function fetchProducts() {
+  if (window.FIREBASE_ENABLED && typeof window.listenToFirebaseProducts === 'function') {
+    return;
+  }
+  try {
+    cachedProducts = JSON.parse(localStorage.getItem('pos_products') || '[]');
+  } catch(e) { cachedProducts = []; }
+}
+
+function gal(){ return cachedLog; }
+function gp(){ return cachedProducts; }
+function fm(n){if(!n&&n!==0)return'—';const s=gs();return Math.round(n).toLocaleString('ar-IQ')+' '+(s.currency||'د.ع')}
+function ta(iso){const d=Date.now()-new Date(iso).getTime(),m=Math.floor(d/6e4),h=Math.floor(m/60);return m<1?'الآن':m<60?'منذ '+m+' دقيقة':h<24?'منذ '+h+' ساعة':new Date(iso).toLocaleDateString('ar-IQ')}
+function ft2(iso){return new Date(iso).toLocaleTimeString('ar-IQ',{hour:'2-digit',minute:'2-digit'})}
+const TC={sale:{ic:'🛒',lb:'عملية بيع',cl:'sale',ac:'ag'},return:{ic:'↩️',lb:'استرجاع مواد',cl:'ret',ac:'ard'},debt_sale:{ic:'📋',lb:'بيع بالدين',cl:'debt',ac:'ao'},debt_pay:{ic:'💳',lb:'تسديد دين',cl:'pay',ac:'abu'},product_add:{ic:'📦',lb:'إضافة منتج',cl:'prod',ac:'ag'},stock_add:{ic:'📥',lb:'زيادة مخزون',cl:'stk',ac:'ag'},customer_add:{ic:'👤',lb:'عميل جديد',cl:'cust',ac:'ag'}};
+let cf='all';
+function sf(t,b){cf=t;document.querySelectorAll('.ftb').forEach(x=>x.classList.remove('ac'));b.classList.add('ac');ral()}
+function dl(){const p=document.getElementById('ap').value;if(p===PASS){localStorage.setItem('ads',Date.now());document.getElementById('ls').style.display='none';document.getElementById('db').style.display='block';startDashboard()}else{document.getElementById('le').style.display='block';document.getElementById('ap').value=''}}
+function ce(){document.getElementById('le').style.display='none'}
+function dlo(){localStorage.removeItem('ads');document.getElementById('db').style.display='none';document.getElementById('ls').style.display='flex';document.getElementById('ap').value=''}
+
+function startDashboard() {
+  let checks = 0;
+  const interval = setInterval(() => {
+    if (window.FIREBASE_ENABLED && typeof window.listenToFirebaseActivities === 'function') {
+      clearInterval(interval);
+      init();
+    } else if (checks > 20) {
+      clearInterval(interval);
+      init();
+    }
+    checks++;
+  }, 100);
+}
+
+window.onload=function(){
+  const s=parseInt(localStorage.getItem('ads')||'0');
+  if(Date.now()-s<28800000){
+    document.getElementById('ls').style.display='none';
+    document.getElementById('db').style.display='block';
+    startDashboard();
+  }
+}
+
+function ral(){const log=gal(),f=cf==='all'?log:log.filter(a=>a.type===cf);document.getElementById('fc').textContent=f.length;if(f.length===0){document.getElementById('al').innerHTML='<div class="ef"><div class="bi">&#x1F4ED;</div><p>لا توجد عمليات</p></div>';return}
+document.getElementById('al').innerHTML=f.slice(0,200).map(a=>{const c=TC[a.type]||{ic:'❓',lb:a.type,cl:'sale',ac:'ag'};const d=a.details||{};let dt='',am='';
+switch(a.type){case'sale':dt=`${d.items?d.items.length:0} مادة | ${d.cashier||''} | ${d.paymentMethod==='cash'?'نقداً':d.paymentMethod==='card'?'كارت':'تحويل'}`;am=`<span class="${c.ac}">${fm(d.total)}</span>`;break;
+case'return':dt=`${d.items?d.items.length:0} مادة | ${d.cashier||''}`;am=`<span class="${c.ac}">-${fm(d.total)}</span>`;break;
+case'debt_sale':dt=`${d.customer||''} | ${d.items?d.items.length:0} مادة`;am=`<span class="${c.ac}">${fm(d.total)}</span>`;break;
+case'debt_pay':dt=`العميل: ${d.customer||''}`;am=`<span class="${c.ac}">+${fm(d.amount)}</span>`;break;
+case'product_add':dt=`${d.name||''} | الكمية: ${d.stock||0}`;break;
+case'stock_add':dt=`${d.product||''} | كمية: +${d.qty||0} | المخزون: ${d.newStock||0}`;break;
+case'customer_add':dt=`${d.name||''} | ${d.phone||''}`;break;}
+return`<div class="ai2"><div class="aic ${c.cl}">${c.ic}</div><div class="ab"><div class="at">${c.lb}</div><div class="ad">${dt}</div><div class="atm">&#x1F550; ${ft2(a.timestamp)} &mdash; ${ta(a.timestamp)} | &#x1F464; ${a.cashier||''}</div></div><div class="aa">${am}</div></div>`}).join('')}
+
+function rst(){const td=new Date().toISOString().split('T')[0],log=gal(),tl=log.filter(a=>a.timestamp.startsWith(td));
+const sa=tl.filter(a=>a.type==='sale'),re=tl.filter(a=>a.type==='return'),de=tl.filter(a=>a.type==='debt_sale'),pa=tl.filter(a=>a.type==='debt_pay');
+const st=sa.reduce((s,a)=>s+(a.details?.total||0),0),rt=re.reduce((s,a)=>s+(a.details?.total||0),0),dt=de.reduce((s,a)=>s+(a.details?.total||0),0),pt=pa.reduce((s,a)=>s+(a.details?.amount||0),0);
+document.getElementById('s1').textContent=sa.length;document.getElementById('s1t').textContent=fm(st);
+document.getElementById('s2').textContent=re.length;document.getElementById('s2t').textContent=fm(rt);
+document.getElementById('s3').textContent=de.length;document.getElementById('s3t').textContent=fm(dt);
+document.getElementById('s4').textContent=pa.length;document.getElementById('s4t').textContent=fm(pt);
+const rows=[{ic:'🛒',lb:'مبيعات نقدية',v:st,cl:'g'},{ic:'↩️',lb:'استرجاعات',v:'-'+fm(rt),cl:'r',raw:true},{ic:'📋',lb:'مبيعات الدين',v:dt,cl:'o'},{ic:'💳',lb:'تسديد ديون',v:pt,cl:'b'}];
+document.getElementById('dr').innerHTML=rows.map(r=>`<div class="drw"><div class="drl"><span>${r.ic}</span><span>${r.lb}</span></div><span class="drv ${r.cl}">${r.raw?r.v:fm(r.v)}</span></div>`).join('');
+document.getElementById('dn').style.display='block';document.getElementById('dnv').textContent=fm(st+pt-rt)}
+
+function rls(){const s=gs(),p=gp(),lp=p.filter(x=>x.stock<=(x.minStock||s.minStock||5));if(!lp.length){document.getElementById('lsc').style.display='none';return}
+document.getElementById('lsc').style.display='block';document.getElementById('lsl').innerHTML=lp.map(p=>`<div style="display:flex;justify-content:space-between;padding:8px 10px;border-bottom:1px solid rgba(255,255,255,.05);font-size:13px"><span>${p.name}</span><span style="color:${p.stock===0?'#ff4757':'#ffa502'};font-weight:700">${p.stock===0?'❌ نفد':'⚠️ '+p.stock}</span></div>`).join('')}
+
+function rh(){const s=gs();document.getElementById('sn').textContent=s.storeName||'المتجر';document.getElementById('dd').textContent=new Date().toLocaleDateString('ar-IQ',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}
+
+let fbListenersInitialized = false;
+
+function init() {
+  rh();
+  if (window.FIREBASE_ENABLED && typeof window.listenToFirebaseActivities === 'function' && !fbListenersInitialized) {
+    fbListenersInitialized = true;
+    
+    window.listenToFirebaseActivities((data) => {
+      cachedLog = data;
+      rst();
+      ral();
+      rls();
+    });
+
+    window.listenToFirebaseProducts((data) => {
+      cachedProducts = data;
+      rst();
+      ral();
+      rls();
+    });
+
+    window.listenToFirebaseSettings((data) => {
+      if (data) {
+        localStorage.setItem('pos_settings', JSON.stringify(data));
+        rh();
+        rst();
+      }
+    });
+
+  } else {
+    fetchActivities().then(() => {
+      fetchProducts().then(() => {
+        rst();
+        ral();
+        rls();
+      });
+    });
+    setInterval(ra, 30000);
+  }
+}
+
+async function ra(){
+  if (window.FIREBASE_ENABLED) return;
+  await fetchActivities();
+  await fetchProducts();
+  rh();
+  rst();
+  ral();
+  rls();
+}
+</script>
+</body>
+</html>

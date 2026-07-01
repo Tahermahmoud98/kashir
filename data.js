@@ -6,22 +6,34 @@
 const DB = {
   // --------- الإعدادات ---------
   getSettings() {
-    return JSON.parse(localStorage.getItem('pos_settings') || JSON.stringify({
-      storeName: 'السوبر ماركيت',
-      storeAddress: 'العراق - بغداد',
-      storePhone: '07700000000',
-      exchangeRate: 1500,
+    const defaultSettings = {
+      storeName: 'متجرك',
+      storeAddress: 'العنوان',
+      storePhone: '',
+      currency: 'د.ع',
       defaultCurrency: 'IQD',
       taxRate: 0,
       minStock: 5,
-      invoiceNote: 'شكراً لزيارتكم! 🌟',
-      password: '1234'
-    }));
+      invoiceNote: 'شكراً لزيارتكم! 🙏',
+      password: '1234',
+      telegramUser: '@taher1014'
+    };
+    
+    let stored = {};
+    try {
+      stored = JSON.parse(localStorage.getItem('pos_settings')) || {};
+    } catch(e) {}
+    
+    return Object.assign({}, defaultSettings, stored);
   },
 
   saveSettings(settings) {
     localStorage.setItem('pos_settings', JSON.stringify(settings));
+    if (typeof window.syncSettingsToFirebase === 'function') {
+      window.syncSettingsToFirebase(settings);
+    }
   },
+
 
   // --------- الفئات ---------
   getCategories() {
@@ -44,24 +56,28 @@ const DB = {
   // --------- المنتجات ---------
   getProducts() {
     return JSON.parse(localStorage.getItem('pos_products') || JSON.stringify([
-      { id: 'p1', barcode: '6001234567890', name: 'خبز عيش', category: 'cat1', unit: 'قطعة', priceIQD: 1000, priceUSD: 0.67, cost: 600, stock: 50, minStock: 10, emoji: '🍞', notes: '' },
-      { id: 'p2', barcode: '6001234567891', name: 'حليب كامل الدسم', category: 'cat3', unit: 'لتر', priceIQD: 2500, priceUSD: 1.67, cost: 1800, stock: 30, minStock: 8, emoji: '🥛', notes: '' },
-      { id: 'p3', barcode: '6001234567892', name: 'عصير برتقال', category: 'cat2', unit: 'لتر', priceIQD: 3000, priceUSD: 2.00, cost: 2000, stock: 25, minStock: 5, emoji: '🍊', notes: '' },
-      { id: 'p4', barcode: '6001234567893', name: 'تفاح أحمر', category: 'cat4', unit: 'كيلو', priceIQD: 4000, priceUSD: 2.67, cost: 2500, stock: 15, minStock: 5, emoji: '🍎', notes: '' },
-      { id: 'p5', barcode: '6001234567894', name: 'دجاج مجمد', category: 'cat5', unit: 'كيلو', priceIQD: 8000, priceUSD: 5.33, cost: 5500, stock: 20, minStock: 5, emoji: '🐔', notes: '' },
-      { id: 'p6', barcode: '6001234567895', name: 'شوكولاتة كيت كات', category: 'cat7', unit: 'قطعة', priceIQD: 2000, priceUSD: 1.33, cost: 1300, stock: 60, minStock: 10, emoji: '🍫', notes: '' },
-      { id: 'p7', barcode: '6001234567896', name: 'سبراي تنظيف', category: 'cat6', unit: 'علبة', priceIQD: 5000, priceUSD: 3.33, cost: 3500, stock: 3, minStock: 5, emoji: '🧴', notes: '' },
-      { id: 'p8', barcode: '6001234567897', name: 'فاصولياء معلبة', category: 'cat8', unit: 'علبة', priceIQD: 2500, priceUSD: 1.67, cost: 1700, stock: 0, minStock: 5, emoji: '🥫', notes: '' },
-      { id: 'p9', barcode: '6001234567898', name: 'مياه معدنية', category: 'cat2', unit: 'لتر', priceIQD: 1500, priceUSD: 1.00, cost: 800, stock: 100, minStock: 20, emoji: '💧', notes: '' },
-      { id: 'p10', barcode: '6001234567899', name: 'زيت نباتي', category: 'cat1', unit: 'لتر', priceIQD: 6000, priceUSD: 4.00, cost: 4500, stock: 18, minStock: 5, emoji: '🫙', notes: '' },
-      { id: 'p11', barcode: '6001234567900', name: 'سكر أبيض', category: 'cat1', unit: 'كيلو', priceIQD: 3500, priceUSD: 2.33, cost: 2500, stock: 40, minStock: 10, emoji: '🍬', notes: '' },
-      { id: 'p12', barcode: '6001234567901', name: 'أرز بسمتي', category: 'cat1', unit: 'كيلو', priceIQD: 5000, priceUSD: 3.33, cost: 3800, stock: 35, minStock: 10, emoji: '🍚', notes: '' },
+      { id: 'p1', barcode: '6001234567890', name: 'خبز عيش', category: 'cat1', unit: 'قطعة', priceIQD: 1000, priceUSD: 0.67, cost: 600, stock: 50, minStock: 10, emoji: '🍞', notes: '', expiryDate: '' },
+      { id: 'p2', barcode: '6001234567891', name: 'حليب كامل الدسم', category: 'cat3', unit: 'لتر', priceIQD: 2500, priceUSD: 1.67, cost: 1800, stock: 30, minStock: 8, emoji: '🥛', notes: '', expiryDate: '' },
+      { id: 'p3', barcode: '6001234567892', name: 'عصير برتقال', category: 'cat2', unit: 'لتر', priceIQD: 3000, priceUSD: 2.00, cost: 2000, stock: 25, minStock: 5, emoji: '🍊', notes: '', expiryDate: '' },
+      { id: 'p4', barcode: '6001234567893', name: 'تفاح أحمر', category: 'cat4', unit: 'كيلو', priceIQD: 4000, priceUSD: 2.67, cost: 2500, stock: 15, minStock: 5, emoji: '🍎', notes: '', expiryDate: '' },
+      { id: 'p5', barcode: '6001234567894', name: 'دجاج مجمد', category: 'cat5', unit: 'كيلو', priceIQD: 8000, priceUSD: 5.33, cost: 5500, stock: 20, minStock: 5, emoji: '🐔', notes: '', expiryDate: '' },
+      { id: 'p6', barcode: '6001234567895', name: 'شوكولاتة كيت كات', category: 'cat7', unit: 'قطعة', priceIQD: 2000, priceUSD: 1.33, cost: 1300, stock: 60, minStock: 10, emoji: '🍫', notes: '', expiryDate: '' },
+      { id: 'p7', barcode: '6001234567896', name: 'سبراي تنظيف', category: 'cat6', unit: 'علبة', priceIQD: 5000, priceUSD: 3.33, cost: 3500, stock: 3, minStock: 5, emoji: '🧴', notes: '', expiryDate: '' },
+      { id: 'p8', barcode: '6001234567897', name: 'فاصولياء معلبة', category: 'cat8', unit: 'علبة', priceIQD: 2500, priceUSD: 1.67, cost: 1700, stock: 0, minStock: 5, emoji: '🥫', notes: '', expiryDate: '' },
+      { id: 'p9', barcode: '6001234567898', name: 'مياه معدنية', category: 'cat2', unit: 'لتر', priceIQD: 1500, priceUSD: 1.00, cost: 800, stock: 100, minStock: 20, emoji: '💧', notes: '', expiryDate: '' },
+      { id: 'p10', barcode: '6001234567899', name: 'زيت نباتي', category: 'cat1', unit: 'لتر', priceIQD: 6000, priceUSD: 4.00, cost: 4500, stock: 18, minStock: 5, emoji: '🫙', notes: '', expiryDate: '' },
+      { id: 'p11', barcode: '6001234567900', name: 'سكر أبيض', category: 'cat1', unit: 'كيلو', priceIQD: 3500, priceUSD: 2.33, cost: 2500, stock: 40, minStock: 10, emoji: '🍬', notes: '', expiryDate: '' },
+      { id: 'p12', barcode: '6001234567901', name: 'أرز بسمتي', category: 'cat1', unit: 'كيلو', priceIQD: 5000, priceUSD: 3.33, cost: 3800, stock: 35, minStock: 10, emoji: '🍚', notes: '', expiryDate: '' },
     ]));
   },
 
   saveProducts(products) {
     localStorage.setItem('pos_products', JSON.stringify(products));
+    if (typeof window.syncProductsToFirebase === 'function') {
+      window.syncProductsToFirebase(products);
+    }
   },
+
 
   addProduct(product) {
     const products = this.getProducts();
@@ -165,9 +181,9 @@ const DB = {
     const debts = this.getDebts();
     debt.id = 'DEBT-' + Date.now();
     debt.date = new Date().toISOString();
-    debt.status = 'pending'; // pending | partial | paid
-    debt.paidAmount = 0;
-    debt.payments = []; // سجل الدفعات
+    debt.status = debt.paidAmount > 0 ? (debt.paidAmount >= debt.totalIQD ? 'paid' : 'partial') : 'pending';
+    debt.paidAmount = debt.paidAmount || 0;
+    debt.payments = debt.payments || [];
     debts.push(debt);
     this.saveDebts(debts);
     return debt;
@@ -211,6 +227,32 @@ const DB = {
   deleteDebt(id) {
     const debts = this.getDebts().filter(d => d.id !== id);
     this.saveDebts(debts);
+  },
+
+  // --------- سجل النشاط (Admin Log) ---------
+  getActivityLog() {
+    return JSON.parse(localStorage.getItem('pos_activity_log') || '[]');
+  },
+
+  addActivity(type, details) {
+    const activity = {
+      id: 'ACT-' + Date.now(),
+      type,
+      details,
+      timestamp: new Date().toISOString(),
+      cashier: (document.getElementById('current-user') || {}).textContent?.trim() || 'system'
+    };
+
+    // 1) Save to localStorage (backup - same device)
+    const log = this.getActivityLog();
+    log.unshift(activity);
+    if (log.length > 500) log.splice(500);
+    localStorage.setItem('pos_activity_log', JSON.stringify(log));
+
+    // 2) Push to Firebase (cloud - any device, any network)
+    if (typeof pushActivityToFirebase === 'function') {
+      pushActivityToFirebase(activity);
+    }
   }
 };
 
