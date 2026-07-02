@@ -1727,7 +1727,47 @@
       const badge = document.getElementById('noti-badge');
       if (!list || !badge) return;
       
-      const unreadCount = notifications.filter(n => !n.read).length;
+      let allNotis = [...notifications];
+
+      // Add dynamic stock alerts
+      if (typeof cachedProducts !== 'undefined' && Array.isArray(cachedProducts)) {
+        const outOfStock = cachedProducts.filter(p => p.stock === 0);
+        const lowStock = cachedProducts.filter(p => p.stock > 0 && p.stock <= p.minStock);
+        
+        outOfStock.forEach(p => {
+          allNotis.unshift({
+            id: 'sys-oos-' + p.id,
+            type: 'stock_out',
+            title: 'نفاد المخزون',
+            text: `المنتج "${p.name}" نفد بالكامل.`,
+            timestamp: new Date().toISOString(),
+            read: false,
+            isSystem: true
+          });
+        });
+        
+        lowStock.forEach(p => {
+          allNotis.unshift({
+            id: 'sys-low-' + p.id,
+            type: 'stock_low',
+            title: 'نواقص المخزون',
+            text: `المنتج "${p.name}" قارب على النفاد (المتبقي: ${p.stock}).`,
+            timestamp: new Date().toISOString(),
+            read: false,
+            isSystem: true
+          });
+        });
+      }
+
+      // Filter read state for system notifications
+      const sysReads = JSON.parse(localStorage.getItem('sys_noti_reads') || '{}');
+      allNotis.forEach(n => {
+        if (n.isSystem && sysReads[n.id]) {
+          n.read = true;
+        }
+      });
+      
+      const unreadCount = allNotis.filter(n => !n.read).length;
       if (unreadCount > 0) {
         badge.textContent = unreadCount;
         badge.style.display = 'inline-flex';
@@ -1735,13 +1775,21 @@
         badge.style.display = 'none';
       }
       
-      if (notifications.length === 0) {
+      if (allNotis.length === 0) {
         list.innerHTML = '<div style="padding:20px; text-align:center; color:var(--muted)">لا توجد إشعارات حالياً</div>';
         return;
       }
       
-      list.innerHTML = notifications.map(n => `
-        <div onclick="markAsRead('${n.id}')" style="padding:12px 16px; border-bottom:1px solid var(--brd); cursor:pointer; background:${n.read ? 'transparent' : 'rgba(0, 200, 150, 0.05)'}; display:flex; gap:10px; align-items:flex-start; transition:background 0.2s;">
+      // Sort by read status (unread first) then by timestamp
+      allNotis.sort((a, b) => {
+        if (a.read === b.read) {
+          return new Date(b.timestamp) - new Date(a.timestamp);
+        }
+        return a.read ? 1 : -1;
+      });
+      
+      list.innerHTML = allNotis.map(n => `
+        <div onclick="markAsRead('${n.id}', ${n.isSystem ? 'true' : 'false'})" style="padding:12px 16px; border-bottom:1px solid var(--brd); cursor:pointer; background:${n.read ? 'transparent' : 'rgba(0, 200, 150, 0.05)'}; display:flex; gap:10px; align-items:flex-start; transition:background 0.2s;">
           <div style="font-size:16px;">${getNotificationIcon(n.type)}</div>
           <div style="flex:1;">
             <div style="font-weight:700; color:var(--txt); margin-bottom:2px;">${n.title}</div>
@@ -1754,22 +1802,37 @@
     }
 
     function getNotificationIcon(type) {
-      const icons = { sale: '🛒', return: '↩️', debt_sale: '📋', debt_pay: '💳', old_debt_pay: '💳', report_submit: '📊', product_add: '📦', stock_add: '📥', customer_add: '👤' };
+      const icons = { sale: '🛒', return: '↩️', debt_sale: '📋', debt_pay: '💳', old_debt_pay: '💳', report_submit: '📊', product_add: '📦', stock_add: '📥', customer_add: '👤', stock_low: '⚠️', stock_out: '❌' };
       return icons[type] || '🔔';
     }
 
-    function markAsRead(id) {
-      const noti = notifications.find(n => n.id === id);
-      if (noti) {
-        noti.read = true;
-        localStorage.setItem('admin_notifications', JSON.stringify(notifications));
-        renderNotifications();
+    function markAsRead(id, isSystem) {
+      if (isSystem) {
+        const sysReads = JSON.parse(localStorage.getItem('sys_noti_reads') || '{}');
+        sysReads[id] = true;
+        localStorage.setItem('sys_noti_reads', JSON.stringify(sysReads));
+      } else {
+        const noti = notifications.find(n => n.id === id);
+        if (noti) {
+          noti.read = true;
+          localStorage.setItem('admin_notifications', JSON.stringify(notifications));
+        }
       }
+      renderNotifications();
     }
 
     function clearAllNotifications() {
       notifications = [];
       localStorage.setItem('admin_notifications', JSON.stringify(notifications));
+      
+      if (typeof cachedProducts !== 'undefined' && Array.isArray(cachedProducts)) {
+        const sysReads = JSON.parse(localStorage.getItem('sys_noti_reads') || '{}');
+        cachedProducts.filter(p => p.stock <= p.minStock).forEach(p => {
+           if(p.stock === 0) sysReads['sys-oos-'+p.id] = true;
+           else sysReads['sys-low-'+p.id] = true;
+        });
+        localStorage.setItem('sys_noti_reads', JSON.stringify(sysReads));
+      }
       renderNotifications();
     }
 
@@ -1781,6 +1844,16 @@
         if (isHidden) {
           notifications.forEach(n => n.read = true);
           localStorage.setItem('admin_notifications', JSON.stringify(notifications));
+          
+          if (typeof cachedProducts !== 'undefined' && Array.isArray(cachedProducts)) {
+            const sysReads = JSON.parse(localStorage.getItem('sys_noti_reads') || '{}');
+            cachedProducts.filter(p => p.stock <= p.minStock).forEach(p => {
+               if(p.stock === 0) sysReads['sys-oos-'+p.id] = true;
+               else sysReads['sys-low-'+p.id] = true;
+            });
+            localStorage.setItem('sys_noti_reads', JSON.stringify(sysReads));
+          }
+          
           renderNotifications();
         }
       }

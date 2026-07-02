@@ -1,11 +1,14 @@
-const CACHE_NAME = 'supermarket-v5';
+const CACHE_NAME = 'supermarket-v7';
 const ASSETS = [
   './index.html',
+  './admin.html',
   './styles.css',
   './responsive.css',
   './app.js',
   './responsive.js',
   './data.js',
+  './firebase-config.js',
+  './firebase-sync.js',
   './manifest.json',
   './icon-192.png',
   './icon-512.png'

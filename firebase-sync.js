@@ -92,6 +92,57 @@ function listenToFirebaseProducts(callback) {
   });
 }
 
+async function syncInvoicesToFirebase(invoices) {
+  if (!window.FIREBASE_ENABLED || !window._fbDB) return;
+  try {
+    const { set } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js');
+    const ref = window._fbRef(window._fbDB, 'invoices');
+    await set(ref, invoices);
+  } catch(e) { console.warn('Firebase invoices sync failed:', e); }
+}
+
+function listenToFirebaseInvoices(callback) {
+  if (!window.FIREBASE_ENABLED || !window._fbDB) { callback([]); return; }
+  const ref = window._fbRef(window._fbDB, 'invoices');
+  window._fbOn(ref, (snapshot) => {
+    callback(snapshot.val() || []);
+  });
+}
+
+async function syncCustomersToFirebase(customers) {
+  if (!window.FIREBASE_ENABLED || !window._fbDB) return;
+  try {
+    const { set } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js');
+    const ref = window._fbRef(window._fbDB, 'customers');
+    await set(ref, customers);
+  } catch(e) { console.warn('Firebase customers sync failed:', e); }
+}
+
+function listenToFirebaseCustomers(callback) {
+  if (!window.FIREBASE_ENABLED || !window._fbDB) { callback([]); return; }
+  const ref = window._fbRef(window._fbDB, 'customers');
+  window._fbOn(ref, (snapshot) => {
+    callback(snapshot.val() || []);
+  });
+}
+
+async function syncDebtsToFirebase(debts) {
+  if (!window.FIREBASE_ENABLED || !window._fbDB) return;
+  try {
+    const { set } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js');
+    const ref = window._fbRef(window._fbDB, 'debts');
+    await set(ref, debts);
+  } catch(e) { console.warn('Firebase debts sync failed:', e); }
+}
+
+function listenToFirebaseDebts(callback) {
+  if (!window.FIREBASE_ENABLED || !window._fbDB) { callback([]); return; }
+  const ref = window._fbRef(window._fbDB, 'debts');
+  window._fbOn(ref, (snapshot) => {
+    callback(snapshot.val() || []);
+  });
+}
+
 function listenToFirebaseSettings(callback) {
   if (!window.FIREBASE_ENABLED || !window._fbDB) { callback(null); return; }
   const settingsRef = window._fbRef(window._fbDB, 'settings');
@@ -126,7 +177,12 @@ window.listenToFirebaseActivities = listenToFirebaseActivities;
 window.syncSettingsToFirebase = syncSettingsToFirebase;
 window.syncProductsToFirebase = syncProductsToFirebase;
 window.listenToFirebaseProducts = listenToFirebaseProducts;
+window.syncInvoicesToFirebase = syncInvoicesToFirebase;
+window.listenToFirebaseInvoices = listenToFirebaseInvoices;
+window.syncCustomersToFirebase = syncCustomersToFirebase;
+window.listenToFirebaseCustomers = listenToFirebaseCustomers;
+window.syncDebtsToFirebase = syncDebtsToFirebase;
+window.listenToFirebaseDebts = listenToFirebaseDebts;
 window.listenToFirebaseSettings = listenToFirebaseSettings;
 window.setFirebaseLastReportTime = setFirebaseLastReportTime;
 window.listenToFirebaseLastReportTime = listenToFirebaseLastReportTime;
-

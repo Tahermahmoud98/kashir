@@ -110,6 +110,9 @@ const DB = {
 
   saveCustomers(customers) {
     localStorage.setItem('pos_customers', JSON.stringify(customers));
+    if (typeof window.syncCustomersToFirebase === 'function') {
+      window.syncCustomersToFirebase(customers);
+    }
   },
 
   addCustomer(customer) {
@@ -142,6 +145,9 @@ const DB = {
 
   saveInvoices(invoices) {
     localStorage.setItem('pos_invoices', JSON.stringify(invoices));
+    if (typeof window.syncInvoicesToFirebase === 'function') {
+      window.syncInvoicesToFirebase(invoices);
+    }
   },
 
   addInvoice(invoice) {
@@ -174,6 +180,9 @@ const DB = {
 
   saveDebts(debts) {
     localStorage.setItem('pos_debts', JSON.stringify(debts));
+    if (typeof window.syncDebtsToFirebase === 'function') {
+      window.syncDebtsToFirebase(debts);
+    }
   },
 
   // إضافة دين جديد (عملية بيع بالدين)
