@@ -1456,6 +1456,27 @@ body {
   color: var(--text-primary);
 }
 
+.btn-outline {
+  padding: 10px 20px;
+  background: rgba(108, 99, 255, 0.12);
+  border: 1px solid rgba(108, 99, 255, 0.3);
+  border-radius: var(--radius-sm);
+  color: var(--primary);
+  font-family: 'Cairo', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.btn-outline:hover {
+  background: rgba(108, 99, 255, 0.22);
+}
+
 .btn-danger {
   padding: 10px 20px;
   background: rgba(255, 77, 109, 0.15);
@@ -2313,18 +2334,90 @@ body {
 
 /* ========= PRINT STYLES ========= */
 @media print {
-  body * {
+  /* Default page print (A4 reports, accounts, etc.) when printing-page is active */
+  body.printing-page {
+    background: white !important;
+    color: black !important;
+  }
+
+  body.printing-page .sidebar,
+  body.printing-page .header,
+  body.printing-page .theme-toggle-btn,
+  body.printing-page .page-header-bar button,
+  body.printing-page .modal-footer,
+  body.printing-page .modal-close,
+  body.printing-page #toast-container,
+  body.printing-page .settings-actions {
+    display: none !important;
+  }
+
+  body.printing-page #main-app {
+    display: block !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  body.printing-page .main-content {
+    margin-right: 0 !important;
+    margin-left: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+  }
+
+  body.printing-page .page {
+    display: none !important;
+  }
+
+  body.printing-page .page[style*="display: block"],
+  body.printing-page .page[style*="display:block"] {
+    display: block !important;
+    background: white !important;
+    color: black !important;
+    padding: 0 !important;
+  }
+
+  body.printing-page .report-stat-card,
+  body.printing-page .inv-stat-card,
+  body.printing-page .settings-card,
+  body.printing-page .supplier-card,
+  body.printing-page .employee-card,
+  body.printing-page .dash-card {
+    background: white !important;
+    color: black !important;
+    border: 1px solid #ccc !important;
+    box-shadow: none !important;
+    transform: none !important;
+    page-break-inside: avoid;
+  }
+
+  body.printing-page .data-table tbody tr {
+    background: white !important;
+    color: black !important;
+    box-shadow: none !important;
+  }
+
+  body.printing-page .data-table thead th {
+    color: black !important;
+    border-bottom: 2px solid black !important;
+  }
+
+  body.printing-page .data-table tbody tr td {
+    border-bottom: 1px solid #ccc !important;
+  }
+
+  /* Thermal Receipt Printing Override (Default print or printing-receipt class) */
+  body:not(.printing-page) * {
     visibility: hidden;
   }
 
-  #receipt-content,
-  #receipt-content * {
+  body:not(.printing-page) #receipt-content,
+  body:not(.printing-page) #receipt-content * {
     visibility: visible;
     color: black !important;
     background: white !important;
   }
 
-  #receipt-content {
+  body:not(.printing-page) #receipt-content {
     position: absolute;
     left: 0;
     top: 0;

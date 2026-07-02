@@ -5,7 +5,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>نظام كاشير السوبر ماركيت | POS System</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛒</text></svg>">
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛒</text></svg>">
   <meta name="description" content="نظام كاشير متكامل للسوبر ماركيت يدعم الدينار العراقي والدولار الأمريكي">
   <link rel="manifest" href="manifest.json">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -23,6 +24,7 @@
       grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
       gap: 10px;
     }
+
     .weight-btn {
       background: var(--bg-card);
       border: 1px solid var(--border-color);
@@ -35,19 +37,254 @@
       cursor: pointer;
       transition: all 0.2s;
     }
+
     .weight-btn:hover {
       background: var(--primary-light);
       color: white;
       border-color: var(--primary);
     }
+
     .weight-btn.kg-btn {
       background: rgba(0, 200, 150, 0.1);
       border-color: rgba(0, 200, 150, 0.3);
       color: var(--primary);
     }
+
     .weight-btn.kg-btn:hover {
       background: var(--primary);
       color: white;
+    }
+
+    /* ============================================================ */
+    /* تحسين وتطوير تصميم جميع الصفحات باستثناء شاشة الكاشير */
+    /* ============================================================ */
+    .page:not(#page-pos) {
+      padding: 30px;
+      animation: fadeIn 0.4s ease-out;
+    }
+
+    /* بطاقات عصرية ونمط زجاجي فاخر */
+    .page:not(#page-pos) .report-stat-card,
+    .page:not(#page-pos) .inv-stat-card,
+    .page:not(#page-pos) .settings-card,
+    .page:not(#page-pos) .supplier-card,
+    .page:not(#page-pos) .employee-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      padding: 24px;
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .page:not(#page-pos) .report-stat-card::after,
+    .page:not(#page-pos) .inv-stat-card::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary), var(--primary-light));
+    }
+
+    .page:not(#page-pos) .inv-stat-card.warning::after {
+      background: linear-gradient(90deg, var(--warning), #ffe0b2);
+    }
+
+    .page:not(#page-pos) .inv-stat-card.danger::after {
+      background: linear-gradient(90deg, var(--danger), #ffcdd2);
+    }
+
+    .page:not(#page-pos) .report-stat-card:hover,
+    .page:not(#page-pos) .inv-stat-card:hover,
+    .page:not(#page-pos) .settings-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    /* أزرار وعناصر تحكم احترافية */
+    .page:not(#page-pos) .btn-primary {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      border: none;
+      box-shadow: 0 4px 15px rgba(108, 99, 255, 0.3);
+      font-weight: 700;
+      transition: all 0.3s ease;
+      border-radius: var(--radius-sm);
+      padding: 10px 20px;
+    }
+
+    .page:not(#page-pos) .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(108, 99, 255, 0.4);
+    }
+
+    .page:not(#page-pos) .btn-outline {
+      border: 1px solid var(--primary);
+      color: var(--primary);
+      background: transparent;
+      transition: all 0.2s ease;
+    }
+
+    .page:not(#page-pos) .btn-outline:hover {
+      background: rgba(108, 99, 255, 0.1);
+      transform: translateY(-1px);
+    }
+
+    /* تحسين تصميم الجداول */
+    .page:not(#page-pos) .data-table {
+      border-collapse: separate;
+      border-spacing: 0 8px;
+      width: 100%;
+    }
+
+    .page:not(#page-pos) .data-table thead th {
+      background: transparent;
+      color: var(--text-secondary);
+      font-weight: 700;
+      border-bottom: 2px solid var(--border);
+      padding: 14px 20px;
+      font-size: 14px;
+    }
+
+    .page:not(#page-pos) .data-table tbody tr {
+      background: var(--bg-card);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+      transition: all 0.2s ease;
+    }
+
+    .page:not(#page-pos) .data-table tbody tr td {
+      border: none;
+      border-top: 1px solid var(--border-light);
+      border-bottom: 1px solid var(--border-light);
+      padding: 16px 20px;
+    }
+
+    .page:not(#page-pos) .data-table tbody tr td:first-child {
+      border-right: 1px solid var(--border-light);
+      border-radius: 0 var(--radius) var(--radius) 0;
+    }
+
+    .page:not(#page-pos) .data-table tbody tr td:last-child {
+      border-left: 1px solid var(--border-light);
+      border-radius: var(--radius) 0 0 var(--radius);
+    }
+
+    .page:not(#page-pos) .data-table tbody tr:hover {
+      transform: scale(1.01);
+      box-shadow: var(--shadow);
+      background: var(--bg-card-hover);
+    }
+
+    /* تبويبات عصرية */
+    .page:not(#page-pos) .archive-tabs-container {
+      display: flex;
+      gap: 12px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 10px;
+      margin-bottom: 25px;
+    }
+
+    .page:not(#page-pos) .archive-tab {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      font-weight: 700;
+      padding: 10px 20px;
+      cursor: pointer;
+      position: relative;
+      transition: color 0.3s;
+    }
+
+    .page:not(#page-pos) .archive-tab.active {
+      color: var(--primary);
+    }
+
+    .page:not(#page-pos) .archive-tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: -11px;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: var(--primary);
+      border-radius: 3px 3px 0 0;
+    }
+
+    /* تأثير تركيز مضيء على حقول الإدخال */
+    .page:not(#page-pos) input[type="text"],
+    .page:not(#page-pos) input[type="number"],
+    .page:not(#page-pos) input[type="password"],
+    .page:not(#page-pos) select,
+    .page:not(#page-pos) textarea {
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text-primary);
+      padding: 12px 16px;
+      transition: all 0.3s;
+    }
+
+    .page:not(#page-pos) input:focus,
+    .page:not(#page-pos) select:focus,
+    .page:not(#page-pos) textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.15);
+      outline: none;
+    }
+
+    .page:not(#page-pos) .page-header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    .page:not(#page-pos) .page-header-bar h3 {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+
+    @keyframes radarSweep {
+      0% {
+        top: 0%;
+      }
+
+      50% {
+        top: 100%;
+      }
+
+      100% {
+        top: 0%;
+      }
+    }
+
+    /* زر القائمة الجانبية (الهاتف والتابلت) */
+    .menu-toggle-btn {
+      display: none;
+      background: transparent;
+      border: none;
+      color: var(--text-primary);
+      font-size: 24px;
+      cursor: pointer;
+      align-items: center;
+      justify-content: center;
+      padding: 8px;
+      margin-left: 10px;
+      transition: color 0.2s;
+    }
+
+    .menu-toggle-btn:hover {
+      color: var(--primary);
+    }
+
+    @media (max-width: 992px) {
+      .menu-toggle-btn {
+        display: flex !important;
+      }
     }
   </style>
 </head>
@@ -76,7 +313,7 @@
       </div>
       <div class="modal-body">
         <input type="hidden" id="odpm-customer-id">
-        
+
         <div class="debt-remaining-box" style="margin-bottom:20px; text-align:center;">
           <div style="font-size:12px; color:var(--muted)">إجمالي الدين القديم المتبقي</div>
           <div class="debt-remaining-display" id="odpm-remaining">0 د.ع</div>
@@ -86,13 +323,12 @@
           <label>المبلغ المدفوع (د.ع) <span class="required">*</span></label>
           <input type="number" id="odpm-amount" placeholder="0" min="1" oninput="calcOldDebtRemaining()">
         </div>
-        
+
         <div class="debt-pay-result" id="odpm-result" style="display:none;"></div>
       </div>
       <div class="modal-footer">
         <button class="btn-secondary" onclick="closeModal('old-debt-pay-modal')">إلغاء</button>
-        <button class="btn-primary" id="odpm-submit" 
-          onclick="submitOldDebtPayment()">✔ تأكيد التسديد</button>
+        <button class="btn-primary" id="odpm-submit" onclick="submitOldDebtPayment()">✔ تأكيد التسديد</button>
       </div>
     </div>
   </div>
@@ -137,6 +373,10 @@
       <nav class="sidebar-nav">
         <div class="nav-section">
           <span class="nav-section-title">القائمة الرئيسية</span>
+          <a href="#" class="nav-item" onclick="showPage('dashboard')" id="nav-dashboard">
+            <span class="nav-icon">📊</span>
+            <span>لوحة التحكم</span>
+          </a>
           <a href="#" class="nav-item active" onclick="showPage('pos')" id="nav-pos">
             <span class="nav-icon">🏪</span>
             <span>الكاشير</span>
@@ -146,12 +386,24 @@
             <span>المنتجات</span>
           </a>
           <a href="#" class="nav-item" onclick="showPage('inventory')" id="nav-inventory">
-            <span class="nav-icon">📊</span>
+            <span class="nav-icon">🏭</span>
             <span>المخزون</span>
+          </a>
+          <a href="#" class="nav-item" onclick="showPage('purchases')" id="nav-purchases">
+            <span class="nav-icon">🛒</span>
+            <span>المشتريات</span>
+          </a>
+          <a href="#" class="nav-item" onclick="showPage('sales')" id="nav-sales">
+            <span class="nav-icon">💰</span>
+            <span>المبيعات</span>
           </a>
           <a href="#" class="nav-item" onclick="showPage('customers')" id="nav-customers">
             <span class="nav-icon">👥</span>
             <span>العملاء</span>
+          </a>
+          <a href="#" class="nav-item" onclick="showPage('suppliers')" id="nav-suppliers">
+            <span class="nav-icon">🚚</span>
+            <span>الموردون</span>
           </a>
           <a href="#" class="nav-item" onclick="showPage('debts')" id="nav-debts">
             <span class="nav-icon">💳</span>
@@ -160,17 +412,49 @@
           </a>
         </div>
         <div class="nav-section">
-          <span class="nav-section-title">التقارير والإدارة</span>
+          <span class="nav-section-title">المالية والتقارير</span>
+          <a href="#" class="nav-item" onclick="showPage('accounts')" id="nav-accounts">
+            <span class="nav-icon">🏦</span>
+            <span>الحسابات</span>
+          </a>
           <a href="#" class="nav-item" onclick="showPage('reports')" id="nav-reports">
             <span class="nav-icon">📈</span>
             <span>التقارير</span>
           </a>
 
+          <a href="#" class="nav-item" onclick="showPage('discounts')" id="nav-discounts">
+            <span class="nav-icon">🎁</span>
+            <span>العروض والخصومات</span>
+          </a>
+        </div>
+        <div class="nav-section">
+          <span class="nav-section-title">الأدوات والإعدادات</span>
+          <a href="#" class="nav-item" onclick="showPage('barcode')" id="nav-barcode">
+            <span class="nav-icon">📷</span>
+            <span>الباركود</span>
+          </a>
+          <a href="#" class="nav-item" onclick="showPage('printing')" id="nav-printing">
+            <span class="nav-icon">🖨️</span>
+            <span>الطباعة</span>
+          </a>
+          <a href="#" class="nav-item" onclick="showPage('notifications')" id="nav-notifications">
+            <span class="nav-icon">🔔</span>
+            <span>الإشعارات</span>
+          </a>
+          <a href="#" class="nav-item" onclick="showPage('backup')" id="nav-backup">
+            <span class="nav-icon">💾</span>
+            <span>النسخ الاحتياطي</span>
+          </a>
+          <a href="#" class="nav-item" onclick="showPage('activitylog')" id="nav-activitylog">
+            <span class="nav-icon">📋</span>
+            <span>سجل العمليات</span>
+          </a>
           <a href="#" class="nav-item" onclick="showPage('settings')" id="nav-settings">
             <span class="nav-icon">⚙️</span>
             <span>الإعدادات</span>
           </a>
-          <a href="admin.html" target="_blank" class="nav-item" style="background: rgba(0, 200, 150, 0.08); border: 1px dashed rgba(0, 200, 150, 0.3); border-radius: 8px; margin-top: 8px;">
+          <a href="admin.html" target="_blank" class="nav-item"
+            style="background: rgba(0, 200, 150, 0.08); border: 1px dashed rgba(0, 200, 150, 0.3); border-radius: 8px; margin-top: 8px;">
             <span class="nav-icon">👑</span>
             <span style="color: var(--primary); font-weight: 700;">لوحة الإدارة</span>
           </a>
@@ -178,7 +462,6 @@
             <span class="nav-icon">🗂️</span>
             <span>الأرشيف</span>
           </a>
-
         </div>
       </nav>
 
@@ -202,6 +485,7 @@
       <!-- Header -->
       <header class="top-header">
         <div class="header-right">
+          <button class="menu-toggle-btn" onclick="toggleSidebar()" aria-label="Open sidebar menu">☰</button>
           <button class="btn-home-header" id="btn-back-home" onclick="showPage('home')" style="display: none;">🏠
             الرئيسية</button>
           <h2 class="page-title" id="page-title">الرئيسية</h2>
@@ -308,6 +592,106 @@
               <div class="home-card-desc">سجل المبيعات اليومية والشهرية والسنوية</div>
             </div>
 
+            <!-- لوحة التحكم -->
+            <div class="home-nav-card"
+              style="background: linear-gradient(135deg, rgba(99,102,241,0.15), rgba(99,102,241,0.05)); border: 1px solid rgba(99,102,241,0.2);"
+              onclick="showPage('dashboard')">
+              <div class="home-card-icon-wrapper" style="background: rgba(99,102,241,0.2);">📊</div>
+              <div class="home-card-title">لوحة التحكم</div>
+              <div class="home-card-desc">ملخص المبيعات والأرباح والإحصائيات</div>
+            </div>
+
+            <!-- المشتريات -->
+            <div class="home-nav-card"
+              style="background: linear-gradient(135deg, rgba(245,158,11,0.15), rgba(245,158,11,0.05)); border: 1px solid rgba(245,158,11,0.2);"
+              onclick="showPage('purchases')">
+              <div class="home-card-icon-wrapper" style="background: rgba(245,158,11,0.2);">🛒</div>
+              <div class="home-card-title">المشتريات</div>
+              <div class="home-card-desc">الموردون وفواتير الشراء والمرتجعات</div>
+            </div>
+
+            <!-- المبيعات -->
+            <div class="home-nav-card"
+              style="background: linear-gradient(135deg, rgba(16,185,129,0.15), rgba(16,185,129,0.05)); border: 1px solid rgba(16,185,129,0.2);"
+              onclick="showPage('sales')">
+              <div class="home-card-icon-wrapper" style="background: rgba(16,185,129,0.2);">💰</div>
+              <div class="home-card-title">المبيعات</div>
+              <div class="home-card-desc">جميع الفواتير والمرتجعات وعروض الأسعار</div>
+            </div>
+
+            <!-- الموردون -->
+            <div class="home-nav-card"
+              style="background: linear-gradient(135deg, rgba(239,68,68,0.15), rgba(239,68,68,0.05)); border: 1px solid rgba(239,68,68,0.2);"
+              onclick="showPage('suppliers')">
+              <div class="home-card-icon-wrapper" style="background: rgba(239,68,68,0.2);">🚚</div>
+              <div class="home-card-title">الموردون</div>
+              <div class="home-card-desc">بيانات الموردين والديون وسجل المشتريات</div>
+            </div>
+
+            <!-- الحسابات -->
+            <div class="home-nav-card"
+              style="background: linear-gradient(135deg, rgba(20,184,166,0.15), rgba(20,184,166,0.05)); border: 1px solid rgba(20,184,166,0.2);"
+              onclick="showPage('accounts')">
+              <div class="home-card-icon-wrapper" style="background: rgba(20,184,166,0.2);">🏦</div>
+              <div class="home-card-title">الحسابات</div>
+              <div class="home-card-desc">الإيرادات والمصروفات والأرباح والخسائر</div>
+            </div>
+
+
+
+            <!-- العروض والخصومات -->
+            <div class="home-nav-card"
+              style="background: linear-gradient(135deg, rgba(236,72,153,0.15), rgba(236,72,153,0.05)); border: 1px solid rgba(236,72,153,0.2);"
+              onclick="showPage('discounts')">
+              <div class="home-card-icon-wrapper" style="background: rgba(236,72,153,0.2);">🎁</div>
+              <div class="home-card-title">العروض والخصومات</div>
+              <div class="home-card-desc">الخصومات وكوبونات وعروض الاشتراك</div>
+            </div>
+
+            <!-- الباركود -->
+            <div class="home-nav-card"
+              style="background: linear-gradient(135deg, rgba(6,182,212,0.15), rgba(6,182,212,0.05)); border: 1px solid rgba(6,182,212,0.2);"
+              onclick="showPage('barcode')">
+              <div class="home-card-icon-wrapper" style="background: rgba(6,182,212,0.2);">📷</div>
+              <div class="home-card-title">الباركود</div>
+              <div class="home-card-desc">إنشاء وطباعة الباركود وملصقات الأسعار</div>
+            </div>
+
+            <!-- الطباعة -->
+            <div class="home-nav-card"
+              style="background: linear-gradient(135deg, rgba(107,114,128,0.15), rgba(107,114,128,0.05)); border: 1px solid rgba(107,114,128,0.2);"
+              onclick="showPage('printing')">
+              <div class="home-card-icon-wrapper" style="background: rgba(107,114,128,0.2);">🖨️</div>
+              <div class="home-card-title">الطباعة</div>
+              <div class="home-card-desc">طباعة الفواتير والباركود والملصقات</div>
+            </div>
+
+            <!-- الإشعارات -->
+            <div class="home-nav-card"
+              style="background: linear-gradient(135deg, rgba(251,191,36,0.15), rgba(251,191,36,0.05)); border: 1px solid rgba(251,191,36,0.2);"
+              onclick="showPage('notifications')">
+              <div class="home-card-icon-wrapper" style="background: rgba(251,191,36,0.2);">🔔</div>
+              <div class="home-card-title">الإشعارات</div>
+              <div class="home-card-desc">نقص المخزون والصلاحيات والديون المستحقة</div>
+            </div>
+
+            <!-- النسخ الاحتياطي -->
+            <div class="home-nav-card"
+              style="background: linear-gradient(135deg, rgba(52,211,153,0.15), rgba(52,211,153,0.05)); border: 1px solid rgba(52,211,153,0.2);"
+              onclick="showPage('backup')">
+              <div class="home-card-icon-wrapper" style="background: rgba(52,211,153,0.2);">💾</div>
+              <div class="home-card-title">النسخ الاحتياطي</div>
+              <div class="home-card-desc">نسخ احتياطي تلقائي واستعادة البيانات</div>
+            </div>
+
+            <!-- سجل العمليات -->
+            <div class="home-nav-card"
+              style="background: linear-gradient(135deg, rgba(139,92,246,0.15), rgba(139,92,246,0.05)); border: 1px solid rgba(139,92,246,0.2);"
+              onclick="showPage('activitylog')">
+              <div class="home-card-icon-wrapper" style="background: rgba(139,92,246,0.2);">📋</div>
+              <div class="home-card-title">سجل العمليات</div>
+              <div class="home-card-desc">تسجيل جميع العمليات وسجل الدخول</div>
+            </div>
 
           </div>
 
@@ -345,7 +729,8 @@
           </button>
           <button class="pos-view-btn" id="pos-tab-cart" onclick="switchPosMobileView('cart')">
             <span class="pvb-icon">🛒</span>
-            <span class="pvb-label">السلة <span class="pos-cart-badge" id="pos-cart-badge" style="display:none">0</span></span>
+            <span class="pvb-label">السلة <span class="pos-cart-badge" id="pos-cart-badge"
+                style="display:none">0</span></span>
           </button>
         </div>
         <div class="pos-container">
@@ -354,7 +739,23 @@
             <div class="pos-search-bar">
               <input type="text" id="pos-search" placeholder="🔍 ابحث بالاسم أو الباركود..."
                 oninput="searchProducts(this.value)">
-              <button class="btn-barcode" onclick="simulateBarcode()">📷 باركود</button>
+              <button class="btn-barcode" onclick="openGlobalScanner('pos-search', handleScannedBarcode)"
+                title="مسح باركود بالكاميرا">📷 كاميرا</button>
+              <button class="btn-barcode-sim"
+                style="padding:10px 14px; background:var(--bg-card); border:1px solid var(--border-color); border-radius:var(--radius); color:var(--text-secondary); cursor:pointer; font-weight:700; font-family:inherit; font-size:12px; display:inline-flex; align-items:center; justify-content:center;"
+                onclick="simulateBarcode()" title="إدخال يدوي">⌨️ محاكاة</button>
+            </div>
+            <div class="pos-branch-warehouse-bar" style="display:flex; gap:10px; margin-bottom:10px;">
+              <select id="pos-branch-select"
+                style="flex:1; padding:8px; border-radius:var(--radius-sm); border:1px solid var(--border-color); background:var(--bg-card); color:var(--text-primary); font-family:inherit;"
+                onchange="updatePOSBranch()">
+                <option value="main">الفرع الرئيسي</option>
+              </select>
+              <select id="pos-warehouse-select"
+                style="flex:1; padding:8px; border-radius:var(--radius-sm); border:1px solid var(--border-color); background:var(--bg-card); color:var(--text-primary); font-family:inherit;"
+                onchange="updatePOSWarehouse()">
+                <option value="main">المستودع الرئيسي</option>
+              </select>
             </div>
             <div class="category-tabs" id="category-tabs">
               <button class="cat-tab active" onclick="filterByCategory('all', this)">الكل</button>
@@ -366,12 +767,19 @@
           <div class="pos-cart">
             <div class="cart-header">
               <h3>🛒 سلة المشتريات</h3>
-              <div class="cart-controls">
-                <input type="text" id="cart-customer-input" list="cart-customers-list" 
-                       placeholder="-- عميل زائر (بحث) --" oninput="handleCustomerInput(this.value)"
-                       style="padding:6px 10px; border:1px solid var(--border-color); border-radius:var(--radius-sm); width:180px; font-family:inherit; font-size:14px; background:var(--bg-secondary); color:var(--text-primary);">
-                <datalist id="cart-customers-list"></datalist>
-                <button class="btn-clear-cart" onclick="clearCart()">🗑️ مسح</button>
+              <div class="cart-controls" style="display:flex; flex-direction:column; gap:4px; align-items:flex-start;">
+                <div style="display:flex; gap:6px; align-items:center; width:100%;">
+                  <input type="text" id="cart-customer-input" list="cart-customers-list"
+                    placeholder="-- عميل زائر (بحث) --" oninput="handleCustomerInput(this.value)"
+                    style="padding:6px 10px; border:1px solid var(--border-color); border-radius:var(--radius-sm); width:180px; font-family:inherit; font-size:14px; background:var(--bg-secondary); color:var(--text-primary);">
+                  <datalist id="cart-customers-list"></datalist>
+                  <button class="btn-clear-cart" onclick="clearCart()">🗑️ مسح</button>
+                </div>
+                <div id="customer-points-display"
+                  style="display:none; font-size:12px; color:var(--primary); font-weight:700; margin-top:2px;"></div>
+                <button id="btn-redeem-points" class="btn-outline"
+                  style="display:none; padding:4px 8px; font-size:11px; font-weight:700; cursor:pointer;"
+                  onclick="redeemPoints()">🎁 استبدال النقاط</button>
               </div>
             </div>
 
@@ -398,6 +806,14 @@
                   </select>
                 </div>
                 <span id="discount-amount">- 0 د.ع</span>
+              </div>
+              <div class="summary-row coupon-row">
+                <div class="discount-controls">
+                  <input type="text" id="coupon-code-input" placeholder="كود الكوبون"
+                    style="padding:4px 8px; border:1px solid var(--border-color); border-radius:var(--radius-sm); font-size:12px; background:var(--bg-secondary); color:var(--text-primary); width:110px;"
+                    oninput="applyCouponCode()">
+                </div>
+                <span id="coupon-discount-amount" style="color:var(--danger)">- 0 د.ع</span>
               </div>
               <div class="summary-row tax-row">
                 <span>الضريبة (<span id="tax-rate-display">0</span>%):</span>
@@ -497,10 +913,12 @@
               </div>
 
               <div style="display: flex; gap: 8px;">
-                <button class="btn-checkout" id="btn-checkout" onclick="processPayment()" style="flex: 2; margin-top: 0;">
+                <button class="btn-checkout" id="btn-checkout" onclick="processPayment()"
+                  style="flex: 2; margin-top: 0;">
                   ✅ إتمام البيع
                 </button>
-                <button class="btn-checkout" id="btn-return-pos" onclick="processReturnFromPOS()" style="flex: 1; background:var(--danger); margin-top: 0; padding: 12px 5px; font-size: 13px;">
+                <button class="btn-checkout" id="btn-return-pos" onclick="processReturnFromPOS()"
+                  style="flex: 1; background:var(--danger); margin-top: 0; padding: 12px 5px; font-size: 13px;">
                   ↩️ استرجاع
                 </button>
               </div>
@@ -612,7 +1030,10 @@
       <div id="page-inventory" class="page">
         <div class="page-header-bar">
           <h3>إدارة المخزون</h3>
-          <button class="btn-primary" onclick="openStockModal()">+ إضافة مخزون</button>
+          <div style="display:flex; gap:10px;">
+            <button class="btn-outline" onclick="openTransferModal()">🔄 تحويل مخزوني</button>
+            <button class="btn-primary" onclick="openStockModal()">+ إضافة مخزون</button>
+          </div>
         </div>
         <div class="inventory-stats">
           <div class="inv-stat-card">
@@ -662,7 +1083,9 @@
             <input type="text" class="search-input" placeholder="🔍 ابحث عن عميل..."
               oninput="searchCustomers(this.value)">
             <button class="btn-primary" onclick="openCustomerModal()">+ إضافة عميل</button>
-            <button class="btn-secondary" onclick="printCustomersTable()" style="background:var(--bg-secondary); color:var(--text-primary); border:1px solid var(--border-color); padding:8px 15px; border-radius:var(--radius-sm); cursor:pointer;">🖨️ طباعة</button>
+            <button class="btn-secondary" onclick="printCustomersTable()"
+              style="background:var(--bg-secondary); color:var(--text-primary); border:1px solid var(--border-color); padding:8px 15px; border-radius:var(--radius-sm); cursor:pointer;">🖨️
+              طباعة</button>
           </div>
         </div>
         <div class="customers-grid" id="customers-grid"></div>
@@ -746,13 +1169,14 @@
           <h3>التقارير والمبيعات</h3>
           <div class="page-actions">
             <div class="date-picker-group">
-            <span class="date-label">من</span>
+              <span class="date-label">من</span>
               <input type="date" id="report-from" onchange="loadReports()">
               <span class="date-label">إلى</span>
               <input type="date" id="report-to" onchange="loadReports()">
             </div>
             <button class="btn-primary" onclick="exportReport()">📥 طباعة</button>
-            <button class="btn-outline" onclick="sendDailyReportToTelegram()" style="border-color: #0088cc; color: #0088cc;">✈️ إرسال التقرير لتليجرام</button>
+            <button class="btn-outline" onclick="sendDailyReportToTelegram()"
+              style="border-color: #0088cc; color: #0088cc;">✈️ إرسال التقرير لتليجرام</button>
           </div>
         </div>
 
@@ -853,6 +1277,947 @@
       </div>
 
 
+      <!-- ============================================================ -->
+      <!-- لوحة التحكم - Dashboard -->
+      <!-- ============================================================ -->
+      <div id="page-dashboard" class="page">
+        <div class="page-header-bar">
+          <h3>📊 لوحة التحكم</h3>
+          <div class="page-actions">
+            <span id="dashboard-date" style="color:var(--text-secondary); font-size:14px;"></span>
+          </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="inventory-stats"
+          style="grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); margin-bottom:20px;">
+          <div class="inv-stat-card">
+            <span class="inv-stat-icon">💰</span>
+            <div>
+              <span class="inv-stat-value" id="dash-sales-today">0</span>
+              <span class="inv-stat-label">مبيعات اليوم</span>
+            </div>
+          </div>
+          <div class="inv-stat-card" style="border-right:3px solid var(--primary);">
+            <span class="inv-stat-icon">📈</span>
+            <div>
+              <span class="inv-stat-value" id="dash-profit-today" style="color:var(--primary);">0</span>
+              <span class="inv-stat-label">أرباح اليوم</span>
+            </div>
+          </div>
+          <div class="inv-stat-card">
+            <span class="inv-stat-icon">🧾</span>
+            <div>
+              <span class="inv-stat-value" id="dash-invoices-today">0</span>
+              <span class="inv-stat-label">فواتير اليوم</span>
+            </div>
+          </div>
+          <div class="inv-stat-card warning">
+            <span class="inv-stat-icon">⚠️</span>
+            <div>
+              <span class="inv-stat-value" id="dash-low-stock">0</span>
+              <span class="inv-stat-label">منتجات ناقصة</span>
+            </div>
+          </div>
+          <div class="inv-stat-card danger">
+            <span class="inv-stat-icon">📅</span>
+            <div>
+              <span class="inv-stat-value" id="dash-expiring-soon">0</span>
+              <span class="inv-stat-label">قريب الانتهاء</span>
+            </div>
+          </div>
+          <div class="inv-stat-card">
+            <span class="inv-stat-icon">💳</span>
+            <div>
+              <span class="inv-stat-value" id="dash-total-debts">0</span>
+              <span class="inv-stat-label">ديون العملاء</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- أكثر المنتجات مبيعاً -->
+        <div class="reports-tables">
+          <div class="report-table-card">
+            <h4>🏆 أكثر المنتجات مبيعاً اليوم</h4>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>المنتج</th>
+                  <th>الكمية</th>
+                  <th>الإيراد</th>
+                </tr>
+              </thead>
+              <tbody id="dash-top-products"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================================ -->
+      <!-- المشتريات - Purchases -->
+      <!-- ============================================================ -->
+      <div id="page-purchases" class="page">
+        <div class="page-header-bar">
+          <h3>🛒 المشتريات</h3>
+          <div class="page-actions">
+            <button class="btn-primary" onclick="openPurchaseModal()">+ فاتورة شراء جديدة</button>
+          </div>
+        </div>
+
+        <!-- تبويبات المشتريات -->
+        <div class="archive-tabs-bar"
+          style="margin-bottom:20px; background:var(--bg-card); padding:10px; border-radius:var(--radius-md);">
+          <button class="archive-tab active" onclick="switchPurchasesTab('invoices', this)">📃 فواتير الشراء</button>
+          <button class="archive-tab" onclick="switchPurchasesTab('suppliers', this)">🚚 الموردون</button>
+          <button class="archive-tab" onclick="switchPurchasesTab('returns', this)">↩️ المرتجعات</button>
+          <button class="archive-tab" onclick="switchPurchasesTab('payments', this)">💸 الدفعات</button>
+        </div>
+
+        <div id="purchases-tab-invoices">
+          <div class="products-table-container">
+            <table class="data-table" id="purchases-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>المورد</th>
+                  <th>التاريخ</th>
+                  <th>الإجمالي</th>
+                  <th>الحالة</th>
+                  <th>الإجراءات</th>
+                </tr>
+              </thead>
+              <tbody id="purchases-tbody-main">
+                <tr>
+                  <td colspan="6" style="text-align:center;color:var(--text-secondary);padding:40px;">لا توجد فواتير
+                    شراء بعد</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div id="purchases-tab-suppliers" style="display:none;">
+          <div class="page-header-bar" style="margin-bottom:15px;">
+            <span></span>
+            <button class="btn-primary" onclick="openSupplierModal()">+ إضافة مورد</button>
+          </div>
+          <div class="products-table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>اسم المورد</th>
+                  <th>الهاتف</th>
+                  <th>الشركة</th>
+                  <th>الدين</th>
+                  <th>الإجراءات</th>
+                </tr>
+              </thead>
+              <tbody id="purchases-suppliers-tbody">
+                <tr>
+                  <td colspan="5" style="text-align:center;color:var(--text-secondary);padding:40px;">لا يوجد موردون بعد
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div id="purchases-tab-returns" style="display:none;">
+          <div class="products-table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>المورد</th>
+                  <th>التاريخ</th>
+                  <th>المبلغ</th>
+                  <th>السبب</th>
+                </tr>
+              </thead>
+              <tbody id="purchases-returns-tbody">
+                <tr>
+                  <td colspan="5" style="text-align:center;color:var(--text-secondary);padding:40px;">لا توجد مرتجعات
+                    بعد</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div id="purchases-tab-payments" style="display:none;">
+          <div class="products-table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>المورد</th>
+                  <th>المبلغ</th>
+                  <th>التاريخ</th>
+                  <th>الملاحظة</th>
+                </tr>
+              </thead>
+              <tbody id="purchases-payments-tbody">
+                <tr>
+                  <td colspan="4" style="text-align:center;color:var(--text-secondary);padding:40px;">لا توجد دفعات بعد
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================================ -->
+      <!-- المبيعات - Sales -->
+      <!-- ============================================================ -->
+      <div id="page-sales" class="page">
+        <div class="page-header-bar">
+          <h3>💰 المبيعات</h3>
+          <div class="page-actions">
+            <input type="date" id="sales-date-filter" onchange="loadSalesPage()"
+              style="padding:8px;border:1px solid var(--border-color);border-radius:var(--radius-sm);background:var(--bg-secondary);color:var(--text-primary);">
+            <button class="btn-primary" onclick="exportSalesReport()">📥 تصدير</button>
+          </div>
+        </div>
+
+        <div class="archive-tabs-bar"
+          style="margin-bottom:20px; background:var(--bg-card); padding:10px; border-radius:var(--radius-md);">
+          <button class="archive-tab active" onclick="switchSalesTab('all', this)">🧾 جميع الفواتير</button>
+          <button class="archive-tab" onclick="switchSalesTab('returns', this)">↩️ المرتجعات</button>
+          <button class="archive-tab" onclick="switchSalesTab('quotes', this)">📄 عروض الأسعار</button>
+          <button class="archive-tab" onclick="switchSalesTab('reservations', this)">📌 الحجوزات</button>
+        </div>
+
+        <div id="sales-tab-all">
+          <div class="reports-stats" style="margin-bottom:20px;">
+            <div class="report-stat-card">
+              <div class="report-stat-icon">💰</div>
+              <div class="report-stat-info">
+                <span class="report-stat-label">إجمالي المبيعات</span>
+                <span class="report-stat-value" id="sales-total">0 د.ع</span>
+              </div>
+            </div>
+            <div class="report-stat-card">
+              <div class="report-stat-icon">🧾</div>
+              <div class="report-stat-info">
+                <span class="report-stat-label">عدد الفواتير</span>
+                <span class="report-stat-value" id="sales-count">0</span>
+              </div>
+            </div>
+            <div class="report-stat-card">
+              <div class="report-stat-icon">↩️</div>
+              <div class="report-stat-info">
+                <span class="report-stat-label">المرتجعات</span>
+                <span class="report-stat-value" id="sales-returns">0</span>
+              </div>
+            </div>
+          </div>
+          <div class="products-table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>رقم الفاتورة</th>
+                  <th>التاريخ</th>
+                  <th>العميل</th>
+                  <th>الإجمالي</th>
+                  <th>طريقة الدفع</th>
+                  <th>الحالة</th>
+                </tr>
+              </thead>
+              <tbody id="sales-invoices-tbody">
+                <tr>
+                  <td colspan="6" style="text-align:center;color:var(--text-secondary);padding:40px;">لا توجد فواتير
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div id="sales-tab-returns" style="display:none;">
+          <div class="products-table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>رقم الفاتورة</th>
+                  <th>التاريخ</th>
+                  <th>المبلغ المرتجع</th>
+                  <th>السبب</th>
+                </tr>
+              </thead>
+              <tbody id="sales-returns-tbody">
+                <tr>
+                  <td colspan="4" style="text-align:center;color:var(--text-secondary);padding:40px;">لا توجد مرتجعات
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div id="sales-tab-quotes" style="display:none;">
+          <div class="page-header-bar" style="margin-bottom:15px;">
+            <span></span>
+            <button class="btn-primary" onclick="openNewQuoteModal()">+ إنشاء عرض سعر</button>
+          </div>
+          <div class="products-table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>تاريخ العرض</th>
+                  <th>العميل</th>
+                  <th>قيمة العرض</th>
+                  <th>إجراء</th>
+                </tr>
+              </thead>
+              <tbody id="sales-quotes-tbody">
+                <tr>
+                  <td colspan="4" style="text-align:center;color:var(--text-secondary);padding:40px;">لا توجد عروض أسعار
+                    مسجلة بعد</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div id="sales-tab-reservations" style="display:none;">
+          <div class="page-header-bar" style="margin-bottom:15px;">
+            <span></span>
+            <button class="btn-primary" onclick="openNewReservationModal()">+ إضافة حجز طلبية</button>
+          </div>
+          <div class="products-table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>العميل</th>
+                  <th>تاريخ التسليم المتوقع</th>
+                  <th>إجمالي الطلبية</th>
+                  <th>العربون المدفوع</th>
+                  <th>حالة الحجز</th>
+                  <th>إجراء</th>
+                </tr>
+              </thead>
+              <tbody id="sales-reservations-tbody">
+                <tr>
+                  <td colspan="6" style="text-align:center;color:var(--text-secondary);padding:40px;">لا توجد حجوزات
+                    مسجلة بعد</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================================ -->
+      <!-- الموردون - Suppliers -->
+      <!-- ============================================================ -->
+      <div id="page-suppliers" class="page">
+        <div class="page-header-bar">
+          <h3>🚚 الموردون</h3>
+          <div class="page-actions">
+            <input type="text" class="search-input" placeholder="🔍 ابحث عن مورد..."
+              oninput="searchSuppliers(this.value)">
+            <button class="btn-primary" onclick="openSupplierModal()">+ إضافة مورد</button>
+          </div>
+        </div>
+
+        <div class="inventory-stats" style="margin-bottom:20px;">
+          <div class="inv-stat-card">
+            <span class="inv-stat-icon">🚚</span>
+            <div>
+              <span class="inv-stat-value" id="suppliers-count">0</span>
+              <span class="inv-stat-label">إجمالي الموردين</span>
+            </div>
+          </div>
+          <div class="inv-stat-card danger">
+            <span class="inv-stat-icon">💸</span>
+            <div>
+              <span class="inv-stat-value" id="suppliers-debt">0 د.ع</span>
+              <span class="inv-stat-label">إجمالي الديون</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="customers-grid" id="suppliers-grid"></div>
+
+        <div id="suppliers-empty" style="text-align:center; padding:60px; color:var(--text-secondary);display:none;">
+          <div style="font-size:50px; margin-bottom:16px;">🚚</div>
+          <p>لا يوجد موردون بعد</p>
+          <button class="btn-primary" style="margin-top:16px;" onclick="openSupplierModal()">+ إضافة مورد</button>
+        </div>
+      </div>
+
+      <!-- ============================================================ -->
+      <!-- الحسابات - Accounts -->
+      <!-- ============================================================ -->
+      <div id="page-accounts" class="page">
+        <div class="page-header-bar">
+          <h3>🏦 الحسابات</h3>
+          <div class="page-actions">
+            <button class="btn-primary" onclick="openExpenseModal()">+ إضافة مصروف</button>
+          </div>
+        </div>
+
+        <div class="archive-tabs-bar"
+          style="margin-bottom:20px; background:var(--bg-card); padding:10px; border-radius:var(--radius-md);">
+          <button class="archive-tab active" onclick="switchAccountsTab('summary', this)">📊 الملخص</button>
+          <button class="archive-tab" onclick="switchAccountsTab('revenues', this)">💰 الإيرادات</button>
+          <button class="archive-tab" onclick="switchAccountsTab('expenses', this)">💸 المصروفات</button>
+          <button class="archive-tab" onclick="switchAccountsTab('cashbox', this)">🏧 الصندوق</button>
+          <button class="archive-tab" onclick="switchAccountsTab('pnl', this)">📈 الأرباح والخسائر</button>
+          <button class="archive-tab" onclick="switchAccountsTab('journal', this)">📒 القيود اليومية</button>
+        </div>
+
+        <div id="accounts-tab-summary">
+          <div class="reports-stats" style="margin-bottom:20px;">
+            <div class="report-stat-card">
+              <div class="report-stat-icon">💰</div>
+              <div class="report-stat-info">
+                <span class="report-stat-label">إجمالي الإيرادات</span>
+                <span class="report-stat-value" id="acc-total-revenue">0 د.ع</span>
+              </div>
+            </div>
+            <div class="report-stat-card">
+              <div class="report-stat-icon">💸</div>
+              <div class="report-stat-info">
+                <span class="report-stat-label">إجمالي المصروفات</span>
+                <span class="report-stat-value" id="acc-total-expenses" style="color:var(--danger);">0 د.ع</span>
+              </div>
+            </div>
+            <div class="report-stat-card" style="border-right:3px solid var(--primary);">
+              <div class="report-stat-icon" style="background:var(--primary-light);color:white;">📈</div>
+              <div class="report-stat-info">
+                <span class="report-stat-label">صافي الربح</span>
+                <span class="report-stat-value" id="acc-net-profit" style="color:var(--primary);">0 د.ع</span>
+              </div>
+            </div>
+            <div class="report-stat-card">
+              <div class="report-stat-icon">🏧</div>
+              <div class="report-stat-info">
+                <span class="report-stat-label">رصيد الصندوق</span>
+                <span class="report-stat-value" id="acc-cashbox">0 د.ع</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="accounts-tab-revenues" style="display:none;">
+          <div class="products-table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>التاريخ</th>
+                  <th>المصدر</th>
+                  <th>المبلغ</th>
+                  <th>الملاحظة</th>
+                </tr>
+              </thead>
+              <tbody id="acc-revenues-tbody">
+                <tr>
+                  <td colspan="4" style="text-align:center;color:var(--text-secondary);padding:40px;">لا توجد إيرادات
+                    مسجلة</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div id="accounts-tab-expenses" style="display:none;">
+          <div class="products-table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>التاريخ</th>
+                  <th>البند</th>
+                  <th>المبلغ</th>
+                  <th>الملاحظة</th>
+                  <th>إجراء</th>
+                </tr>
+              </thead>
+              <tbody id="acc-expenses-tbody">
+                <tr>
+                  <td colspan="5" style="text-align:center;color:var(--text-secondary);padding:40px;">لا توجد مصروفات
+                    مسجلة</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div id="accounts-tab-cashbox" style="display:none;">
+          <div style="text-align:center; padding:40px;">
+            <div style="font-size:60px; margin-bottom:16px;">🏧</div>
+            <h2 id="cashbox-balance-display" style="color:var(--primary); font-size:32px;">0 د.ع</h2>
+            <p style="color:var(--text-secondary);">رصيد الصندوق الحالي</p>
+            <div style="display:flex; gap:12px; justify-content:center; margin-top:20px;">
+              <button class="btn-primary" onclick="openCashInModal()">➕ إيداع نقدي</button>
+              <button class="btn-danger" onclick="openCashOutModal()">➖ سحب نقدي</button>
+            </div>
+          </div>
+        </div>
+        <div id="accounts-tab-pnl" style="display:none;">
+          <div class="products-table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>الفترة</th>
+                  <th>الإيرادات</th>
+                  <th>المصروفات</th>
+                  <th>الربح/الخسارة</th>
+                </tr>
+              </thead>
+              <tbody id="acc-pnl-tbody">
+                <tr>
+                  <td colspan="4" style="text-align:center;color:var(--text-secondary);padding:40px;">لا توجد بيانات
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div id="accounts-tab-journal" style="display:none;">
+          <div class="products-table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>التاريخ</th>
+                  <th>البيان</th>
+                  <th>مدين</th>
+                  <th>دائن</th>
+                  <th>الرصيد</th>
+                </tr>
+              </thead>
+              <tbody id="acc-journal-tbody">
+                <tr>
+                  <td colspan="5" style="text-align:center;color:var(--text-secondary);padding:40px;">لا توجد قيود</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================================ -->
+
+
+      <!-- ============================================================ -->
+      <!-- العروض والخصومات - Discounts -->
+      <!-- ============================================================ -->
+      <div id="page-discounts" class="page">
+        <div class="page-header-bar">
+          <h3>🎁 العروض والخصومات</h3>
+          <div class="page-actions">
+            <button class="btn-primary" onclick="openDiscountModal()">+ إضافة خصم</button>
+          </div>
+        </div>
+
+        <div class="archive-tabs-bar"
+          style="margin-bottom:20px; background:var(--bg-card); padding:10px; border-radius:var(--radius-md);">
+          <button class="archive-tab active" onclick="switchDiscountsTab('products', this)">🏷️ خصومات المنتجات</button>
+          <button class="archive-tab" onclick="switchDiscountsTab('bogo', this)">🎁 اشترِ واحداً واحصل على آخر</button>
+          <button class="archive-tab" onclick="switchDiscountsTab('coupons', this)">🎟️ كوبونات الخصم</button>
+        </div>
+
+        <div id="discounts-tab-products">
+          <div class="products-table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>المنتج</th>
+                  <th>نوع الخصم</th>
+                  <th>القيمة</th>
+                  <th>تاريخ الانتهاء</th>
+                  <th>الحالة</th>
+                  <th>إجراء</th>
+                </tr>
+              </thead>
+              <tbody id="discounts-products-tbody">
+                <tr>
+                  <td colspan="6" style="text-align:center;color:var(--text-secondary);padding:40px;">لا توجد خصومات على
+                    المنتجات</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div id="discounts-tab-bogo" style="display:none;">
+          <div class="page-header-bar" style="margin-bottom:15px;">
+            <span></span>
+            <button class="btn-primary" onclick="openBogoModal()">+ إضافة عرض BOGO</button>
+          </div>
+          <div class="products-table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>المنتج الخاضع للعرض</th>
+                  <th>تاريخ التفعيل</th>
+                  <th>إجراء</th>
+                </tr>
+              </thead>
+              <tbody id="discounts-bogo-tbody">
+                <tr>
+                  <td colspan="3" style="text-align:center;color:var(--text-secondary);padding:40px;">لا توجد عروض BOGO
+                    حالياً</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div id="discounts-tab-coupons" style="display:none;">
+          <div class="page-header-bar" style="margin-bottom:15px;">
+            <span></span>
+            <button class="btn-primary" onclick="openCouponModal()">+ إضافة كوبون</button>
+          </div>
+          <div class="products-table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>كود الكوبون</th>
+                  <th>نوع الخصم</th>
+                  <th>القيمة</th>
+                  <th>الاستخدامات</th>
+                  <th>تاريخ الانتهاء</th>
+                  <th>إجراء</th>
+                </tr>
+              </thead>
+              <tbody id="discounts-coupons-tbody">
+                <tr>
+                  <td colspan="6" style="text-align:center;color:var(--text-secondary);padding:40px;">لا توجد كوبونات
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================================ -->
+      <!-- الباركود - Barcode -->
+      <!-- ============================================================ -->
+      <div id="page-barcode" class="page">
+        <div class="page-header-bar">
+          <h3>📷 إدارة الباركود</h3>
+        </div>
+
+        <div class="archive-tabs-bar"
+          style="margin-bottom:20px; background:var(--bg-card); padding:10px; border-radius:var(--radius-md);">
+          <button class="archive-tab active" onclick="switchBarcodeTab('generate', this)">🔢 إنشاء باركود</button>
+          <button class="archive-tab" onclick="switchBarcodeTab('labels', this)">🏷️ طباعة الملصقات</button>
+          <button class="archive-tab" onclick="switchBarcodeTab('scanner', this)">📷 قارئ الباركود</button>
+        </div>
+
+        <div id="barcode-tab-generate">
+          <div class="settings-container">
+            <div class="settings-card">
+              <h4>🔢 إنشاء باركود جديد</h4>
+              <div class="settings-form">
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>اختر المنتج</label>
+                    <select id="barcode-product-select"
+                      style="width:100%;padding:10px;border-radius:var(--radius-sm);border:1px solid var(--border-color);background:var(--bg-secondary);color:var(--text-primary);"
+                      onchange="generateBarcodePreview()"></select>
+                  </div>
+                  <div class="form-group">
+                    <label>أو أدخل رقماً يدوياً</label>
+                    <div style="display:flex; gap:6px;">
+                      <input type="text" id="barcode-manual-input" placeholder="مثال: 1234567890"
+                        oninput="generateBarcodePreview()" style="flex:1;">
+                      <button type="button" class="btn-outline"
+                        style="padding:6px 12px; border-radius:var(--radius-sm); border:1px solid var(--border-color); cursor:pointer;"
+                        onclick="openGlobalScanner('barcode-manual-input', (code) => { generateBarcodePreview(); })"
+                        title="مسح باركود بالكاميرا">📷</button>
+                    </div>
+                  </div>
+                </div>
+                <div id="barcode-preview-area"
+                  style="text-align:center; padding:30px; background:white; border-radius:var(--radius-md); margin-top:16px; min-height:120px; border:2px dashed var(--border-color);">
+                  <p style="color:#999;">اختر منتجاً أو أدخل رقماً لعرض الباركود</p>
+                </div>
+                <div style="display:flex; gap:12px; margin-top:16px;">
+                  <button class="btn-primary" onclick="printBarcodeLabel()">🖨️ طباعة الملصق</button>
+                  <button class="btn-secondary" onclick="downloadBarcode()"
+                    style="background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border-color);">⬇️
+                    تحميل</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="barcode-tab-labels" style="display:none;">
+          <div class="settings-container">
+            <div class="settings-card">
+              <h4>🏷️ طباعة ملصقات الأسعار</h4>
+              <div class="settings-form">
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>اختر المنتجات</label>
+                    <select id="label-product-select"
+                      style="width:100%;padding:10px;border-radius:var(--radius-sm);border:1px solid var(--border-color);background:var(--bg-secondary);color:var(--text-primary);"></select>
+                  </div>
+                  <div class="form-group">
+                    <label>عدد الملصقات</label>
+                    <input type="number" id="label-qty" placeholder="1" min="1" value="1">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>حجم الملصق</label>
+                  <select id="label-size"
+                    style="width:100%;padding:10px;border-radius:var(--radius-sm);border:1px solid var(--border-color);background:var(--bg-secondary);color:var(--text-primary);">
+                    <option value="small">صغير (58mm)</option>
+                    <option value="medium" selected>متوسط (80mm)</option>
+                    <option value="large">كبير (A4)</option>
+                  </select>
+                </div>
+                <button class="btn-primary" onclick="printPriceLabels()">🖨️ طباعة الملصقات</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="barcode-tab-scanner" style="display:none;">
+          <div style="text-align:center; padding:40px;">
+            <div style="font-size:60px; margin-bottom:16px;">📷</div>
+            <h3>قارئ الباركود الذكي</h3>
+            <p style="color:var(--text-secondary); margin-bottom: 20px;">امسح الباركود باستخدام قارئ خارجي أو كاميرا
+              الجهاز مباشرة</p>
+
+            <div style="margin-bottom: 20px;">
+              <button class="btn-primary" id="btn-toggle-camera" onclick="toggleCameraScanner()">📹 تشغيل كاميرا الجهاز
+                للمسح</button>
+            </div>
+
+            <div id="camera-scan-container"
+              style="display:none; margin: 15px auto; max-width: 400px; border-radius: var(--radius-md); overflow:hidden; border:2px solid var(--primary); position:relative;">
+              <video id="scanner-video" style="width:100%; height:auto; display:block; background:#000;"
+                playsinline></video>
+              <div
+                style="position:absolute; top:0; left:0; width:100%; height:2px; background:var(--success); box-shadow: 0 0 10px var(--success); animation: radarSweep 2s infinite linear;">
+              </div>
+            </div>
+
+            <div
+              style="margin:20px auto; max-width:400px; padding:20px; background:var(--bg-secondary); border-radius:var(--radius-md); border:1px solid var(--border-color);">
+              <input type="text" id="barcode-scanner-input" placeholder="امسح الباركود هنا..."
+                style="width:100%; padding:12px; font-size:18px; text-align:center; border:2px solid var(--primary); border-radius:var(--radius-sm); background:transparent; color:var(--text-primary);"
+                oninput="lookupScannedBarcode(this.value)" autofocus>
+            </div>
+            <div id="barcode-scan-result"
+              style="margin-top:20px; max-width: 400px; margin-left: auto; margin-right: auto;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================================ -->
+      <!-- الطباعة - Printing -->
+      <!-- ============================================================ -->
+      <div id="page-printing" class="page">
+        <div class="page-header-bar">
+          <h3>🖨️ إعدادات الطباعة</h3>
+        </div>
+
+        <div class="settings-container">
+          <div class="settings-card">
+            <h4>🧾 فاتورة حرارية</h4>
+            <div class="settings-form">
+              <div class="form-group">
+                <label>حجم الورق</label>
+                <select id="print-paper-size"
+                  style="width:100%;padding:10px;border-radius:var(--radius-sm);border:1px solid var(--border-color);background:var(--bg-secondary);color:var(--text-primary);">
+                  <option value="58">58 ملم (صغير)</option>
+                  <option value="80" selected>80 ملم (متوسط)</option>
+                  <option value="a4">A4</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>عدد نسخ الفاتورة</label>
+                <input type="number" id="print-copies" placeholder="1" min="1" max="5" value="1">
+              </div>
+              <div class="form-group">
+                <label style="display:flex;align-items:center;gap:8px;">
+                  <input type="checkbox" id="print-show-logo" checked> إظهار الشعار
+                </label>
+              </div>
+              <div class="form-group">
+                <label style="display:flex;align-items:center;gap:8px;">
+                  <input type="checkbox" id="print-show-barcode"> طباعة الباركود على الفاتورة
+                </label>
+              </div>
+              <div class="form-group">
+                <label style="display:flex;align-items:center;gap:8px;">
+                  <input type="checkbox" id="print-auto-print"> طباعة تلقائية بعد البيع
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="settings-card">
+            <h4>🖨️ إعدادات الطابعة</h4>
+            <div class="settings-form">
+              <div class="form-group">
+                <label>نوع الطابعة</label>
+                <select id="printer-type"
+                  style="width:100%;padding:10px;border-radius:var(--radius-sm);border:1px solid var(--border-color);background:var(--bg-secondary);color:var(--text-primary);">
+                  <option value="browser">طباعة المتصفح (افتراضي)</option>
+                  <option value="thermal">طابعة حرارية USB/Bluetooth</option>
+                  <option value="network">طابعة شبكية</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>اختبار الطباعة</label>
+                <button class="btn-primary" onclick="testPrint()">🖨️ طباعة صفحة اختبار</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="settings-actions">
+            <button class="btn-primary" onclick="savePrintSettings()">💾 حفظ إعدادات الطباعة</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================================ -->
+      <!-- الإشعارات - Notifications Page -->
+      <!-- ============================================================ -->
+      <div id="page-notifications" class="page">
+        <div class="page-header-bar">
+          <h3>🔔 الإشعارات والتنبيهات</h3>
+          <div class="page-actions">
+            <button class="btn-secondary" onclick="markAllNotificationsRead()"
+              style="background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border-color);">✅
+              تعليم الكل كمقروء</button>
+          </div>
+        </div>
+
+        <div class="inventory-stats" style="margin-bottom:20px;">
+          <div class="inv-stat-card warning">
+            <span class="inv-stat-icon">⚠️</span>
+            <div>
+              <span class="inv-stat-value" id="notif-low-stock-count">0</span>
+              <span class="inv-stat-label">نقص مخزون</span>
+            </div>
+          </div>
+          <div class="inv-stat-card danger">
+            <span class="inv-stat-icon">📅</span>
+            <div>
+              <span class="inv-stat-value" id="notif-expiry-count">0</span>
+              <span class="inv-stat-label">انتهاء صلاحية</span>
+            </div>
+          </div>
+          <div class="inv-stat-card">
+            <span class="inv-stat-icon">💳</span>
+            <div>
+              <span class="inv-stat-value" id="notif-debt-count">0</span>
+              <span class="inv-stat-label">ديون مستحقة</span>
+            </div>
+          </div>
+        </div>
+
+        <div id="notifications-page-list" style="display:flex; flex-direction:column; gap:12px;"></div>
+
+        <div id="notifications-page-empty"
+          style="text-align:center; padding:60px; color:var(--text-secondary); display:none;">
+          <div style="font-size:50px; margin-bottom:16px;">🔔</div>
+          <p>لا توجد إشعارات حالياً</p>
+        </div>
+      </div>
+
+      <!-- ============================================================ -->
+      <!-- النسخ الاحتياطي - Backup -->
+      <!-- ============================================================ -->
+      <div id="page-backup" class="page">
+        <div class="page-header-bar">
+          <h3>💾 النسخ الاحتياطي والاستعادة</h3>
+        </div>
+
+        <div class="settings-container">
+          <div class="settings-card">
+            <h4>💾 إنشاء نسخة احتياطية</h4>
+            <div class="settings-form">
+              <p style="color:var(--text-secondary); margin-bottom:16px;">قم بحفظ نسخة احتياطية كاملة من بيانات النظام
+                (المنتجات، الفواتير، العملاء، الإعدادات)</p>
+              <div style="display:flex; gap:12px; flex-wrap:wrap;">
+                <button class="btn-primary" onclick="createBackup()">📥 تحميل نسخة احتياطية (JSON)</button>
+                <button class="btn-primary" style="background:linear-gradient(135deg,#059669,#047857);"
+                  onclick="exportToExcel()">📊 تصدير إلى Excel (CSV)</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="settings-card">
+            <h4>📤 استعادة البيانات</h4>
+            <div class="settings-form">
+              <p style="color:var(--text-secondary); margin-bottom:16px;">⚠️ تحذير: استعادة البيانات ستحل محل جميع
+                البيانات الحالية</p>
+              <div class="form-group">
+                <label>اختر ملف النسخة الاحتياطية</label>
+                <input type="file" id="backup-file-input" accept=".json"
+                  style="padding:10px; border:1px solid var(--border-color); border-radius:var(--radius-sm); width:100%;"
+                  onchange="previewBackupFile(event)">
+              </div>
+              <div id="backup-preview"
+                style="display:none; padding:12px; background:rgba(0,200,150,0.1); border-radius:var(--radius-sm); margin-bottom:16px;">
+              </div>
+              <button class="btn-danger" onclick="restoreBackup()">📤 استعادة البيانات</button>
+            </div>
+          </div>
+
+          <div class="settings-card">
+            <h4>🔄 النسخ الاحتياطي التلقائي</h4>
+            <div class="settings-form">
+              <div class="form-group">
+                <label style="display:flex;align-items:center;gap:8px;">
+                  <input type="checkbox" id="auto-backup-enabled" onchange="toggleAutoBackup()"> تفعيل النسخ الاحتياطي
+                  التلقائي
+                </label>
+              </div>
+              <div class="form-group">
+                <label>تكرار النسخ الاحتياطي</label>
+                <select id="auto-backup-interval"
+                  style="width:100%;padding:10px;border-radius:var(--radius-sm);border:1px solid var(--border-color);background:var(--bg-secondary);color:var(--text-primary);">
+                  <option value="daily">يومياً</option>
+                  <option value="weekly">أسبوعياً</option>
+                  <option value="monthly">شهرياً</option>
+                </select>
+              </div>
+              <div id="last-backup-info" style="color:var(--text-secondary); font-size:13px; margin-top:8px;">آخر نسخة
+                احتياطية: لم يتم إنشاء نسخة بعد</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================================ -->
+      <!-- سجل العمليات - Activity Log -->
+      <!-- ============================================================ -->
+      <div id="page-activitylog" class="page">
+        <div class="page-header-bar">
+          <h3>📋 سجل العمليات</h3>
+          <div class="page-actions">
+            <input type="text" class="search-input" placeholder="🔍 ابحث في السجل..."
+              oninput="searchActivityLog(this.value)">
+            <button class="btn-danger" onclick="clearActivityLog()" style="background:var(--danger);">🗑️ مسح
+              السجل</button>
+          </div>
+        </div>
+
+        <div class="archive-tabs-bar"
+          style="margin-bottom:20px; background:var(--bg-card); padding:10px; border-radius:var(--radius-md);">
+          <button class="archive-tab active" onclick="switchActivityTab('all', this)">📋 جميع العمليات</button>
+          <button class="archive-tab" onclick="switchActivityTab('sales', this)">💰 المبيعات</button>
+          <button class="archive-tab" onclick="switchActivityTab('products', this)">📦 المنتجات</button>
+          <button class="archive-tab" onclick="switchActivityTab('logins', this)">🔑 تسجيل الدخول</button>
+        </div>
+
+        <div class="products-table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>التاريخ والوقت</th>
+                <th>المستخدم</th>
+                <th>نوع العملية</th>
+                <th>التفاصيل</th>
+              </tr>
+            </thead>
+            <tbody id="activity-log-tbody">
+              <tr>
+                <td colspan="4" style="text-align:center;color:var(--text-secondary);padding:40px;">لا توجد سجلات عمليات
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
 
       <!-- Settings Page -->
       <div id="page-settings" class="page">
@@ -871,6 +2236,14 @@
               <div class="form-group">
                 <label>رقم الهاتف</label>
                 <input type="text" id="s-store-phone" placeholder="رقم الهاتف">
+              </div>
+              <div class="form-group">
+                <label>اللغة / Language</label>
+                <select id="s-language" onchange="changeLanguage(this.value)">
+                  <option value="ar">العربية (Arabic)</option>
+                  <option value="en">English</option>
+                  <option value="ku">Kurdî (كردية)</option>
+                </select>
               </div>
             </div>
           </div>
@@ -958,7 +2331,8 @@
       <div class="modal-body">
         <input type="hidden" id="rm-inv-id">
         <div id="return-items-list" style="max-height: 300px; overflow-y: auto;"></div>
-        <div style="display:flex; justify-content:space-between; margin-top: 15px; font-weight: bold; border-top: 1px solid var(--border); padding-top: 10px;">
+        <div
+          style="display:flex; justify-content:space-between; margin-top: 15px; font-weight: bold; border-top: 1px solid var(--border); padding-top: 10px;">
           <span>إجمالي مبلغ الاسترجاع:</span>
           <span id="return-total-amount" style="color: var(--danger)">0 د.ع</span>
         </div>
@@ -1024,7 +2398,10 @@
             <label>الباركود <span class="required">*</span></label>
             <div class="input-with-btn">
               <input type="text" id="pm-barcode" placeholder="أدخل الباركود">
-              <button onclick="generateBarcode()">توليد</button>
+              <button type="button" class="btn-outline"
+                style="padding:6px 12px; border-radius:var(--radius-sm); border:1px solid var(--border-color); cursor:pointer;"
+                onclick="openGlobalScanner('pm-barcode')" title="مسح باركود بالكاميرا">📷 مسح</button>
+              <button type="button" onclick="generateBarcode()">توليد</button>
             </div>
           </div>
           <div class="form-group">
@@ -1054,8 +2431,10 @@
         </div>
 
         <!-- Bag Calculator Section -->
-        <div id="bag-calculator-section" style="display:none; background: rgba(0,200,150,0.05); border: 1px dashed var(--primary); padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-          <h4 style="margin-top:0; margin-bottom:10px; color:var(--primary); font-size:14px;">📦 حاسبة الأكياس / الجملة (اختياري)</h4>
+        <div id="bag-calculator-section"
+          style="display:none; background: rgba(0,200,150,0.05); border: 1px dashed var(--primary); padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+          <h4 style="margin-top:0; margin-bottom:10px; color:var(--primary); font-size:14px;">📦 حاسبة الأكياس / الجملة
+            (اختياري)</h4>
           <div class="form-row" style="margin-bottom:10px;">
             <div class="form-group">
               <label style="font-size:12px;">وزن الكيس (كيلو)</label>
@@ -1076,7 +2455,8 @@
               <input type="number" id="bc-price" placeholder="مثال: 28000" min="0" oninput="calculateBag()">
             </div>
           </div>
-          <small style="color:var(--text-muted); display:block; margin-top:8px;">* سيتم حساب سعر الكيلو الإفرادي والمخزون الكلي (بالكيلو) تلقائياً بالأسفل.</small>
+          <small style="color:var(--text-muted); display:block; margin-top:8px;">* سيتم حساب سعر الكيلو الإفرادي
+            والمخزون الكلي (بالكيلو) تلقائياً بالأسفل.</small>
         </div>
         <div class="form-row">
           <div class="form-group">
@@ -1435,6 +2815,478 @@
   </div>
 
 
+
+  <!-- Purchase Invoice Modal -->
+  <div class="modal-overlay" id="purchase-invoice-modal" style="display:none;">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>📄 فاتورة شراء جديدة</h3>
+        <button class="modal-close" onclick="closeModal('purchase-invoice-modal')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-row">
+          <div class="form-group">
+            <label>المورد <span class="required">*</span></label>
+            <select id="pim-supplier"
+              style="width:100%; padding:10px; border-radius:var(--radius-sm); border:1px solid var(--border-color); background:var(--bg-secondary); color:var(--text-primary);"></select>
+          </div>
+          <div class="form-group">
+            <label>المنتج <span class="required">*</span></label>
+            <select id="pim-product"
+              style="width:100%; padding:10px; border-radius:var(--radius-sm); border:1px solid var(--border-color); background:var(--bg-secondary); color:var(--text-primary);"></select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>الكمية المشتراة <span class="required">*</span></label>
+            <input type="number" id="pim-qty" placeholder="0" min="1">
+          </div>
+          <div class="form-group">
+            <label>سعر الشراء الفردي (د.ع) <span class="required">*</span></label>
+            <input type="number" id="pim-cost" placeholder="0" min="0">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>سعر البيع الفردي الجديد (د.ع) <span class="required">*</span></label>
+            <input type="number" id="pim-price" placeholder="0" min="0">
+          </div>
+          <div class="form-group">
+            <label>المستودع <span class="required">*</span></label>
+            <select id="pim-warehouse"
+              style="width:100%; padding:10px; border-radius:var(--radius-sm); border:1px solid var(--border-color); background:var(--bg-secondary); color:var(--text-primary);"></select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>تاريخ الصلاحية (اختياري)</label>
+            <input type="date" id="pim-expiry">
+          </div>
+          <div class="form-group">
+            <label>المبلغ المدفوع للمورد (د.ع)</label>
+            <input type="number" id="pim-paid" placeholder="0" min="0">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeModal('purchase-invoice-modal')">إلغاء</button>
+        <button class="btn-primary" onclick="submitPurchaseInvoice()">💾 حفظ الفاتورة</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Supplier Return Modal -->
+  <div class="modal-overlay" id="supplier-return-modal" style="display:none;">
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <h3>↩️ مرتجع إلى مورد</h3>
+        <button class="modal-close" onclick="closeModal('supplier-return-modal')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>المورد <span class="required">*</span></label>
+          <select id="srm-supplier" style="width:100%; padding:10px;" onchange="updateSRMProducts()"></select>
+        </div>
+        <div class="form-group">
+          <label>المنتج المرتجع <span class="required">*</span></label>
+          <select id="srm-product" style="width:100%; padding:10px;"></select>
+        </div>
+        <div class="form-group">
+          <label>الكمية المرتجعة <span class="required">*</span></label>
+          <input type="number" id="srm-qty" placeholder="0" min="1">
+        </div>
+        <div class="form-group">
+          <label>المبلغ المرتجع نقداً أو مقاصة دين (د.ع)</label>
+          <input type="number" id="srm-amount" placeholder="0" min="0">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeModal('supplier-return-modal')">إلغاء</button>
+        <button class="btn-primary" onclick="submitSupplierReturn()">تأكيد المرتجع</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Supplier Payment Modal -->
+  <div class="modal-overlay" id="supplier-payment-modal" style="display:none;">
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <h3>💸 دفعة لمورد</h3>
+        <button class="modal-close" onclick="closeModal('supplier-payment-modal')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>المورد <span class="required">*</span></label>
+          <select id="spm-supplier" style="width:100%; padding:10px;" onchange="updateSPMRemaining()"></select>
+        </div>
+        <div class="form-group">
+          <label>الدين المتبقي للمورد:</label>
+          <div class="debt-remaining-display" id="spm-remaining-debt" style="color:var(--danger);">0 د.ع</div>
+        </div>
+        <div class="form-group">
+          <label>المبلغ المدفوع (د.ع) <span class="required">*</span></label>
+          <input type="number" id="spm-amount" placeholder="0" min="1">
+        </div>
+        <div class="form-group">
+          <label>الدفع من <span class="required">*</span></label>
+          <select id="spm-account"
+            style="width:100%; padding:10px; border-radius:var(--radius-sm); border:1px solid var(--border-color); background:var(--bg-secondary); color:var(--text-primary);">
+            <option value="cashbox">الصندوق (نقداً)</option>
+            <option value="bank">البنك (تحويل/بطاقة)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>ملاحظة</label>
+          <input type="text" id="spm-note" placeholder="مثال: تسديد دفعة من الحساب">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeModal('supplier-payment-modal')">إلغاء</button>
+        <button class="btn-primary" onclick="submitSupplierPayment()">✅ تسجيل الدفعة</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quote Modal -->
+  <div class="modal-overlay" id="quote-modal" style="display:none;">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>📄 عرض سعر جديد</h3>
+        <button class="modal-close" onclick="closeModal('quote-modal')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>العميل المستهدف (اختياري)</label>
+          <select id="qm-customer" style="width:100%; padding:10px;"></select>
+        </div>
+        <div class="form-group">
+          <label>اختر المنتجات المراد إضافتها لعرض السعر</label>
+          <select id="qm-product-select" style="width:100%; padding:10px; margin-bottom:10px;"
+            onchange="addQuoteItem()"></select>
+        </div>
+        <div class="products-table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>المنتج</th>
+                <th>سعر العرض (د.ع)</th>
+                <th>الكمية</th>
+                <th>الإجمالي</th>
+                <th>إجراء</th>
+              </tr>
+            </thead>
+            <tbody id="qm-items-tbody"></tbody>
+          </table>
+        </div>
+        <div style="text-align:left; font-weight:700; font-size:16px; margin-top:15px;" id="qm-total-display">
+          إجمالي العرض: 0 د.ع
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeModal('quote-modal')">إلغاء</button>
+        <button class="btn-primary" onclick="submitQuote()">💾 حفظ وطباعة عرض السعر</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reservation Modal -->
+  <div class="modal-overlay" id="reservation-modal" style="display:none;">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>📌 حجز طلبية جديد</h3>
+        <button class="modal-close" onclick="closeModal('reservation-modal')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-row">
+          <div class="form-group">
+            <label>العميل <span class="required">*</span></label>
+            <select id="res-customer" style="width:100%; padding:10px;"></select>
+          </div>
+          <div class="form-group">
+            <label>المنتج المراد حجزه</label>
+            <select id="res-product-select" style="width:100%; padding:10px;" onchange="addReservationItem()"></select>
+          </div>
+        </div>
+        <div class="products-table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>المنتج</th>
+                <th>سعر البيع (د.ع)</th>
+                <th>الكمية</th>
+                <th>الإجمالي</th>
+                <th>إجراء</th>
+              </tr>
+            </thead>
+            <tbody id="res-items-tbody"></tbody>
+          </table>
+        </div>
+        <div class="form-row" style="margin-top:15px;">
+          <div class="form-group">
+            <label>مبلغ العربون المدفوع (د.ع)</label>
+            <input type="number" id="res-deposit" placeholder="0" min="0">
+          </div>
+          <div class="form-group">
+            <label>تاريخ التسليم المتوقع</label>
+            <input type="date" id="res-date">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeModal('reservation-modal')">إلغاء</button>
+        <button class="btn-primary" onclick="submitReservation()">💾 تثبيت الحجز</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stock Transfer Modal -->
+  <div class="modal-overlay" id="transfer-modal" style="display:none;">
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <h3>🏭 تحويل مخزوني بين المستودعات</h3>
+        <button class="modal-close" onclick="closeModal('transfer-modal')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>المنتج <span class="required">*</span></label>
+          <select id="tm-product" style="width:100%; padding:10px;" onchange="updateTMPendingQty()"></select>
+        </div>
+        <div class="form-group">
+          <label>من مستودع <span class="required">*</span></label>
+          <select id="tm-from-warehouse" style="width:100%; padding:10px;" onchange="updateTMPendingQty()"></select>
+        </div>
+        <div class="form-group">
+          <label>إلى مستودع <span class="required">*</span></label>
+          <select id="tm-to-warehouse" style="width:100%; padding:10px;"></select>
+        </div>
+        <div class="form-group">
+          <label>الكمية المتاحة في المصدر:</label>
+          <div class="debt-remaining-display" id="tm-available-qty" style="color:var(--success);">0</div>
+        </div>
+        <div class="form-group">
+          <label>الكمية المحولة <span class="required">*</span></label>
+          <input type="number" id="tm-qty" placeholder="0" min="1">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeModal('transfer-modal')">إلغاء</button>
+        <button class="btn-primary" onclick="submitStockTransfer()">✅ تنفيذ التحويل</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Expense Modal -->
+  <div class="modal-overlay" id="expense-modal" style="display:none;">
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <h3>💸 إضافة مصروف جديد</h3>
+        <button class="modal-close" onclick="closeModal('expense-modal')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>بند المصروف <span class="required">*</span></label>
+          <input type="text" id="exm-item" placeholder="مثال: فاتورة كهرباء، إيجار">
+        </div>
+        <div class="form-group">
+          <label>المبلغ (د.ع) <span class="required">*</span></label>
+          <input type="number" id="exm-amount" placeholder="0" min="1">
+        </div>
+        <div class="form-group">
+          <label>الحساب الدائن <span class="required">*</span></label>
+          <select id="exm-account"
+            style="width:100%; padding:10px; border-radius:var(--radius-sm); border:1px solid var(--border-color); background:var(--bg-secondary); color:var(--text-primary);">
+            <option value="cashbox">الصندوق (نقداً)</option>
+            <option value="bank">البنك (تحويل/بطاقة)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>ملاحظة</label>
+          <input type="text" id="exm-note" placeholder="ملاحظة إضافية">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeModal('expense-modal')">إلغاء</button>
+        <button class="btn-primary" onclick="submitExpense()">💾 حفظ المصروف</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Supplier Form Modal -->
+  <div class="modal-overlay" id="supplier-form-modal" style="display:none;">
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <h3 id="supplier-modal-title">🚚 إضافة مورد جديد</h3>
+        <button class="modal-close" onclick="closeModal('supplier-form-modal')">✕</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="sf-id">
+        <div class="form-group">
+          <label>اسم المورد <span class="required">*</span></label>
+          <input type="text" id="sf-name" placeholder="أدخل اسم المورد">
+        </div>
+        <div class="form-group">
+          <label>رقم الهاتف</label>
+          <input type="text" id="sf-phone" placeholder="أدخل رقم الهاتف">
+        </div>
+        <div class="form-group">
+          <label>اسم الشركة</label>
+          <input type="text" id="sf-company" placeholder="أدخل اسم الشركة">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeModal('supplier-form-modal')">إلغاء</button>
+        <button class="btn-primary" onclick="submitSupplierForm()">💾 حفظ</button>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- Cash Deposit Modal -->
+  <div class="modal-overlay" id="cash-deposit-modal" style="display:none;">
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <h3 id="cash-deposit-title">💸 إيداع نقدي</h3>
+        <button class="modal-close" onclick="closeModal('cash-deposit-modal')">✕</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="cdm-type" value="in"> <!-- in or out -->
+        <div class="form-group">
+          <label>المبلغ (د.ع) <span class="required">*</span></label>
+          <input type="number" id="cdm-amount" placeholder="0" min="1">
+        </div>
+        <div class="form-group">
+          <label>ملاحظة</label>
+          <input type="text" id="cdm-note" placeholder="أدخل تفاصيل الإيداع/السحب">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeModal('cash-deposit-modal')">إلغاء</button>
+        <button class="btn-primary" onclick="submitCashOperation()">✅ تأكيد</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Discount Form Modal -->
+  <div class="modal-overlay" id="discount-form-modal" style="display:none;">
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <h3 id="discount-modal-title">🎁 إضافة عرض/خصم جديد</h3>
+        <button class="modal-close" onclick="closeModal('discount-form-modal')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>المنتج المستهدف <span class="required">*</span></label>
+          <select id="df-product"
+            style="width:100%; padding:10px; border-radius:var(--radius-sm); border:1px solid var(--border-color); background:var(--bg-secondary); color:var(--text-primary);"></select>
+        </div>
+        <div class="form-group">
+          <label>نوع العرض</label>
+          <select id="df-type"
+            style="width:100%; padding:10px; border-radius:var(--radius-sm); border:1px solid var(--border-color); background:var(--bg-secondary); color:var(--text-primary);"
+            onchange="toggleDiscountFields(this.value)">
+            <option value="percent">خصم نسبة مئوية (%)</option>
+            <option value="fixed">خصم مبلغ ثابت (د.ع)</option>
+            <option value="bogo">اشتري 1 واحصل على 1 مجاناً (BOGO)</option>
+          </select>
+        </div>
+        <div class="form-group" id="df-value-group">
+          <label>قيمة الخصم <span class="required">*</span></label>
+          <input type="number" id="df-value" placeholder="0" min="1">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeModal('discount-form-modal')">إلغاء</button>
+        <button class="btn-primary" onclick="submitDiscountForm()">💾 حفظ العرض</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Coupon Form Modal -->
+  <div class="modal-overlay" id="coupon-form-modal" style="display:none;">
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <h3>🎫 إضافة كوبون خصم جديد</h3>
+        <button class="modal-close" onclick="closeModal('coupon-form-modal')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>رمز الكوبون (كود) <span class="required">*</span></label>
+          <input type="text" id="cf-code" placeholder="مثال: SAVE20" style="text-transform: uppercase;">
+        </div>
+        <div class="form-group">
+          <label>نوع الخصم</label>
+          <select id="cf-type"
+            style="width:100%; padding:10px; border-radius:var(--radius-sm); border:1px solid var(--border-color); background:var(--bg-secondary); color:var(--text-primary);">
+            <option value="percent">نسبة مئوية (%)</option>
+            <option value="fixed">مبلغ ثابت (د.ع)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>قيمة الخصم <span class="required">*</span></label>
+          <input type="number" id="cf-value" placeholder="0" min="1">
+        </div>
+        <div class="form-group">
+          <label>الحد الأقصى للاستخدام</label>
+          <input type="number" id="cf-max-uses" placeholder="غير محدود" min="1">
+        </div>
+        <div class="form-group">
+          <label>تاريخ الانتهاء</label>
+          <input type="date" id="cf-expiry">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeModal('coupon-form-modal')">إلغاء</button>
+        <button class="btn-primary" onclick="submitCouponForm()">💾 إضافة الكوبون</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Barcode Simulation Modal -->
+  <div class="modal-overlay" id="barcode-simulation-modal" style="display:none;">
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <h3>📷 محاكاة قارئ الباركود</h3>
+        <button class="modal-close" onclick="closeModal('barcode-simulation-modal')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>أدخل الباركود يدوياً</label>
+          <input type="text" id="bsm-barcode" placeholder="أدخل الرقم المراد قراءته">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeModal('barcode-simulation-modal')">إلغاء</button>
+        <button class="btn-primary" onclick="submitBarcodeSimulation()">🔍 قراءة الباركود</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Global Camera Barcode Scanner Modal -->
+  <div class="modal-overlay" id="global-scanner-modal" style="display:none; z-index:3000;">
+    <div class="modal modal-sm" style="max-width: 450px;">
+      <div class="modal-header">
+        <h3>📹 قارئ الباركود بالكاميرا</h3>
+        <button class="modal-close" onclick="closeGlobalScanner()">✕</button>
+      </div>
+      <div class="modal-body" style="text-align: center;">
+        <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 12px;">وجّه كاميرا الهاتف نحو الباركود
+          للمسح التلقائي</p>
+        <div
+          style="position: relative; width: 100%; aspect-ratio: 4/3; background: #000; border-radius: 12px; overflow: hidden; margin-bottom: 15px; border: 2px solid var(--primary);">
+          <video id="global-scanner-video" autoplay playsinline
+            style="width: 100%; height: 100%; object-fit: cover;"></video>
+          <!-- خط رادار المسح -->
+          <div
+            style="position: absolute; left: 0; right: 0; height: 3px; background: #00c896; box-shadow: 0 0 8px #00c896; animation: radarSweep 2s infinite;">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" style="width: 100%;" onclick="closeGlobalScanner()">إلغاء</button>
+      </div>
+    </div>
+  </div>
 
   <!-- Toast -->
   <div id="toast-container"></div>

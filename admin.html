@@ -768,7 +768,18 @@
       }
 
       .ah {
-        padding: 12px 14px
+        padding: 16px 14px;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 12px;
+      }
+
+      .ah-actions {
+        flex-wrap: wrap;
+        justify-content: center;
+        width: 100%;
+        gap: 6px !important;
       }
     }
 
@@ -782,8 +793,12 @@
         font-size: 16px
       }
 
+      .lb {
+        padding: 32px 20px;
+      }
+
       .mg {
-        padding: 12px
+        padding: 12px;
       }
     }
 
@@ -795,6 +810,40 @@
 
     body.dark-mode #ls {
       background: radial-gradient(ellipse at top, #1a1a3e 0%, #0f0f1a 60%)
+    }
+
+    /* Toast Notification */
+    #admin-toast-container {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: var(--card);
+      color: var(--txt);
+      border: 2px solid var(--p);
+      padding: 14px 28px;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      z-index: 2500;
+      font-weight: 700;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s;
+      opacity: 0;
+      pointer-events: none;
+    }
+    #admin-toast-container.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+    #admin-toast-container.success {
+      border-color: var(--p);
+    }
+    #admin-toast-container.error {
+      border-color: var(--danger);
     }
   </style>
 </head>
@@ -819,10 +868,11 @@
           <h2>لوحة الإدارة</h2><span>مرحباً، المسؤول الرئيسي</span>
         </div>
       </div>
-      <div style="display:flex;gap:8px;align-items:center">
+      <div class="ah-actions" style="display:flex;gap:8px;align-items:center">
         <div class="lv">
           <div class="ld"></div>مباشر
         </div>
+        <button class="br" onclick="openAdminEmployeesModal()">👥 الموظفون</button>
         <button class="br" id="theme-toggle-btn" onclick="toggleAdminTheme()" title="تبديل الوضع">🌙 داكن</button>
         <button class="br" onclick="ra()">&#x1F504; تحديث</button>
         <button class="bx" onclick="dlo()">خروج</button>
@@ -902,6 +952,150 @@
       </div>
     </div>
   </div>
+  <!-- Modal for Admin Employees Control -->
+  <div id="admin-emp-modal" style="
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.8);
+    backdrop-filter: blur(8px);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  ">
+    <div style="
+      background: var(--card);
+      border-radius: var(--r);
+      border: 1px solid var(--brd);
+      width: 100%;
+      max-width: 800px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 24px;
+      color: var(--txt);
+      position: relative;
+    ">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--brd); padding-bottom: 12px;">
+        <h2 style="font-size: 18px; font-weight: 800;">👥 إدارة الموظفين والصلاحيات</h2>
+        <button onclick="closeAdminEmployeesModal()" style="
+          background: transparent;
+          border: none;
+          color: var(--muted);
+          font-size: 24px;
+          cursor: pointer;
+        ">&times;</button>
+      </div>
+
+      <!-- Action and Grid -->
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
+        <span style="font-size: 13px; color: var(--muted);">تعديل حسابات الموظفين وتخصيص صلاحيات دخولهم لنقطة البيع.</span>
+        <button class="br" onclick="showAddEmployeeForm()" style="background: var(--p); color: #000; font-weight: 700;">+ إضافة موظف جديد</button>
+      </div>
+
+      <!-- Add/Edit Inline Form -->
+      <div id="emp-form-container" style="
+        display: none;
+        background: var(--card2);
+        border: 1px solid var(--brd);
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 20px;
+      ">
+        <h3 id="emp-form-title" style="font-size: 14px; margin-bottom: 12px; font-weight: 800;">👤 إضافة موظف</h3>
+        <input type="hidden" id="emp-edit-id">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 15px;">
+          <div>
+            <label style="font-size: 12px; color: var(--muted); display: block; margin-bottom: 4px;">الاسم الثنائي *</label>
+            <input type="text" id="emp-name" style="width: 100%; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--brd); background: var(--card); color: var(--txt); font-family: inherit;">
+          </div>
+          <div>
+            <label style="font-size: 12px; color: var(--muted); display: block; margin-bottom: 4px;">الدور الوظيفي</label>
+            <select id="emp-role" style="width: 100%; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--brd); background: var(--card); color: var(--txt); font-family: inherit;">
+              <option value="كاشير">كاشير (POS)</option>
+              <option value="مدير">مدير (Manager)</option>
+              <option value="محاسب">محاسب (Accountant)</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size: 12px; color: var(--muted); display: block; margin-bottom: 4px;">كلمة المرور (دخول)</label>
+            <input type="password" id="emp-password" style="width: 100%; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--brd); background: var(--card); color: var(--txt); font-family: inherit;">
+          </div>
+        </div>
+
+        <!-- Permissions Checkboxes -->
+        <div style="margin-bottom: 15px;">
+          <label style="font-size: 12px; color: var(--muted); display: block; margin-bottom: 6px;">صلاحيات الوصول النشطة:</label>
+          <div style="display: flex; flex-wrap: wrap; gap: 16px;">
+            <label style="display: flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer;">
+              <input type="checkbox" id="perm-pos" checked> نقطة البيع (الكاشير)
+            </label>
+            <label style="display: flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer;">
+              <input type="checkbox" id="perm-products"> إدارة المنتجات والباركود
+            </label>
+            <label style="display: flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer;">
+              <input type="checkbox" id="perm-inventory"> المخازن والمشتريات
+            </label>
+            <label style="display: flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer;">
+              <input type="checkbox" id="perm-reports"> كشوفات المالية والتقارير
+            </label>
+            <label style="display: flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer;">
+              <input type="checkbox" id="perm-settings"> الإعدادات والموظفين
+            </label>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 8px; justify-content: flex-end;">
+          <button class="br" onclick="hideEmployeeForm()" style="background: transparent;">إلغاء</button>
+          <button class="br" onclick="saveEmployeeData()" style="background: var(--p); color: #000; font-weight: 700;">حفظ البيانات</button>
+        </div>
+      </div>
+
+      <!-- Employees Grid List -->
+      <div id="admin-emp-grid" style="
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 12px;
+      "></div>
+      <div id="admin-emp-empty" style="text-align: center; padding: 40px; color: var(--muted); display: none;">
+        <div style="font-size: 40px; margin-bottom: 8px;">👥</div>
+        <p>لا يوجد موظفون مضافون حالياً</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Custom Confirm Modal -->
+  <div id="admin-confirm-modal" style="
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.8);
+    backdrop-filter: blur(8px);
+    z-index: 1100;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  ">
+    <div style="
+      background: var(--card);
+      border-radius: var(--r);
+      border: 1px solid var(--brd);
+      width: 100%;
+      max-width: 400px;
+      padding: 24px;
+      color: var(--txt);
+      text-align: center;
+    ">
+      <div style="font-size: 40px; margin-bottom: 12px;">⚠️</div>
+      <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 8px;" id="admin-confirm-title">تأكيد العملية</h3>
+      <p style="font-size: 13px; color: var(--muted); margin-bottom: 24px;" id="admin-confirm-msg">هل أنت متأكد؟</p>
+      <div style="display: flex; gap: 8px; justify-content: center;">
+        <button class="br" id="admin-confirm-cancel-btn" style="background: transparent;">إلغاء</button>
+        <button class="br" id="admin-confirm-ok-btn" style="background: var(--danger); color: white; font-weight: 700; border-color: var(--danger);">تأكيد الحذف</button>
+      </div>
+    </div>
+  </div>
+
   <script src="firebase-config.js"></script>
   <script src="firebase-sync.js" type="module"></script>
   <script>
@@ -1131,6 +1325,244 @@
         });
       }
     })();
+    // ============================================================
+    // إدارة الموظفين والصلاحيات للآدمن الرئيسي
+    // ============================================================
+    function openAdminEmployeesModal() {
+      document.getElementById('admin-emp-modal').style.display = 'flex';
+      hideEmployeeForm();
+      loadAdminEmployees();
+    }
+
+    function closeAdminEmployeesModal() {
+      document.getElementById('admin-emp-modal').style.display = 'none';
+    }
+
+    function loadAdminEmployees() {
+      const employees = JSON.parse(localStorage.getItem('pos_employees') || '[]');
+      const grid = document.getElementById('admin-emp-grid');
+      const empty = document.getElementById('admin-emp-empty');
+
+      if (employees.length === 0) {
+        grid.style.display = 'none';
+        empty.style.display = 'block';
+        return;
+      }
+
+      grid.style.display = 'grid';
+      empty.style.display = 'none';
+
+      grid.innerHTML = employees.map(emp => {
+        return `
+          <div style="
+            background: var(--card2);
+            border: 1px solid var(--brd);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+          ">
+            <div>
+              <div style="font-size: 32px; margin-bottom: 8px; text-align: center;">👤</div>
+              <h4 style="font-size: 15px; font-weight: 800; text-align: center; margin-bottom: 4px;">${emp.name}</h4>
+              <p style="font-size: 12px; color: var(--muted); text-align: center; margin-bottom: 12px;">الدور: ${emp.role || 'كاشير'}</p>
+              
+              <div style="display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; margin-bottom: 15px;">
+                ${emp.permissions?.pos ? '<span style="font-size: 10px; background: rgba(0,200,150,0.1); color: var(--p); padding: 2px 6px; border-radius: 4px;">كاشير</span>' : ''}
+                ${emp.permissions?.products ? '<span style="font-size: 10px; background: rgba(0,200,255,0.1); color: #00c8ff; padding: 2px 6px; border-radius: 4px;">منتجات</span>' : ''}
+                ${emp.permissions?.inventory ? '<span style="font-size: 10px; background: rgba(150,100,255,0.1); color: #a855f7; padding: 2px 6px; border-radius: 4px;">مخزن</span>' : ''}
+                ${emp.permissions?.reports ? '<span style="font-size: 10px; background: rgba(255,165,2,0.1); color: var(--warn); padding: 2px 6px; border-radius: 4px;">تقارير</span>' : ''}
+                ${emp.permissions?.settings ? '<span style="font-size: 10px; background: rgba(236,72,153,0.1); color: #ec4899; padding: 2px 6px; border-radius: 4px;">صلاحيات</span>' : ''}
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 8px; border-top: 1px solid var(--brd); padding-top: 12px; justify-content: space-between; width: 100%;">
+              <button onclick="editAdminEmployee('${emp.id}')" style="
+                background: rgba(0, 200, 150, 0.12);
+                border: 1px solid rgba(0, 200, 150, 0.3);
+                color: var(--p);
+                padding: 6px 14px;
+                border-radius: 10px;
+                font-size: 13px;
+                cursor: pointer;
+                font-family: inherit;
+                font-weight: 700;
+                transition: all 0.2s;
+              ">✏️ تعديل</button>
+              
+              <button onclick="deleteAdminEmployee('${emp.id}')" style="
+                background: rgba(255, 71, 87, 0.12);
+                border: 1px solid rgba(255, 71, 87, 0.3);
+                color: var(--danger);
+                padding: 6px 14px;
+                border-radius: 10px;
+                font-size: 13px;
+                cursor: pointer;
+                font-family: inherit;
+                font-weight: 700;
+                transition: all 0.2s;
+              ">🗑️ حذف</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function showAddEmployeeForm() {
+      document.getElementById('emp-form-title').textContent = '👤 إضافة موظف جديد';
+      document.getElementById('emp-edit-id').value = '';
+      document.getElementById('emp-name').value = '';
+      document.getElementById('emp-role').value = 'كاشير';
+      document.getElementById('emp-password').value = '';
+      document.getElementById('perm-pos').checked = true;
+      document.getElementById('perm-products').checked = false;
+      document.getElementById('perm-inventory').checked = false;
+      document.getElementById('perm-reports').checked = false;
+      document.getElementById('perm-settings').checked = false;
+
+      document.getElementById('emp-form-container').style.display = 'block';
+    }
+
+    function hideEmployeeForm() {
+      document.getElementById('emp-form-container').style.display = 'none';
+    }
+
+    function saveEmployeeData() {
+      const id = document.getElementById('emp-edit-id').value;
+      const name = document.getElementById('emp-name').value.trim();
+      const role = document.getElementById('emp-role').value;
+      const password = document.getElementById('emp-password').value;
+
+      if (!name) {
+        showAdminToast('الرجاء إدخال اسم الموظف ثنائياً', 'error');
+        return;
+      }
+
+      const employees = JSON.parse(localStorage.getItem('pos_employees') || '[]');
+      
+      const permissions = {
+        pos: document.getElementById('perm-pos').checked,
+        products: document.getElementById('perm-products').checked,
+        inventory: document.getElementById('perm-inventory').checked,
+        reports: document.getElementById('perm-reports').checked,
+        settings: document.getElementById('perm-settings').checked
+      };
+
+      if (id) {
+        const idx = employees.findIndex(e => e.id === id);
+        if (idx !== -1) {
+          employees[idx].name = name;
+          employees[idx].role = role;
+          if (password) employees[idx].password = password;
+          employees[idx].permissions = permissions;
+        }
+      } else {
+        const newEmp = {
+          id: Date.now().toString(),
+          name,
+          role,
+          password: password || '1234',
+          permissions
+        };
+        employees.push(newEmp);
+      }
+
+      localStorage.setItem('pos_employees', JSON.stringify(employees));
+      hideEmployeeForm();
+      loadAdminEmployees();
+      showAdminToast('تم حفظ بيانات الموظف بنجاح', 'success');
+      
+      if (window.FIREBASE_ENABLED && typeof window.syncFirebaseData === 'function') {
+        window.syncFirebaseData('employees', employees);
+      }
+    }
+
+    // Helpers to replace native alerts and confirms with beautiful HTML overlays/toasts
+    function showAdminToast(msg, type = 'success') {
+      let toast = document.getElementById('admin-toast-container');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'admin-toast-container';
+        document.body.appendChild(toast);
+      }
+      toast.className = 'show ' + type;
+      toast.innerHTML = (type === 'success' ? '✅ ' : '❌ ') + msg;
+      
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000);
+    }
+
+    function showAdminConfirm(msg, title = 'تأكيد العملية') {
+      return new Promise((resolve) => {
+        const modal = document.getElementById('admin-confirm-modal');
+        const okBtn = document.getElementById('admin-confirm-ok-btn');
+        const cancelBtn = document.getElementById('admin-confirm-cancel-btn');
+        
+        document.getElementById('admin-confirm-title').textContent = title;
+        document.getElementById('admin-confirm-msg').textContent = msg;
+        
+        modal.style.display = 'flex';
+        
+        const cleanup = (result) => {
+          modal.style.display = 'none';
+          okBtn.onclick = null;
+          cancelBtn.onclick = null;
+          resolve(result);
+        };
+        
+        okBtn.onclick = () => cleanup(true);
+        cancelBtn.onclick = () => cleanup(false);
+      });
+    }
+
+    // Export functions to window scope for onclick handlers in dynamically generated HTML
+    window.openAdminEmployeesModal = openAdminEmployeesModal;
+    window.closeAdminEmployeesModal = closeAdminEmployeesModal;
+    window.showAddEmployeeForm = showAddEmployeeForm;
+    window.hideEmployeeForm = hideEmployeeForm;
+    window.saveEmployeeData = saveEmployeeData;
+    window.showAdminToast = showAdminToast;
+    window.showAdminConfirm = showAdminConfirm;
+
+    window.editAdminEmployee = function(id) {
+      const employees = JSON.parse(localStorage.getItem('pos_employees') || '[]');
+      const emp = employees.find(e => e.id === id);
+      if (!emp) return;
+
+      document.getElementById('emp-form-title').textContent = '✏️ تعديل بيانات الموظف: ' + emp.name;
+      document.getElementById('emp-edit-id').value = emp.id;
+      document.getElementById('emp-name').value = emp.name;
+      document.getElementById('emp-role').value = emp.role || 'كاشير';
+      document.getElementById('emp-password').value = emp.password || '';
+      
+      const p = emp.permissions || {};
+      document.getElementById('perm-pos').checked = !!p.pos;
+      document.getElementById('perm-products').checked = !!p.products;
+      document.getElementById('perm-inventory').checked = !!p.inventory;
+      document.getElementById('perm-reports').checked = !!p.reports;
+      document.getElementById('perm-settings').checked = !!p.settings;
+
+      document.getElementById('emp-form-container').style.display = 'block';
+    }
+
+    window.deleteAdminEmployee = function(id) {
+      showAdminConfirm('هل أنت متأكد من رغبتك في حذف هذا الموظف؟', 'تأكيد الحذف').then(confirmed => {
+        if (!confirmed) return;
+        
+        let employees = JSON.parse(localStorage.getItem('pos_employees') || '[]');
+        employees = employees.filter(e => e.id !== id);
+        
+        localStorage.setItem('pos_employees', JSON.stringify(employees));
+        loadAdminEmployees();
+        showAdminToast('تم حذف الموظف بنجاح', 'success');
+
+        if (window.FIREBASE_ENABLED && typeof window.syncFirebaseData === 'function') {
+          window.syncFirebaseData('employees', employees);
+        }
+      });
+    }
   </script>
 </body>
 
