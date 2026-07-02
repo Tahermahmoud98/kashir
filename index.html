@@ -5,6 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>نظام كاشير السوبر ماركيت | POS System</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛒</text></svg>">
   <meta name="description" content="نظام كاشير متكامل للسوبر ماركيت يدعم الدينار العراقي والدولار الأمريكي">
   <link rel="manifest" href="manifest.json">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,6 +17,39 @@
 
   <link rel="stylesheet" href="styles.css?v=2">
   <link rel="stylesheet" href="responsive.css?v=2">
+  <style>
+    .weight-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 10px;
+    }
+    .weight-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 12px 5px;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .weight-btn:hover {
+      background: var(--primary-light);
+      color: white;
+      border-color: var(--primary);
+    }
+    .weight-btn.kg-btn {
+      background: rgba(0, 200, 150, 0.1);
+      border-color: rgba(0, 200, 150, 0.3);
+      color: var(--primary);
+    }
+    .weight-btn.kg-btn:hover {
+      background: var(--primary);
+      color: white;
+    }
+  </style>
 </head>
 
 <body>
@@ -29,6 +63,36 @@
       </div>
       <div class="splash-loader">
         <div class="loader-bar"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Old Debt Payment Modal -->
+  <div class="modal-overlay" id="old-debt-pay-modal" style="display:none;">
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <h3>تسديد ديون قديمة</h3>
+        <button class="modal-close" onclick="closeModal('old-debt-pay-modal')">×</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="odpm-customer-id">
+        
+        <div class="debt-remaining-box" style="margin-bottom:20px; text-align:center;">
+          <div style="font-size:12px; color:var(--muted)">إجمالي الدين القديم المتبقي</div>
+          <div class="debt-remaining-display" id="odpm-remaining">0 د.ع</div>
+        </div>
+
+        <div class="form-group">
+          <label>المبلغ المدفوع (د.ع) <span class="required">*</span></label>
+          <input type="number" id="odpm-amount" placeholder="0" min="1" oninput="calcOldDebtRemaining()">
+        </div>
+        
+        <div class="debt-pay-result" id="odpm-result" style="display:none;"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeModal('old-debt-pay-modal')">إلغاء</button>
+        <button class="btn-primary" id="odpm-submit" 
+          onclick="submitOldDebtPayment()">✔ تأكيد التسديد</button>
       </div>
     </div>
   </div>
@@ -303,9 +367,10 @@
             <div class="cart-header">
               <h3>🛒 سلة المشتريات</h3>
               <div class="cart-controls">
-                <select id="cart-customer" onchange="selectCustomer(this.value)">
-                  <option value="">-- عميل زائر --</option>
-                </select>
+                <input type="text" id="cart-customer-input" list="cart-customers-list" 
+                       placeholder="-- عميل زائر (بحث) --" oninput="handleCustomerInput(this.value)"
+                       style="padding:6px 10px; border:1px solid var(--border-color); border-radius:var(--radius-sm); width:180px; font-family:inherit; font-size:14px; background:var(--bg-secondary); color:var(--text-primary);">
+                <datalist id="cart-customers-list"></datalist>
                 <button class="btn-clear-cart" onclick="clearCart()">🗑️ مسح</button>
               </div>
             </div>
@@ -593,10 +658,11 @@
       <div id="page-customers" class="page">
         <div class="page-header-bar">
           <h3>إدارة العملاء</h3>
-          <div class="page-actions">
+          <div class="page-actions" style="display:flex; gap:10px; align-items:center;">
             <input type="text" class="search-input" placeholder="🔍 ابحث عن عميل..."
               oninput="searchCustomers(this.value)">
             <button class="btn-primary" onclick="openCustomerModal()">+ إضافة عميل</button>
+            <button class="btn-secondary" onclick="printCustomersTable()" style="background:var(--bg-secondary); color:var(--text-primary); border:1px solid var(--border-color); padding:8px 15px; border-radius:var(--radius-sm); cursor:pointer;">🖨️ طباعة</button>
           </div>
         </div>
         <div class="customers-grid" id="customers-grid"></div>
@@ -904,6 +970,46 @@
     </div>
   </div>
 
+  <!-- Weight Modal -->
+  <div class="modal-overlay" id="weight-modal" style="display:none;">
+    <div class="modal" style="max-width: 450px;">
+      <div class="modal-header">
+        <h3 id="weight-modal-title">تحديد الوزن</h3>
+        <button class="modal-close" onclick="closeModal('weight-modal')">✕</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="wm-product-id">
+        <div class="weight-grid">
+          <!-- Grams -->
+          <button class="weight-btn" onclick="selectWeight(0.1)">100 غرام</button>
+          <button class="weight-btn" onclick="selectWeight(0.2)">200 غرام</button>
+          <button class="weight-btn" onclick="selectWeight(0.25)">250 غرام (ربع)</button>
+          <button class="weight-btn" onclick="selectWeight(0.3)">300 غرام</button>
+          <button class="weight-btn" onclick="selectWeight(0.4)">400 غرام</button>
+          <button class="weight-btn" onclick="selectWeight(0.5)">500 غرام (نصف)</button>
+          <button class="weight-btn" onclick="selectWeight(0.6)">600 غرام</button>
+          <button class="weight-btn" onclick="selectWeight(0.7)">700 غرام</button>
+          <button class="weight-btn" onclick="selectWeight(0.75)">750 غرام (إلا ربع)</button>
+          <button class="weight-btn" onclick="selectWeight(0.8)">800 غرام</button>
+          <button class="weight-btn" onclick="selectWeight(0.9)">900 غرام</button>
+          <!-- Kilograms -->
+          <button class="weight-btn kg-btn" onclick="selectWeight(1)">1 كيلو</button>
+          <button class="weight-btn kg-btn" onclick="selectWeight(1.5)">1.5 كيلو (نصف)</button>
+          <button class="weight-btn kg-btn" onclick="selectWeight(2)">2 كيلو</button>
+          <button class="weight-btn kg-btn" onclick="selectWeight(2.5)">2.5 كيلو (نصف)</button>
+          <button class="weight-btn kg-btn" onclick="selectWeight(3)">3 كيلو</button>
+        </div>
+        <div style="margin-top: 20px;">
+          <label style="display:block; margin-bottom:8px; font-weight:600;">أو أدخل الوزن يدوياً (بالكيلو):</label>
+          <div style="display:flex; gap:10px;">
+            <input type="number" id="wm-custom-weight" placeholder="مثال: 1.125" step="0.001" min="0" style="flex:1;">
+            <button class="btn-primary" onclick="confirmCustomWeight()">إضافة</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Product Modal -->
   <div class="modal-overlay" id="product-modal" style="display:none;">
     <div class="modal">
@@ -935,15 +1041,42 @@
           </div>
           <div class="form-group">
             <label>الوحدة</label>
-            <select id="pm-unit">
+            <select id="pm-unit" onchange="toggleBagCalculator()">
               <option value="قطعة">قطعة</option>
               <option value="كيلو">كيلو</option>
+              <option value="كيس">كيس</option>
               <option value="لتر">لتر</option>
               <option value="علبة">علبة</option>
               <option value="حزمة">حزمة</option>
               <option value="كرتون">كرتون</option>
             </select>
           </div>
+        </div>
+
+        <!-- Bag Calculator Section -->
+        <div id="bag-calculator-section" style="display:none; background: rgba(0,200,150,0.05); border: 1px dashed var(--primary); padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+          <h4 style="margin-top:0; margin-bottom:10px; color:var(--primary); font-size:14px;">📦 حاسبة الأكياس / الجملة (اختياري)</h4>
+          <div class="form-row" style="margin-bottom:10px;">
+            <div class="form-group">
+              <label style="font-size:12px;">وزن الكيس (كيلو)</label>
+              <input type="number" id="bc-weight" placeholder="مثال: 5" min="0" step="0.1" oninput="calculateBag()">
+            </div>
+            <div class="form-group">
+              <label style="font-size:12px;">عدد الأكياس المشتراة</label>
+              <input type="number" id="bc-qty" placeholder="مثال: 10" min="0" oninput="calculateBag()">
+            </div>
+          </div>
+          <div class="form-row" style="margin-bottom:0;">
+            <div class="form-group">
+              <label style="font-size:12px;">سعر شراء الكيس</label>
+              <input type="number" id="bc-cost" placeholder="مثال: 25000" min="0" oninput="calculateBag()">
+            </div>
+            <div class="form-group">
+              <label style="font-size:12px;">سعر بيع الكيس كاملاً</label>
+              <input type="number" id="bc-price" placeholder="مثال: 28000" min="0" oninput="calculateBag()">
+            </div>
+          </div>
+          <small style="color:var(--text-muted); display:block; margin-top:8px;">* سيتم حساب سعر الكيلو الإفرادي والمخزون الكلي (بالكيلو) تلقائياً بالأسفل.</small>
         </div>
         <div class="form-row">
           <div class="form-group">
@@ -1038,13 +1171,21 @@
             <input type="text" id="cm-name" placeholder="اسم العميل">
           </div>
           <div class="form-group">
-            <label>رقم الهاتف</label>
-            <input type="text" id="cm-phone" placeholder="رقم الهاتف">
+            <label>رقم العميل (اختياري)</label>
+            <input type="text" id="cm-number" placeholder="مثال: 1 أو 20">
           </div>
+        </div>
+        <div class="form-group">
+          <label>رقم الهاتف</label>
+          <input type="text" id="cm-phone" placeholder="رقم الهاتف">
         </div>
         <div class="form-group">
           <label>العنوان</label>
           <input type="text" id="cm-address" placeholder="عنوان العميل">
+        </div>
+        <div class="form-group">
+          <label>الديون القديمة السابقة (إن وجدت)</label>
+          <input type="number" id="cm-old-debt" placeholder="أدخل مبلغ الدين القديم" min="0">
         </div>
         <div class="form-group">
           <label>ملاحظات</label>

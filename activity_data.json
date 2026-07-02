@@ -1,5 +1,374 @@
 [
   {
+    "id": "ACT-1782951290939",
+    "type": "customer_add",
+    "details": {
+      "name": "علي",
+      "phone": "05040504",
+      "oldDebt": 50000
+    },
+    "timestamp": "2026-07-02T00:14:50.939Z",
+    "cashier": "admin"
+  },
+  {
+    "id": "ACT-1782950850702",
+    "type": "debt_sale",
+    "details": {
+      "debtId": "DEBT-1782950850694",
+      "customer": "هزار",
+      "total": 14000,
+      "items": [
+        {
+          "id": "p2",
+          "name": "حليب كامل الدسم",
+          "emoji": "🥛",
+          "priceIQD": 2500,
+          "priceUSD": 1.67,
+          "cost": 1800,
+          "qty": 1,
+          "maxQty": 35,
+          "unit": "لتر"
+        },
+        {
+          "id": "p3",
+          "name": "عصير برتقال",
+          "emoji": "🍊",
+          "priceIQD": 3000,
+          "priceUSD": 2,
+          "cost": 2000,
+          "qty": 1,
+          "maxQty": 17,
+          "unit": "لتر"
+        },
+        {
+          "id": "p1",
+          "name": "خبز عيش",
+          "emoji": "🍞",
+          "priceIQD": 2000,
+          "priceUSD": 1.33,
+          "cost": 1000,
+          "qty": 1,
+          "maxQty": 53,
+          "unit": "قطعة"
+        },
+        {
+          "id": "p1782427718224",
+          "name": "سفن",
+          "emoji": "🍾",
+          "priceIQD": 1250,
+          "priceUSD": 0.83,
+          "cost": 1000,
+          "qty": 2,
+          "maxQty": 90,
+          "unit": "لتر"
+        },
+        {
+          "id": "p1782422168830",
+          "name": "فلفل",
+          "emoji": "data:image/jpeg;base64,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",
+          "priceIQD": 2000,
+          "priceUSD": 1.33,
+          "cost": 1500,
+          "qty": 2,
+          "maxQty": 78,
+          "unit": "علبة"
+        }
+      ],
+      "cashier": "admin"
+    },
+    "timestamp": "2026-07-02T00:07:30.702Z",
+    "cashier": "admin"
+  },
+  {
+    "id": "ACT-1782950771935",
+    "type": "customer_add",
+    "details": {
+      "name": "هزار",
+      "phone": "00090009",
+      "oldDebt": 435000
+    },
+    "timestamp": "2026-07-02T00:06:11.935Z",
+    "cashier": "admin"
+  },
+  {
+    "id": "ACT-1782950549835",
+    "type": "customer_add",
+    "details": {
+      "name": "طاهر",
+      "phone": "090909090"
+    },
+    "timestamp": "2026-07-02T00:02:29.835Z",
+    "cashier": "admin"
+  },
+  {
+    "id": "ACT-1782949401267",
+    "type": "item_delete",
+    "details": {
+      "target": "عميل",
+      "name": "محمود حسن"
+    },
+    "timestamp": "2026-07-01T23:43:21.267Z",
+    "cashier": "admin"
+  },
+  {
+    "id": "ACT-1782949037955",
+    "type": "customer_add",
+    "details": {
+      "name": "هژار محمود محمد",
+      "phone": "07504865388"
+    },
+    "timestamp": "2026-07-01T23:37:17.955Z",
+    "cashier": "admin"
+  },
+  {
+    "id": "ACT-1782948120026",
+    "type": "sale",
+    "details": {
+      "invoiceId": "INV-1782948120015",
+      "total": 12000,
+      "items": [
+        {
+          "id": "p5",
+          "name": "دجاج مجمد",
+          "emoji": "🐔",
+          "priceIQD": 8000,
+          "priceUSD": 5.33,
+          "cost": 5500,
+          "qty": 0.75,
+          "maxQty": 30,
+          "unit": "كيلو"
+        },
+        {
+          "id": "p3",
+          "name": "عصير برتقال",
+          "emoji": "🍊",
+          "priceIQD": 3000,
+          "priceUSD": 2,
+          "cost": 2000,
+          "qty": 2,
+          "maxQty": 19,
+          "unit": "لتر"
+        }
+      ],
+      "cashier": "admin",
+      "paymentMethod": "cash"
+    },
+    "timestamp": "2026-07-01T23:22:00.026Z",
+    "cashier": "admin"
+  },
+  {
+    "id": "ACT-1782948024793",
+    "type": "sale",
+    "details": {
+      "invoiceId": "INV-1782948024780",
+      "total": 7500,
+      "items": [
+        {
+          "id": "p1",
+          "name": "خبز عيش",
+          "emoji": "🍞",
+          "priceIQD": 2000,
+          "priceUSD": 1.33,
+          "cost": 1000,
+          "qty": 1,
+          "maxQty": 54,
+          "unit": "قطعة"
+        },
+        {
+          "id": "p2",
+          "name": "حليب كامل الدسم",
+          "emoji": "🥛",
+          "priceIQD": 2500,
+          "priceUSD": 1.67,
+          "cost": 1800,
+          "qty": 1,
+          "maxQty": 36,
+          "unit": "لتر"
+        },
+        {
+          "id": "p3",
+          "name": "عصير برتقال",
+          "emoji": "🍊",
+          "priceIQD": 3000,
+          "priceUSD": 2,
+          "cost": 2000,
+          "qty": 1,
+          "maxQty": 20,
+          "unit": "لتر"
+        }
+      ],
+      "cashier": "admin",
+      "paymentMethod": "cash"
+    },
+    "timestamp": "2026-07-01T23:20:24.793Z",
+    "cashier": "admin"
+  },
+  {
+    "id": "ACT-1782938332346",
+    "type": "product_add",
+    "details": {
+      "name": "فاصوليا",
+      "price": 5600,
+      "stock": 5,
+      "category": "cat1"
+    },
+    "timestamp": "2026-07-01T20:38:52.346Z",
+    "cashier": "admin"
+  },
+  {
+    "id": "ACT-1782937498003",
+    "type": "product_add",
+    "details": {
+      "name": "توفك",
+      "price": 5000,
+      "stock": 25,
+      "category": "cat1"
+    },
+    "timestamp": "2026-07-01T20:24:58.003Z",
+    "cashier": "admin"
+  },
+  {
+    "id": "ACT-1782936098097",
+    "type": "stock_add",
+    "details": {
+      "product": "خبز عيش",
+      "qty": 10,
+      "newStock": 54
+    },
+    "timestamp": "2026-07-01T20:01:38.097Z",
+    "cashier": "admin"
+  },
+  {
+    "id": "ACT-1782935100587",
+    "type": "sale",
+    "details": {
+      "invoiceId": "INV-1782935100573",
+      "total": 18500,
+      "items": [
+        {
+          "id": "p1",
+          "name": "خبز عيش",
+          "emoji": "🍞",
+          "priceIQD": 2000,
+          "priceUSD": 1.33,
+          "cost": 1000,
+          "qty": 1,
+          "maxQty": 45,
+          "unit": "قطعة"
+        },
+        {
+          "id": "p2",
+          "name": "حليب كامل الدسم",
+          "emoji": "🥛",
+          "priceIQD": 2500,
+          "priceUSD": 1.67,
+          "cost": 1800,
+          "qty": 1,
+          "maxQty": 17,
+          "unit": "لتر"
+        },
+        {
+          "id": "p4",
+          "name": "تفاح أحمر",
+          "emoji": "🍎",
+          "priceIQD": 3000,
+          "priceUSD": 1.92,
+          "cost": 2500,
+          "qty": 1,
+          "maxQty": 37,
+          "unit": "كيلو"
+        },
+        {
+          "id": "p3",
+          "name": "عصير برتقال",
+          "emoji": "🍊",
+          "priceIQD": 3000,
+          "priceUSD": 2,
+          "cost": 2000,
+          "qty": 1,
+          "maxQty": 21,
+          "unit": "لتر"
+        },
+        {
+          "id": "p5",
+          "name": "دجاج مجمد",
+          "emoji": "🐔",
+          "priceIQD": 8000,
+          "priceUSD": 5.33,
+          "cost": 5500,
+          "qty": 1,
+          "maxQty": 31,
+          "unit": "كيلو"
+        }
+      ],
+      "cashier": "admin",
+      "paymentMethod": "cash"
+    },
+    "timestamp": "2026-07-01T19:45:00.587Z",
+    "cashier": "admin"
+  },
+  {
+    "id": "ACT-1782911705742",
+    "type": "debt_sale",
+    "details": {
+      "debtId": "DEBT-1782911705739",
+      "customer": "عبدالرحمن محمود محمد",
+      "total": 24000,
+      "items": [
+        {
+          "id": "p5",
+          "name": "دجاج مجمد",
+          "emoji": "🐔",
+          "priceIQD": 8000,
+          "priceUSD": 5.33,
+          "cost": 5500,
+          "qty": 3,
+          "maxQty": 34,
+          "unit": "كيلو"
+        }
+      ],
+      "cashier": "admin"
+    },
+    "timestamp": "2026-07-01T13:15:05.742Z",
+    "cashier": "admin"
+  },
+  {
+    "id": "ACT-1782911673043",
+    "type": "sale",
+    "details": {
+      "invoiceId": "INV-1782911673038",
+      "total": 5500,
+      "items": [
+        {
+          "id": "p3",
+          "name": "عصير برتقال",
+          "emoji": "🍊",
+          "priceIQD": 3000,
+          "priceUSD": 2,
+          "cost": 2000,
+          "qty": 1,
+          "maxQty": 22,
+          "unit": "لتر"
+        },
+        {
+          "id": "p2",
+          "name": "حليب كامل الدسم",
+          "emoji": "🥛",
+          "priceIQD": 2500,
+          "priceUSD": 1.67,
+          "cost": 1800,
+          "qty": 1,
+          "maxQty": 18,
+          "unit": "لتر"
+        }
+      ],
+      "cashier": "admin",
+      "paymentMethod": "cash"
+    },
+    "timestamp": "2026-07-01T13:14:33.043Z",
+    "cashier": "admin"
+  },
+  {
     "id": "ACT-1782909730214",
     "type": "sale",
     "details": {

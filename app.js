@@ -861,7 +861,8 @@ function loadPOS() {
 function loadCategoryTabs() {
   const cats = DB.getCategories();
   const container = document.getElementById('category-tabs');
-  container.innerHTML = `<button class="cat-tab ${state.productFilter === 'all' ? 'active' : ''}" onclick="filterByCategory('all', this)">الكل</button>`;
+  container.innerHTML = `<button class="cat-tab ${state.productFilter === 'all' ? 'active' : ''}" onclick="filterByCategory('all', this)">الكل</button>
+  <button class="cat-tab ${state.productFilter === 'weight' ? 'active' : ''}" onclick="filterByCategory('weight', this)" style="background:var(--secondary);color:white">مواد بالوزن ⚖️</button>`;
   cats.forEach(cat => {
     const btn = document.createElement('button');
     btn.className = `cat-tab ${state.productFilter === cat.id ? 'active' : ''}`;
@@ -888,7 +889,11 @@ function renderProducts() {
   let products = DB.getProducts();
 
   if (state.productFilter !== 'all') {
-    products = products.filter(p => p.category === state.productFilter);
+    if (state.productFilter === 'weight') {
+      products = products.filter(p => p.unit === 'كيلو' || p.unit === 'كيس' || p.unit === 'غرام');
+    } else {
+      products = products.filter(p => p.category === state.productFilter);
+    }
   }
 
   if (state.searchQuery) {
@@ -931,14 +936,113 @@ function addToCart(productId) {
     return;
   }
 
-  const existing = state.cart.find(item => item.id === productId);
+  // Check if product is sold by weight
+  if (product.unit === 'كيلو' || product.unit === 'غرام' || product.unit === 'كيس') {
+    document.getElementById('wm-product-id').value = productId;
+    document.getElementById('wm-custom-weight').value = '';
+    document.getElementById('weight-modal-title').innerText = `تحديد الوزن: ${product.name}`;
+    
+    const grid = document.querySelector('.weight-grid');
+    const existingBagBtn = document.getElementById('wm-bag-btn');
+    if (existingBagBtn) existingBagBtn.remove();
+    
+    const btn = document.createElement('button');
+    btn.id = 'wm-bag-btn';
+    btn.className = 'weight-btn kg-btn';
+    btn.style.background = 'var(--primary)';
+    btn.style.color = 'white';
+    btn.style.gridColumn = 'span 2';
+    
+    if (product.bagWeight) {
+       btn.innerText = `كيس كامل (${product.bagWeight} كيلو)`;
+       btn.onclick = () => selectBag(product.id);
+    } else {
+       btn.innerText = `كيس كامل (إعداد مطلوب)`;
+       btn.style.background = '#ff9800'; // warning color
+       btn.onclick = () => showToast('يرجى الذهاب للإدارة وتحديد (وزن الكيس) و (سعر الكيس) لهذه المادة أولاً!', 'warning');
+    }
+    grid.appendChild(btn);
+
+    openModal('weight-modal');
+    return; // Stop here, wait for weight selection
+  }
+
+  confirmWeightAdd(productId, 1);
+}
+
+function selectWeight(weightInKg) {
+  const productId = document.getElementById('wm-product-id').value;
+  if (!productId) return;
+  confirmWeightAdd(productId, weightInKg);
+  closeModal('weight-modal');
+}
+
+function confirmCustomWeight() {
+  const productId = document.getElementById('wm-product-id').value;
+  const customWeight = parseFloat(document.getElementById('wm-custom-weight').value);
+  if (!productId) return;
+  if (isNaN(customWeight) || customWeight <= 0) {
+    showToast('يرجى إدخال وزن صحيح', 'warning');
+    return;
+  }
+  confirmWeightAdd(productId, customWeight);
+  closeModal('weight-modal');
+}
+
+function selectBag(productId) {
+  const product = DB.getProducts().find(p => p.id === productId);
+  if (!product || !product.bagWeight) return;
+  
+  const existing = state.cart.find(item => item.id === productId && item.isBag);
   if (existing) {
-    if (existing.qty >= product.stock) {
+    if (existing.qty + product.bagWeight > product.stock) {
       showToast('لا يوجد مخزون كافٍ', 'warning');
       return;
     }
-    existing.qty++;
+    existing.qty += product.bagWeight;
   } else {
+    if (product.bagWeight > product.stock) {
+      showToast('لا يوجد مخزون كافٍ', 'warning');
+      return;
+    }
+    const pricePerKg = product.bagPrice ? (product.bagPrice / product.bagWeight) : product.priceIQD;
+    
+    state.cart.push({
+      id: product.id,
+      name: product.name + ' (كيس كامل)',
+      emoji: product.emoji || '📦',
+      priceIQD: pricePerKg,
+      priceUSD: pricePerKg / DB.getSettings().exchangeRate,
+      cost: product.cost || 0,
+      qty: product.bagWeight,
+      maxQty: product.stock,
+      unit: product.unit,
+      isBag: true
+    });
+  }
+
+  renderCart();
+  updateCartTotals();
+  showToast(`تمت إضافة كيس ${product.name}`, 'success');
+  closeModal('weight-modal');
+}
+
+function confirmWeightAdd(productId, qty) {
+  const product = DB.getProducts().find(p => p.id === productId);
+  if (!product) return;
+
+  const existing = state.cart.find(item => item.id === productId && !item.isBag);
+  if (existing) {
+    if (existing.qty + qty > product.stock) {
+      showToast('لا يوجد مخزون كافٍ', 'warning');
+      return;
+    }
+    existing.qty += qty;
+  } else {
+    if (qty > product.stock) {
+      showToast('لا يوجد مخزون كافٍ', 'warning');
+      return;
+    }
     state.cart.push({
       id: product.id,
       name: product.name,
@@ -946,7 +1050,7 @@ function addToCart(productId) {
       priceIQD: product.priceIQD,
       priceUSD: product.priceUSD,
       cost: product.cost || 0,
-      qty: 1,
+      qty: qty,
       maxQty: product.stock,
       unit: product.unit
     });
@@ -965,8 +1069,21 @@ function removeFromCart(index) {
 
 function updateQty(index, delta) {
   const item = state.cart[index];
-  const newQty = item.qty + delta;
-  if (newQty < 1) {
+  
+  // If weight-based item, step by 0.25 kg. Otherwise step by 1.
+  let step = (item.unit === 'كيلو' || item.unit === 'غرام' || item.unit === 'كيس') ? 0.25 : 1;
+  if (item.isBag) {
+      const product = DB.getProducts().find(p => p.id === item.id);
+      step = product ? product.bagWeight : 1;
+  }
+  const realDelta = delta < 0 ? -step : step;
+  
+  let newQty = item.qty + realDelta;
+  
+  // Fix floating point math issues (e.g. 0.25 + 0.25 = 0.500000001)
+  newQty = Math.round(newQty * 1000) / 1000;
+
+  if (newQty <= 0) {
     removeFromCart(index);
     return;
   }
@@ -1074,20 +1191,39 @@ async function clearCart(confirmRequired = true) {
   if (confirmRequired && state.cart.length > 0 && !(await showConfirm('هل تريد مسح سلة المشتريات؟'))) return;
   state.cart = [];
   document.getElementById('discount-value').value = '';
+  const customerInput = document.getElementById('cart-customer-input');
+  if (customerInput) {
+    customerInput.value = '';
+    state.selectedCustomer = null;
+  }
   renderCart();
   updateCartTotals();
 }
 
 function loadCustomerSelect() {
   const customers = DB.getCustomers();
-  const sel = document.getElementById('cart-customer');
-  sel.innerHTML = '<option value="">-- عميل زائر --</option>';
+  const list = document.getElementById('cart-customers-list');
+  if (!list) return;
+  list.innerHTML = '';
   customers.forEach(c => {
     const opt = document.createElement('option');
-    opt.value = c.id;
-    opt.textContent = `${c.name} - ${c.phone}`;
-    sel.appendChild(opt);
+    const displayStr = `${c.name} - ${c.phone || 'بدون رقم'}${c.customerNumber ? ` (#${c.customerNumber})` : ''}`;
+    opt.value = displayStr;
+    list.appendChild(opt);
   });
+}
+
+function handleCustomerInput(val) {
+  if (!val) {
+    state.selectedCustomer = null;
+    return;
+  }
+  const customers = DB.getCustomers();
+  const match = customers.find(c => {
+    const displayStr = `${c.name} - ${c.phone || 'بدون رقم'}${c.customerNumber ? ` (#${c.customerNumber})` : ''}`;
+    return displayStr === val;
+  });
+  state.selectedCustomer = match ? match.id : null;
 }
 
 function selectCustomer(id) {
@@ -1644,6 +1780,43 @@ function renderProductsTable(products) {
   }).join('');
 }
 
+function toggleBagCalculator() {
+  const unit = document.getElementById('pm-unit').value;
+  const bagSection = document.getElementById('bag-calculator-section');
+  if (bagSection) {
+    if (unit === 'كيلو' || unit === 'كيس') {
+      bagSection.style.display = 'block';
+    } else {
+      bagSection.style.display = 'none';
+      // Reset fields
+      document.getElementById('bc-weight').value = '';
+      document.getElementById('bc-qty').value = '';
+      document.getElementById('bc-cost').value = '';
+      document.getElementById('bc-price').value = '';
+    }
+  }
+}
+
+function calculateBag() {
+  const weight = parseFloat(document.getElementById('bc-weight').value);
+  const qty = parseFloat(document.getElementById('bc-qty').value);
+  const cost = parseFloat(document.getElementById('bc-cost').value);
+  const price = parseFloat(document.getElementById('bc-price').value);
+
+  if (weight > 0) {
+    if (!isNaN(cost)) {
+      document.getElementById('pm-cost').value = Math.round(cost / weight);
+    }
+    if (!isNaN(price)) {
+      document.getElementById('pm-price-iqd').value = Math.round(price / weight);
+      syncPriceFromIQD();
+    }
+    if (!isNaN(qty)) {
+      document.getElementById('pm-stock').value = weight * qty;
+    }
+  }
+}
+
 function openProductModal(productId = null) {
   loadCategoryFilterSelect();
   const modal = document.getElementById('product-modal');
@@ -1662,6 +1835,8 @@ function openProductModal(productId = null) {
     document.getElementById('pm-cost').value = p.cost || '';
     document.getElementById('pm-stock').value = p.stock;
     document.getElementById('pm-min-stock').value = p.minStock || 5;
+    document.getElementById('bc-weight').value = p.bagWeight || '';
+    document.getElementById('bc-price').value = p.bagPrice || '';
     document.getElementById('pm-emoji').value = p.emoji || '';
     document.getElementById('emoji-preview').innerHTML = renderEmojiHTML(p.emoji || '');
     document.getElementById('pm-notes').value = p.notes || '';
@@ -1683,6 +1858,7 @@ function openProductModal(productId = null) {
     document.getElementById('pm-notes').value = '';
   }
 
+  toggleBagCalculator();
   openModal('product-modal');
 }
 
@@ -1693,6 +1869,7 @@ async function deleteProduct(id) {
   if (!p) return;
   if (!(await showConfirm(`هل تريد حذف المنتج "${p.name}"؟`))) return;
   DB.deleteProduct(id);
+  DB.addActivity('item_delete', { target: 'منتج', name: p.name });
   loadProductsPage();
   showToast('تم حذف المنتج', 'success');
 }
@@ -1710,19 +1887,25 @@ function saveProduct() {
   }
 
   const settings = DB.getSettings();
+  const unit = document.getElementById('pm-unit').value;
+  let bagWeight = parseFloat(document.getElementById('bc-weight').value);
+  let bagPrice = parseFloat(document.getElementById('bc-price').value);
+  
   const data = {
     barcode,
     name,
     category,
-    unit: document.getElementById('pm-unit').value,
+    unit: unit,
     priceIQD,
     priceUSD: parseFloat(document.getElementById('pm-price-usd').value || (priceIQD / settings.exchangeRate).toFixed(2)),
     cost: parseFloat(document.getElementById('pm-cost').value || 0),
-    stock: parseInt(document.getElementById('pm-stock').value || 0),
-    minStock: parseInt(document.getElementById('pm-min-stock').value || 5),
+    stock: parseFloat(document.getElementById('pm-stock').value || 0),
+    minStock: parseFloat(document.getElementById('pm-min-stock').value || 5),
     emoji: document.getElementById('pm-emoji').value.trim() || '📦',
     notes: document.getElementById('pm-notes').value.trim(),
-    expiryDate: document.getElementById('pm-expiry-date').value
+    expiryDate: document.getElementById('pm-expiry-date').value,
+    bagWeight: (!isNaN(bagWeight) && bagWeight > 0 && (unit === 'كيلو' || unit === 'كيس')) ? bagWeight : null,
+    bagPrice: (!isNaN(bagPrice) && bagPrice > 0 && (unit === 'كيلو' || unit === 'كيس')) ? bagPrice : null
   };
 
   if (id) {
@@ -1794,8 +1977,10 @@ function addCategory() {
 }
 
 function deleteCategory(id) {
+  const cat = DB.getCategories().find(c => c.id === id);
   const cats = DB.getCategories().filter(c => c.id !== id);
   DB.saveCategories(cats);
+  if (cat) DB.addActivity('item_delete', { target: 'قسم', name: cat.name });
   renderCategoriesList();
   loadCategoryFilterSelect();
   showToast('تم حذف الفئة', 'success');
@@ -1858,6 +2043,7 @@ function addStockInline(productId) {
   p.stock += qty;
   DB.saveProducts(products);
   DB.addStockLog({ productId, productName: p.name, qty, cost: (p.cost || 0) * qty, note: 'إضافة مخزون' });
+  DB.addActivity('stock_add', { product: p.name, qty: qty, newStock: p.stock });
   input.value = '';
   loadInventoryPage();
   showToast(`تمت إضافة ${qty} ${p.unit} إلى ${p.name}`, 'success');
@@ -1890,6 +2076,7 @@ function addStock() {
   p.stock += qty;
   DB.saveProducts(products);
   DB.addStockLog({ productId, productName: p.name, qty, cost: (p.cost || 0) * qty, note });
+  DB.addActivity('stock_add', { product: p.name, qty: qty, newStock: p.stock });
   closeModal('stock-modal');
   loadInventoryPage();
   showToast(`تمت إضافة ${qty} ${p.unit} إلى ${p.name}`, 'success');
@@ -1904,9 +2091,11 @@ function loadCustomersPage() {
 }
 
 function searchCustomers(query) {
+  const q = query.toLowerCase();
   const customers = DB.getCustomers().filter(c =>
-    c.name.toLowerCase().includes(query.toLowerCase()) ||
-    c.phone.includes(query)
+    c.name.toLowerCase().includes(q) ||
+    c.phone.includes(q) ||
+    (c.customerNumber && c.customerNumber.toString().includes(q))
   );
   renderCustomersGrid(customers);
 }
@@ -1922,7 +2111,7 @@ function renderCustomersGrid(customers) {
       <div class="customer-card-header">
         <div class="customer-avatar">${c.name.charAt(0)}</div>
         <div class="customer-card-info">
-          <h4>${c.name}</h4>
+          <h4>${c.name} ${c.customerNumber ? `<span style="font-size:12px;color:var(--p);">#${c.customerNumber}</span>` : ''}</h4>
           <p>📞 ${c.phone}</p>
         </div>
       </div>
@@ -1942,12 +2131,390 @@ function renderCustomersGrid(customers) {
   `).join('');
 }
 
+function printCustomersTable() {
+  const customers = DB.getCustomers();
+  const debts = DB.getDebts();
+  const settings = DB.getSettings ? DB.getSettings() : {};
+  const storeName = settings.storeName || 'نظام الكاشير الذكي';
+
+  const debtorMap = {};
+  debts.forEach(d => {
+    if (!debtorMap[d.customerId]) debtorMap[d.customerId] = 0;
+    debtorMap[d.customerId] += Math.max(0, d.totalIQD - d.paidAmount);
+  });
+
+  const printWindow = window.open('', '_blank', 'width=900,height=700');
+  const now = new Date().toLocaleString('ar-IQ', { dateStyle: 'long', timeStyle: 'short' });
+  let totalAllDebts = 0;
+  let debtorsCount = 0;
+  
+  customers.forEach(c => { 
+    const d = debtorMap[c.id] || 0;
+    totalAllDebts += d;
+    if (d > 0) debtorsCount++;
+  });
+
+  let rows = '';
+  customers.forEach((c, index) => {
+    const debt = debtorMap[c.id] || 0;
+    const hasDebt = debt > 0;
+    rows += `
+      <tr class="${index % 2 === 0 ? 'even' : 'odd'}">
+        <td class="num-cell">${index + 1}</td>
+        <td class="name-cell">${c.name}</td>
+        <td>${c.customerNumber ? '<span class="badge">#' + c.customerNumber + '</span>' : '<span class="dash">—</span>'}</td>
+        <td dir="ltr" class="phone-cell">${c.phone || '<span class="dash">—</span>'}</td>
+        <td class="address-cell">${c.address || '<span class="dash">—</span>'}</td>
+        <td class="amount-cell ${hasDebt ? 'has-debt' : 'no-debt'}">${hasDebt ? formatIQD(debt) : 'لا توجد'}</td>
+      </tr>`;
+  });
+
+  const html = `
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>كشف حسابات العملاء</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap');
+    
+    :root {
+      --primary: #1e293b;
+      --secondary: #3b82f6;
+      --accent: #f59e0b;
+      --text: #334155;
+      --text-light: #64748b;
+      --bg: #f8fafc;
+      --border: #e2e8f0;
+      --danger: #ef4444;
+      --success: #10b981;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Cairo', Tahoma, Arial, sans-serif;
+      background: #fff;
+      color: var(--text);
+      line-height: 1.5;
+      padding: 0;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    .report-container {
+      max-width: 21cm;
+      margin: 0 auto;
+      padding: 40px;
+      background: #fff;
+    }
+
+    /* ===== HEADER ===== */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 2px solid var(--primary);
+      padding-bottom: 20px;
+      margin-bottom: 30px;
+    }
+    
+    .header-right h1 {
+      color: var(--primary);
+      font-size: 28px;
+      font-weight: 800;
+      margin-bottom: 5px;
+    }
+    
+    .header-right p {
+      color: var(--text-light);
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .header-left {
+      text-align: left;
+    }
+    
+    .brand-name {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--secondary);
+      margin-bottom: 5px;
+    }
+    
+    .print-date {
+      font-size: 12px;
+      color: var(--text-light);
+      background: var(--bg);
+      padding: 4px 12px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+    }
+
+    /* ===== SUMMARY CARDS ===== */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    
+    .summary-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 15px 20px;
+      display: flex;
+      flex-direction: column;
+      border-right: 4px solid var(--secondary);
+    }
+    
+    .summary-card.danger { border-right-color: var(--danger); }
+    .summary-card.warning { border-right-color: var(--accent); }
+    
+    .summary-title {
+      font-size: 12px;
+      color: var(--text-light);
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+    }
+    
+    .summary-value {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--primary);
+    }
+    
+    .summary-value.danger-text { color: var(--danger); }
+
+    /* ===== TABLE ===== */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 30px;
+    }
+    
+    thead th {
+      background: var(--primary);
+      color: #fff;
+      font-weight: 600;
+      font-size: 13px;
+      padding: 12px 15px;
+      text-align: right;
+      border: 1px solid var(--primary);
+    }
+    
+    thead th:first-child { border-radius: 0 8px 0 0; }
+    thead th:last-child { border-radius: 8px 0 0 0; }
+    
+    tbody tr {
+      border-bottom: 1px solid var(--border);
+    }
+    
+    tbody tr.even { background: #fdfdfd; }
+    tbody tr.odd { background: #fff; }
+    
+    tbody td {
+      padding: 12px 15px;
+      font-size: 14px;
+      font-weight: 600;
+      vertical-align: middle;
+    }
+    
+    .num-cell {
+      color: var(--text-light);
+      font-size: 13px;
+      width: 50px;
+      text-align: center;
+    }
+    
+    .name-cell {
+      font-weight: 700;
+      color: var(--primary);
+    }
+    
+    .badge {
+      background: #e0e7ff;
+      color: #4338ca;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    
+    .dash { color: #cbd5e0; }
+    
+    .amount-cell {
+      text-align: left;
+      font-weight: 800;
+      font-family: monospace;
+      font-size: 15px;
+    }
+    
+    .amount-cell.has-debt { color: var(--danger); }
+    .amount-cell.no-debt { color: var(--success); font-size: 13px; font-family: 'Cairo', sans-serif;}
+
+    /* ===== TOTAL ROW ===== */
+    .total-row {
+      background: var(--bg);
+      border-top: 2px solid var(--primary);
+      border-bottom: 2px solid var(--primary);
+    }
+    
+    .total-row td {
+      padding: 15px;
+      font-size: 16px;
+    }
+    
+    .total-label {
+      text-align: left;
+      font-weight: 800;
+      color: var(--primary);
+    }
+    
+    .total-amount {
+      text-align: left;
+      font-weight: 800;
+      color: var(--danger);
+      font-family: monospace;
+      font-size: 18px;
+    }
+
+    /* ===== FOOTER ===== */
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-top: 50px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+    
+    .signatures {
+      display: flex;
+      gap: 60px;
+    }
+    
+    .sig-box {
+      text-align: center;
+      width: 150px;
+    }
+    
+    .sig-line {
+      border-bottom: 1px dashed var(--text-light);
+      height: 40px;
+      margin-bottom: 5px;
+    }
+    
+    .sig-label {
+      font-size: 12px;
+      color: var(--text-light);
+      font-weight: 600;
+    }
+    
+    .doc-ref {
+      font-size: 11px;
+      color: #94a3b8;
+      text-align: left;
+    }
+
+    @media print {
+      @page { margin: 0; size: A4; }
+      body { margin: 0; }
+      .report-container { width: 100%; max-width: 100%; padding: 15mm 20mm; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="report-container">
+  
+  <div class="header">
+    <div class="header-right">
+      <h1>كشف حسابات العملاء</h1>
+      <p>تقرير شامل بأسماء العملاء والأرصدة المستحقة</p>
+    </div>
+    <div class="header-left">
+      <div class="brand-name">${storeName}</div>
+      <div class="print-date">تاريخ الطباعة: ${now}</div>
+    </div>
+  </div>
+
+  <div class="summary-grid">
+    <div class="summary-card">
+      <div class="summary-title">إجمالي العملاء المسجلين</div>
+      <div class="summary-value">${customers.length} عميل</div>
+    </div>
+    <div class="summary-card warning">
+      <div class="summary-title">عدد المديونين</div>
+      <div class="summary-value">${debtorsCount} عميل</div>
+    </div>
+    <div class="summary-card danger">
+      <div class="summary-title">إجمالي الديون المستحقة</div>
+      <div class="summary-value danger-text">${formatIQD(totalAllDebts)}</div>
+    </div>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="text-align: center;">#</th>
+        <th>اسم العميل</th>
+        <th>الرقم المخصص</th>
+        <th>رقم الهاتف</th>
+        <th>العنوان</th>
+        <th style="text-align: left;">الرصيد المستحق (د.ع)</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${rows}
+      <tr class="total-row">
+        <td colspan="5" class="total-label">الإجمالي الكلي للديون المستحقة:</td>
+        <td class="total-amount">${formatIQD(totalAllDebts)}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="footer">
+    <div class="signatures">
+      <div class="sig-box">
+        <div class="sig-line"></div>
+        <div class="sig-label">توقيع المحاسب</div>
+      </div>
+      <div class="sig-box">
+        <div class="sig-line"></div>
+        <div class="sig-label">توقيع المدير / الختم</div>
+      </div>
+    </div>
+    <div class="doc-ref">
+      نظام الكاشير الذكي<br>
+      رقم المستند: REF-${Date.now().toString().slice(-6)}
+    </div>
+  </div>
+
+</div>
+
+<script>
+  window.onload = function() { setTimeout(function(){ window.print(); }, 800); }
+</script>
+</body>
+</html>`;
+
+  printWindow.document.write(html);
+  printWindow.document.close();
+}
+
 function openCustomerModal() {
   document.getElementById('customer-modal-title').textContent = 'إضافة عميل جديد';
   document.getElementById('cm-id').value = '';
   document.getElementById('cm-name').value = '';
+  document.getElementById('cm-number').value = '';
   document.getElementById('cm-phone').value = '';
   document.getElementById('cm-address').value = '';
+  document.getElementById('cm-old-debt').value = '';
+  document.getElementById('cm-old-debt').disabled = false; // Allow adding old debt for new customer
   document.getElementById('cm-notes').value = '';
   openModal('customer-modal');
 }
@@ -1955,11 +2522,14 @@ function openCustomerModal() {
 function editCustomer(id) {
   const c = DB.getCustomers().find(c => c.id === id);
   if (!c) return;
-  document.getElementById('customer-modal-title').textContent = 'تعديل العميل';
+  document.getElementById('customer-modal-title').textContent = 'تعديل بيانات العميل';
   document.getElementById('cm-id').value = c.id;
   document.getElementById('cm-name').value = c.name;
+  document.getElementById('cm-number').value = c.customerNumber || '';
   document.getElementById('cm-phone').value = c.phone;
   document.getElementById('cm-address').value = c.address || '';
+  document.getElementById('cm-old-debt').value = c.oldDebt || '';
+  document.getElementById('cm-old-debt').disabled = true; // Don't allow editing old debt once created to avoid math bugs
   document.getElementById('cm-notes').value = c.notes || '';
   openModal('customer-modal');
 }
@@ -1967,11 +2537,14 @@ function editCustomer(id) {
 function saveCustomer() {
   const id = document.getElementById('cm-id').value;
   const name = document.getElementById('cm-name').value.trim();
+  const customerNumber = document.getElementById('cm-number').value.trim();
   const phone = document.getElementById('cm-phone').value.trim();
+  const oldDebtInput = document.getElementById('cm-old-debt').value;
   if (!name) { showToast('أدخل اسم العميل', 'warning'); return; }
 
   const data = {
     name,
+    customerNumber,
     phone,
     address: document.getElementById('cm-address').value.trim(),
     notes: document.getElementById('cm-notes').value.trim()
@@ -1981,9 +2554,11 @@ function saveCustomer() {
     DB.updateCustomer(id, data);
     showToast('تم تحديث العميل', 'success');
   } else {
+    data.oldDebt = oldDebtInput ? parseFloat(oldDebtInput) : 0;
+    data.oldDebtPaid = 0;
     DB.addCustomer(data);
     showToast('تمت إضافة العميل', 'success');
-    DB.addActivity('customer_add', { name: data.name, phone: data.phone });
+    DB.addActivity('customer_add', { name: data.name, phone: data.phone, oldDebt: data.oldDebt });
   }
 
   closeModal('customer-modal');
@@ -1995,6 +2570,7 @@ async function deleteCustomer(id) {
   if (!c) return;
   if (!(await showConfirm(`هل تريد حذف العميل "${c.name}"؟`))) return;
   DB.deleteCustomer(id);
+  DB.addActivity('item_delete', { target: 'عميل', name: c.name });
   loadCustomersPage();
   showToast('تم حذف العميل', 'success');
 }
@@ -2492,10 +3068,12 @@ function renderDebtorsList(query = '') {
   const debtorMap = {};
   debts.forEach(d => {
     if (!debtorMap[d.customerId]) {
+      const c = customers.find(x => x.id === d.customerId);
       debtorMap[d.customerId] = {
         customerId: d.customerId,
         customerName: d.customerName,
         customerPhone: d.customerPhone,
+        customerNumber: c ? c.customerNumber : null,
         totalDebt: 0,
         pendingCount: 0,
         debts: []
@@ -2510,8 +3088,11 @@ function renderDebtorsList(query = '') {
   let debtors = Object.values(debtorMap).filter(d => d.totalDebt > 0 || d.pendingCount > 0);
 
   if (query) {
+    const q = query.toLowerCase();
     debtors = debtors.filter(d =>
-      d.customerName.includes(query) || d.customerPhone?.includes(query)
+      d.customerName.toLowerCase().includes(q) || 
+      d.customerPhone?.includes(q) ||
+      (d.customerNumber && d.customerNumber.toString().includes(q))
     );
   }
 
@@ -2560,6 +3141,10 @@ function showDebtorDetail(customerId) {
   const totalOriginal = debts.reduce((s, d) => s + d.totalIQD, 0);
   const totalPaid = debts.reduce((s, d) => s + d.paidAmount, 0);
 
+  const oldDebtAmount = customer?.oldDebt || 0;
+  const oldDebtPaid = customer?.oldDebtPaid || 0;
+  const oldDebtRemaining = Math.max(0, oldDebtAmount - oldDebtPaid);
+
   const panel = document.getElementById('debt-detail-panel');
 
   panel.innerHTML = `
@@ -2572,39 +3157,71 @@ function showDebtorDetail(customerId) {
           <p>📞 ${customer?.phone || debts[0]?.customerPhone || 'غير محدد'} | 📍 ${customer?.address || ''}</p>
         </div>
       </div>
+    </div>
+
+    <!-- الديون القديمة (إن وجدت) -->
+    ${oldDebtAmount > 0 ? `
+    <div style="margin:20px; padding:20px; background:rgba(255,165,2,0.1); border:1px solid rgba(255,165,2,0.3); border-radius:12px;">
+      <h3 style="color:var(--warn); margin-bottom:15px; font-size:16px;">⏳ سجل الديون السابقة (القديمة)</h3>
+      <div class="debt-detail-totals" style="grid-template-columns: repeat(3, 1fr);">
+        <div class="debt-total-pill orange" style="background:var(--card)">
+          <span class="debt-total-pill-label">إجمالي الدين القديم</span>
+          ${formatIQD(oldDebtAmount)}
+        </div>
+        <div class="debt-total-pill green" style="background:var(--card)">
+          <span class="debt-total-pill-label">ما تم تسديده</span>
+          ${formatIQD(oldDebtPaid)}
+        </div>
+        <div class="debt-total-pill red" style="background:var(--card)">
+          <span class="debt-total-pill-label">المتبقي من القديم</span>
+          ${formatIQD(oldDebtRemaining)}
+        </div>
+      </div>
+      ${oldDebtRemaining > 0 ? `
+      <div style="margin-top:15px; text-align:left;">
+        <button class="btn-primary" onclick="openOldDebtPayModal('${customerId}')" style="background:var(--warn); color:#000;">
+          💳 تسديد من الدين القديم
+        </button>
+      </div>
+      ` : `<div style="margin-top:15px; color:var(--success); font-weight:bold;">✅ تم تسديد الدين القديم بالكامل</div>`}
+    </div>
+    ` : ''}
+
+    <!-- الديون الجديدة -->
+    <div style="margin:20px 20px 0;">
+      <h3 style="color:var(--p); margin-bottom:15px; font-size:16px;">🆕 الديون الجديدة (فواتير النظام)</h3>
       <div class="debt-detail-totals">
         <div class="debt-total-pill red">
-          <span class="debt-total-pill-label">إجمالي المتبقي</span>
+          <span class="debt-total-pill-label">إجمالي المتبقي الجديد</span>
           ${formatIQD(totalDebt)}
-          <div style="font-size:11px;margin-top:2px;opacity:0.8">$${(totalDebt / settings.exchangeRate).toFixed(2)}</div>
         </div>
         <div class="debt-total-pill green">
-          <span class="debt-total-pill-label">المسدد</span>
+          <span class="debt-total-pill-label">مسدد من الجديد</span>
           ${formatIQD(totalPaid)}
         </div>
         <div class="debt-total-pill orange">
-          <span class="debt-total-pill-label">الإجمالي الأصلي</span>
+          <span class="debt-total-pill-label">إجمالي الفواتير</span>
           ${formatIQD(totalOriginal)}
         </div>
       </div>
+      
       ${totalDebt > 0 ? `
       <div style="margin-top:15px;">
         <button class="btn-pay-debt-full" onclick="openGlobalDebtPayModal('${customerId}')">
           <span style="font-size:22px;">💳</span>
           <div style="text-align:right;flex:1;">
-            <div style="font-size:15px;font-weight:800;">بلغ جزئي أو كلي من إجمالي الديون</div>
-            <div style="font-size:13px;opacity:0.85;margin-top:3px;">المتبقى: ${formatIQD(totalDebt)}</div>
+            <div style="font-size:15px;font-weight:800;">تسديد دفعة من الديون الجديدة</div>
+            <div style="font-size:13px;opacity:0.85;margin-top:3px;">المتبقي: ${formatIQD(totalDebt)}</div>
           </div>
           <span style="font-size:20px;">←</span>
         </button>
       </div>
       ` : ''}
-
     </div>
 
-    <!-- قائمة عمليات الدين -->
-    <div class="debt-transactions-list">
-      ${debts.length === 0 ? '<div class="debt-detail-empty"><span>✅</span><p>لا توجد ديون</p></div>' :
+    <!-- قائمة فواتير الديون الجديدة -->
+    <div class="debt-transactions-list" style="margin-top:0;">
+      ${debts.length === 0 ? '<div class="debt-detail-empty"><span>📋</span><p>لا توجد فواتير ديون جديدة</p></div>' :
       [...debts].reverse().map((debt, idx) => renderDebtTransactionCard(debt, idx)).join('')}
     </div>
   `;
@@ -2711,7 +3328,8 @@ function toggleDebtCard(debtId) {
 async function deleteDebtEntry(debtId) {
   if (!(await showConfirm('هل تريد حذف هذا السجل؟ لا يمكن التراجع!'))) return;
   DB.deleteDebt(debtId);
-  showToast('تم حذف سجل الدين', 'success');
+  DB.addActivity('item_delete', { target: 'سجل دين', name: `تم حذف قيد دين` });
+  showToast('تم حذف القيد بنجاح', 'success');
   updateDebtNavBadge();
   loadDebtsPage();
 }
@@ -2807,6 +3425,10 @@ function submitBulkDebtPayment() {
   showToast(`تم سداد ${formatIQD(paidTotal)} بنجاح`, 'success');
   
   const customer = DB.getCustomers().find(c => c.id === customerId);
+  if (customer && paidTotal > 0) {
+    customer.lastPaymentDate = new Date().toISOString();
+    DB.updateCustomer(customer.id, customer);
+  }
   const payMsg = `💳 *تسديد دفعة ديون*\nالعميل: ${customer ? customer.name : 'غير معروف'}\nالمبلغ المسدد: ${formatIQD(paidTotal)}`;
   sendTelegramMessage(payMsg);
   DB.addActivity('debt_pay', { customer: customer ? customer.name : 'غير معروف', amount: paidTotal });
@@ -2922,6 +3544,12 @@ async function submitDebtPayment() {
     cashier: document.getElementById('current-user').textContent
   });
 
+  const cst = DB.getCustomers().find(c => c.id === debt.customerId);
+  if (cst) {
+    cst.lastPaymentDate = new Date().toISOString();
+    DB.updateCustomer(cst.id, cst);
+  }
+
   closeModal('debt-pay-modal');
   updateDebtNavBadge();
   showToast(`✅ تم تسجيل دفعة ${formatIQD(amountIQD)} على ${debt.customerName}`, 'success');
@@ -2932,6 +3560,75 @@ async function submitDebtPayment() {
 
   loadDebtsPage();
   showDebtorDetail(debt.customerId);
+}
+
+// --------- تسديد الديون القديمة ---------
+function openOldDebtPayModal(customerId) {
+  const customer = DB.getCustomers().find(c => c.id === customerId);
+  if (!customer) return;
+  
+  const oldDebtRemaining = Math.max(0, (customer.oldDebt || 0) - (customer.oldDebtPaid || 0));
+  
+  document.getElementById('odpm-customer-id').value = customerId;
+  document.getElementById('odpm-remaining').textContent = formatIQD(oldDebtRemaining);
+  document.getElementById('odpm-amount').value = '';
+  document.getElementById('odpm-result').style.display = 'none';
+  
+  openModal('old-debt-pay-modal');
+}
+
+function calcOldDebtRemaining() {
+  const customerId = document.getElementById('odpm-customer-id').value;
+  const customer = DB.getCustomers().find(c => c.id === customerId);
+  const oldDebtRemaining = Math.max(0, (customer.oldDebt || 0) - (customer.oldDebtPaid || 0));
+  
+  const amount = parseFloat(document.getElementById('odpm-amount').value) || 0;
+  const newRemaining = Math.max(0, oldDebtRemaining - amount);
+  
+  const resultDiv = document.getElementById('odpm-result');
+  resultDiv.style.display = 'block';
+  if (amount > oldDebtRemaining) {
+    resultDiv.innerHTML = `<span style="color:var(--danger)">المبلغ أكبر من الدين القديم المتبقي! (المتبقي: ${formatIQD(oldDebtRemaining)})</span>`;
+    document.getElementById('odpm-submit').disabled = true;
+  } else {
+    resultDiv.innerHTML = `المتبقي بعد السداد: <strong>${formatIQD(newRemaining)}</strong>`;
+    document.getElementById('odpm-submit').disabled = false;
+  }
+}
+
+function submitOldDebtPayment() {
+  const customerId = document.getElementById('odpm-customer-id').value;
+  const amount = parseFloat(document.getElementById('odpm-amount').value) || 0;
+  
+  if (amount <= 0) {
+    showToast('يرجى إدخال مبلغ صحيح', 'warning');
+    return;
+  }
+
+  const customer = DB.getCustomers().find(c => c.id === customerId);
+  if (!customer) return;
+
+  const oldDebtRemaining = Math.max(0, (customer.oldDebt || 0) - (customer.oldDebtPaid || 0));
+  if (amount > oldDebtRemaining) {
+    showToast('المبلغ أكبر من الدين القديم المتبقي', 'error');
+    return;
+  }
+
+  // Update customer
+  customer.oldDebtPaid = (customer.oldDebtPaid || 0) + amount;
+  customer.lastPaymentDate = new Date().toISOString();
+  DB.updateCustomer(customer.id, customer);
+
+  // Notify and log
+  showToast(`تم تسديد ${formatIQD(amount)} من الدين القديم لـ ${customer.name}`, 'success');
+  
+  const payMsg = `💰 *تسديد دين قديم*\nالعميل: ${customer.name}\nالمبلغ المسدد: ${formatIQD(amount)}`;
+  if (typeof sendTelegramMessage === 'function') sendTelegramMessage(payMsg);
+  
+  DB.addActivity('old_debt_pay', { customer: customer.name, amount: amount });
+
+  closeModal('old-debt-pay-modal');
+  showDebtorDetail(customerId); // refresh view
 }
 
 // --------- طباعة تفاصيل الدين ---------
@@ -3068,23 +3765,77 @@ function switchPosMobileView(view) {
   }
 }
 
-function scheduleMidnightReport() {
-  setInterval(() => {
-    const now = new Date();
-    // Check if it's 23:59 (11:59 PM)
-    if (now.getHours() === 23 && now.getMinutes() >= 59) {
-      const dateStr = now.toLocaleDateString('en-GB');
-      const lastSent = localStorage.getItem('last_daily_report_date');
-      if (lastSent !== dateStr) {
-        sendDailyReportToTelegram();
-        localStorage.setItem('last_daily_report_date', dateStr);
+function checkOverdueDebtsAlert() {
+  const todayStr = new Date().toISOString().split('T')[0];
+  const lastAlert = localStorage.getItem('last_debt_alert_date');
+  if (lastAlert === todayStr) return; // Already sent today
+  
+  const customers = DB.getCustomers();
+  const debts = DB.getDebts();
+  const now = Date.now(), thirtyDays = 30 * 24 * 60 * 60 * 1000;
+  
+  let alertText = "";
+  let lateCount = 0;
+  
+  customers.forEach(c => {
+    const cDebts = debts.filter(d => d.customerId === c.id);
+    const invoicesDebt = cDebts.reduce((sum, d) => sum + Math.max(0, d.totalIQD - d.paidAmount), 0);
+    const oldDebt = Math.max(0, (c.oldDebt || 0) - (c.oldDebtPaid || 0));
+    const totalDebt = invoicesDebt + oldDebt;
+    
+    if (totalDebt > 0) {
+      let lastActivityDate = new Date(c.joinDate || Date.now()).getTime();
+      cDebts.forEach(d => {
+         const dTime = new Date(d.date).getTime();
+         if (dTime > lastActivityDate) lastActivityDate = dTime;
+         (d.payments || []).forEach(p => {
+           const pTime = new Date(p.date).getTime();
+           if (pTime > lastActivityDate) lastActivityDate = pTime;
+         });
+      });
+      if (c.lastPaymentDate) {
+         const pTime = new Date(c.lastPaymentDate).getTime();
+         if (pTime > lastActivityDate) lastActivityDate = pTime;
+      }
+      
+      const daysPassed = Math.floor((now - lastActivityDate) / (24*60*60*1000));
+      if (daysPassed >= 30) {
+        alertText += `\n👤 العميل: ${c.name}\n💰 الدين: ${formatIQD(totalDebt)}\n⏳ متأخر: ${daysPassed} يوم\n`;
+        lateCount++;
       }
     }
-  }, 60000); // Check every minute
+  });
+
+  if (lateCount > 0) {
+    sendTelegramMessage(`⚠️ *تنبيه: ${lateCount} عملاء تأخروا في سداد الديون لأكثر من 30 يوم* ⚠️\n${alertText}`);
+  }
+  
+  localStorage.setItem('last_debt_alert_date', todayStr);
+}
+
+function schedulePeriodicReport() {
+  setInterval(() => {
+    const now = new Date();
+    const h = now.getHours();
+    const m = now.getMinutes();
+    
+    // Check for overdue debts daily
+    checkOverdueDebtsAlert();
+    
+    // Trigger at 05:59, 11:59, 17:59, 23:59
+    if ((h === 5 || h === 11 || h === 17 || h === 23) && m >= 59) {
+      const dateStr = now.toLocaleDateString('en-GB');
+      const lastSentKey = `last_report_${dateStr}_${h}`;
+      if (!localStorage.getItem(lastSentKey)) {
+        sendDailyReportToTelegram();
+        localStorage.setItem(lastSentKey, 'true');
+      }
+    }
+  }, 30000); // Check every 30 seconds
 }
 
 // Call on startup
-document.addEventListener('DOMContentLoaded', scheduleMidnightReport);
+document.addEventListener('DOMContentLoaded', schedulePeriodicReport);
 
 // --- Telegram Integration ---
 function sendTelegramMessage(text) {
@@ -3148,7 +3899,7 @@ function sendDailyReportToTelegram() {
   // Net cash for the day: Cash Sales + Debt Payments - Returns
   const netCash = salesCash + totalDebtPaid - totalReturns;
   
-  const msg = `📊 *تقرير نهاية اليوم*
+  const msg = `📊 *تقرير المبيعات (تحديث دوري)*
 📅 التاريخ: ${new Date().toLocaleDateString('ar-IQ')}
 💰 مبيعات نقداً: ${formatIQD(salesCash)}
 💳 مبيعات بطاقة: ${formatIQD(salesCard)}
@@ -3160,7 +3911,7 @@ function sendDailyReportToTelegram() {
 💸 **صافي الصندوق نقداً: ${formatIQD(netCash)}**`;
 
   sendTelegramMessage(msg);
-  showToast('تم إرسال التقرير اليومي إلى التليجرام', 'success');
+  showToast('تم إرسال تقرير المبيعات الدوري إلى التليجرام', 'success');
 }
 
 
