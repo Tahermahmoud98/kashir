@@ -136,7 +136,26 @@ window.addEventListener('load', () => {
     document.getElementById('splash-screen').style.transition = 'opacity 0.5s';
     setTimeout(() => {
       document.getElementById('splash-screen').style.display = 'none';
-      document.getElementById('login-screen').style.display = 'block';
+      
+      // التحقق من وجود جلسة مسجلة مسبقاً
+      const savedUser = localStorage.getItem('pos_current_user');
+      const savedPermissions = localStorage.getItem('pos_user_permissions');
+      
+      if (savedUser && savedPermissions) {
+        state.currentUser = savedUser;
+        try {
+          state.userPermissions = JSON.parse(savedPermissions);
+        } catch(e) {
+          state.userPermissions = { pos: true, products: false, inventory: false, reports: false, settings: false, delete: false };
+        }
+        
+        document.getElementById('login-screen').style.display = 'none';
+        document.getElementById('main-app').style.display = 'flex';
+        document.getElementById('current-user').textContent = state.currentUser;
+        initApp();
+      } else {
+        document.getElementById('login-screen').style.display = 'block';
+      }
     }, 500);
   }, 2000);
 });
@@ -174,6 +193,8 @@ function login() {
   if (username === 'admin' && password === settings.password) {
     state.currentUser = 'admin';
     state.userPermissions = { pos: true, products: true, inventory: true, reports: true, settings: true, delete: true };
+    localStorage.setItem('pos_current_user', 'admin');
+    localStorage.setItem('pos_user_permissions', JSON.stringify(state.userPermissions));
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('main-app').style.display = 'flex';
     document.getElementById('current-user').textContent = username;
@@ -195,6 +216,8 @@ function login() {
       settings: matchedEmp.role === 'مدير',
       delete: matchedEmp.role === 'مدير'
     };
+    localStorage.setItem('pos_current_user', matchedEmp.name);
+    localStorage.setItem('pos_user_permissions', JSON.stringify(state.userPermissions));
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('main-app').style.display = 'flex';
     document.getElementById('current-user').textContent = matchedEmp.name;
@@ -321,6 +344,8 @@ function playErrorSound() {
 
 async function logout() {
   if (await showConfirm('هل تريد تسجيل الخروج؟')) {
+    localStorage.removeItem('pos_current_user');
+    localStorage.removeItem('pos_user_permissions');
     document.getElementById('main-app').style.display = 'none';
     document.getElementById('login-screen').style.display = 'block';
     state.cart = [];
@@ -374,15 +399,22 @@ function initApp() {
   state.currentBranch = 'main';
   state.currentWarehouse = 'main';
 
-  // إخفاء أو إظهار إدارة الموظفين للمسؤول الرئيسي فقط
+  // إخفاء أو إظهار إدارة الموظفين ولوحة الإدارة للمسؤول الرئيسي فقط
   const navEmployees = document.getElementById('nav-employees');
   const homeCardEmployees = document.getElementById('home-card-employees');
+  const navAdmin = document.getElementById('nav-admin');
+  const homeCardAdmin = document.getElementById('home-card-admin');
+
   if (state.currentUser === 'admin') {
     if (navEmployees) navEmployees.style.display = 'flex';
     if (homeCardEmployees) homeCardEmployees.style.display = 'block';
+    if (navAdmin) navAdmin.style.display = 'flex';
+    if (homeCardAdmin) homeCardAdmin.style.display = 'block';
   } else {
     if (navEmployees) navEmployees.style.display = 'none';
     if (homeCardEmployees) homeCardEmployees.style.display = 'none';
+    if (navAdmin) navAdmin.style.display = 'none';
+    if (homeCardAdmin) homeCardAdmin.style.display = 'none';
   }
 
   loadSettings();
@@ -426,7 +458,14 @@ function showPage(page) {
   const pageEl = document.getElementById('page-' + page);
   if (pageEl) pageEl.classList.add('active');
 
-  const navEl = document.getElementById('nav-' + page);
+  // تعيين الرابط النشط في القائمة الجانبية بناءً على المجموعات الجديدة
+  let activeNavId = 'nav-' + page;
+  if (['products', 'inventory', 'barcode'].includes(page)) activeNavId = 'nav-products';
+  else if (['debts', 'customers'].includes(page)) activeNavId = 'nav-debts';
+  else if (['dashboard', 'reports', 'sales', 'archive', 'accounts', 'activitylog'].includes(page)) activeNavId = 'nav-dashboard';
+  else if (['settings', 'printing', 'notifications', 'backup'].includes(page)) activeNavId = 'nav-settings';
+
+  const navEl = document.getElementById(activeNavId);
   if (navEl) navEl.classList.add('active');
 
   const titles = {
@@ -997,6 +1036,9 @@ function loadPOS() {
   renderCart();
   loadCustomerSelect();
   updateQuickAmounts();
+  if (window.innerWidth <= 992) {
+    switchPosMobileView('products');
+  }
 }
 
 function loadCategoryTabs() {
@@ -3205,8 +3247,7 @@ function checkLowStock() {
   const settings = DB.getSettings();
   const lowStockItems = products.filter(p => p.stock <= (p.minStock || settings.minStock));
 
-  document.getElementById('notif-count').textContent = lowStockItems.length;
-
+  // تحديث قائمة لوحة الجرس (الهيدر) بالمخزون المنخفض فقط
   const list = document.getElementById('notifications-list');
   if (list) {
     list.innerHTML = lowStockItems.length ? lowStockItems.map(p => `
@@ -3219,11 +3260,30 @@ function checkLowStock() {
       </div>
     `).join('') : '<p style="color:var(--text-muted);font-size:13px">✅ لا توجد تنبيهات</p>';
   }
+
+  // تحديث جميع الشارات والأعداد عبر النظام الموحد
+  if (typeof buildNotifications === 'function') {
+    const notifs = buildNotifications();
+    syncNotifBadges(notifs);
+  } else {
+    // fallback إذا لم تكن الدالة محملة بعد
+    document.getElementById('notif-count').textContent = lowStockItems.length;
+  }
 }
 
 function toggleNotifications() {
   const panel = document.getElementById('notifications-panel');
   panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+}
+
+// فتح لوحة الإشعارات (يُستدعى من بطاقة التنبيهات في الشاشة الرئيسية)
+function openNotificationsPanel() {
+  const panel = document.getElementById('notifications-panel');
+  if (panel) {
+    panel.style.display = 'block';
+    // تأكد من أن checkLowStock تُشغَّل حتى يتحدث المحتوى
+    checkLowStock();
+  }
 }
 
 // ========= أدوات مساعدة =========
@@ -3557,6 +3617,20 @@ function renderDebtorsList(query = '') {
 }
 
 function showDebtorDetail(customerId) {
+  if (selectedDebtorId === customerId) {
+    selectedDebtorId = null;
+    document.querySelectorAll('.debtor-item').forEach(el => el.classList.remove('active'));
+    const panel = document.getElementById('debt-detail-panel');
+    if (panel) {
+      panel.innerHTML = `
+        <div class="debt-detail-empty">
+          <span>💳</span>
+          <p>اختر عميلاً لعرض تفاصيل ديونه</p>
+        </div>`;
+    }
+    return;
+  }
+
   selectedDebtorId = customerId;
 
   // تحديث التحديد في القائمة
@@ -4344,6 +4418,57 @@ function sendDailyReportToTelegram() {
 
   sendTelegramMessage(msg);
   showToast('تم إرسال تقرير المبيعات الدوري إلى التليجرام', 'success');
+}
+
+function sendReportsToAdmin() {
+  const from = document.getElementById('report-from').value;
+  const to = document.getElementById('report-to').value;
+
+  if (!from || !to) {
+    showToast('يرجى تحديد فترة التقرير أولاً', 'error');
+    return;
+  }
+
+  const invoices = DB.getInvoices().filter(inv => {
+    const d = inv.date.split('T')[0];
+    return d >= from && d <= to;
+  });
+
+  const totalSales = invoices.reduce((s, inv) => s + inv.total, 0);
+  const totalProfit = invoices.reduce((s, inv) => s + calculateInvoiceProfit(inv), 0);
+  const itemsSold = invoices.reduce((s, inv) => s + inv.items.reduce((q, i) => q + i.qty, 0), 0);
+  const avgInvoice = invoices.length ? totalSales / invoices.length : 0;
+
+  const msg = `📊 *تقرير مبيعات المحل (للإدارة)*
+📅 الفترة: من ${from} إلى ${to}
+💰 إجمالي المبيعات: ${formatIQD(totalSales)}
+📈 إجمالي الأرباح: ${formatIQD(totalProfit)}
+🧾 عدد الفواتير: ${invoices.length}
+📦 المنتجات المباعة: ${itemsSold}
+📊 متوسط الفاتورة: ${formatIQD(avgInvoice)}
+================
+👤 مرسل بواسطة: ${state.currentUser || localStorage.getItem('pos_current_user') || 'موظف الكاشير'}`;
+
+  sendTelegramMessage(msg);
+  
+  // مزامنة التقرير مع لوحة المدير الرئيسي فوراً عبر Firebase
+  logActivity('report_submit', {
+    from: from,
+    to: to,
+    totalSales: totalSales,
+    totalProfit: totalProfit,
+    invoicesCount: invoices.length,
+    itemsSold: itemsSold,
+    avgInvoice: avgInvoice,
+    cashier: state.currentUser || localStorage.getItem('pos_current_user') || 'الكاشير'
+  });
+  
+  // تحديث وقت آخر تقرير لمنع التقرير التلقائي من الإرسال خلال الـ 6 ساعات القادمة
+  if (typeof window.setFirebaseLastReportTime === 'function') {
+    window.setFirebaseLastReportTime(Date.now());
+  }
+
+  showToast('تم إرسال التقرير المالي للمدير عبر تليجرام ولوحة الإدارة بنجاح', 'success');
 }
 
 
@@ -6081,35 +6206,45 @@ function generateBarcodePreview() {
 
   let barcodeValue = '';
   let label = '';
+  let priceStr = '';
+  let storeName = DB.getSettings().storeName || 'سوبرماركت';
 
   if (manual && manual.value.trim()) {
     barcodeValue = manual.value.trim();
-    label = barcodeValue;
+    label = 'كود يدوي';
   } else if (sel && sel.value) {
-    const opt = sel.options[sel.selectedIndex];
-    barcodeValue = opt.dataset.barcode || sel.value;
-    label = opt.text;
-    if (!barcodeValue) barcodeValue = sel.value;
+    const products = DB.getProducts();
+    const p = products.find(x => x.id === sel.value);
+    if (p) {
+      barcodeValue = p.barcode;
+      label = p.name;
+      const exchangeRate = DB.getSettings().exchangeRate || 1500;
+      const priceUSD = p.priceUSD || (p.priceIQD / exchangeRate);
+      priceStr = `${p.priceIQD.toLocaleString()} د.ع | $${priceUSD.toFixed(2)}`;
+    }
   }
 
   if (!barcodeValue) {
-    previewArea.innerHTML = '<p style="color:#999;">اختر منتجاً أو أدخل رقماً لعرض الباركود</p>';
+    previewArea.innerHTML = '<p style="color:var(--text-secondary); font-size: 14px; margin:0;">اختر منتجاً أو أدخل رقماً لعرض الباركود</p>';
     return;
   }
 
   // عرض بصري بسيط للباركود (خطوط)
   const bars = barcodeValue.split('').map(ch => {
     const w = (ch.charCodeAt(0) % 3) + 1;
-    return `<div style="display:inline-block;width:${w * 2}px;height:60px;background:#000;margin:0 1px;"></div>`;
+    return `<div style="display:inline-block;width:${w * 2}px;height:55px;background:#000;margin:0 1px;"></div>`;
   }).join('');
 
+  // عرض الملصق كشكل ملصق حراري حقيقي
   previewArea.innerHTML = `
-    <div style="padding:16px; display:inline-block; background:white; border-radius:8px;">
-      <div style="display:flex; align-items:flex-end; gap:1px; justify-content:center; margin-bottom:8px;">
+    <div class="physical-sticker" style="width: 260px; background: #ffffff; padding: 16px; border-radius: 8px; border: 1px solid #cbd5e1; box-shadow: 0 10px 25px rgba(0,0,0,0.06); text-align: center; font-family: inherit; color: #0f172a; direction: rtl; margin: 0 auto;">
+      <div style="font-size: 11px; font-weight: 700; color: #64748b; letter-spacing: 0.5px; border-bottom: 1px dashed #e2e8f0; padding-bottom: 6px; margin-bottom: 10px;">${storeName}</div>
+      <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${label}</div>
+      <div style="display: flex; align-items: flex-end; gap: 1px; justify-content: center; margin-bottom: 6px; padding: 6px; background: #f8fafc; border-radius: 4px;">
         ${bars}
       </div>
-      <div style="font-size:14px; color:#333; font-weight:600;">${barcodeValue}</div>
-      ${label !== barcodeValue ? `<div style="font-size:12px; color:#666; margin-top:4px;">${label}</div>` : ''}
+      <div style="font-family: monospace; font-size: 12px; color: #475569; font-weight: 600; margin-bottom: 8px;">${barcodeValue}</div>
+      ${priceStr ? `<div style="font-size: 13px; font-weight: 800; color: #00c896; background: rgba(0, 200, 150, 0.08); padding: 4px 8px; border-radius: 6px; display: inline-block;">${priceStr}</div>` : ''}
     </div>
   `;
 }
@@ -6127,7 +6262,93 @@ function printBarcodeLabel() {
   win.close();
 }
 
-function downloadBarcode() { showToast('ميزة التحميل قادمة قريباً', 'info'); }
+function downloadBarcode() {
+  const sel = document.getElementById('barcode-product-select');
+  const manual = document.getElementById('barcode-manual-input');
+  
+  let barcodeValue = '';
+  let label = '';
+  
+  if (manual && manual.value.trim()) {
+    barcodeValue = manual.value.trim();
+    label = barcodeValue;
+  } else if (sel && sel.value) {
+    const opt = sel.options[sel.selectedIndex];
+    barcodeValue = opt.dataset.barcode || sel.value;
+    label = opt.text;
+    if (!barcodeValue) barcodeValue = sel.value;
+  }
+  
+  if (!barcodeValue) {
+    showToast('الرجاء اختيار منتج أو إدخال كود لتنزيله', 'error');
+    return;
+  }
+  
+  try {
+    const canvas = document.createElement('canvas');
+    canvas.width = 250;
+    canvas.height = 140;
+    const ctx = canvas.getContext('2d');
+    
+    // Fill background with white
+    ctx.fillStyle = '#FFFFFF';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    // Draw barcode bars (using characters to generate widths dynamically)
+    let totalWidth = 0;
+    const barWidths = [];
+    for (let i = 0; i < barcodeValue.length; i++) {
+      const w = (barcodeValue.charCodeAt(i) % 3) + 1;
+      barWidths.push(w * 2);
+      totalWidth += w * 2 + 2;
+    }
+    
+    let startX = (canvas.width - totalWidth) / 2;
+    ctx.fillStyle = '#000000';
+    for (let i = 0; i < barcodeValue.length; i++) {
+      const w = barWidths[i];
+      ctx.fillRect(startX, 20, w, 60);
+      startX += w + 2;
+    }
+    
+    // Draw text values below the barcode
+    ctx.fillStyle = '#000000';
+    ctx.font = 'bold 14px Cairo, Arial, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText(barcodeValue, canvas.width / 2, 90);
+    
+    if (label && label !== barcodeValue) {
+      ctx.font = '12px Cairo, Arial, sans-serif';
+      ctx.fillStyle = '#555555';
+      ctx.fillText(label, canvas.width / 2, 110);
+    }
+    
+    // Create anchor and download
+    const link = document.createElement('a');
+    link.download = `barcode-${barcodeValue}.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+    showToast('تم تحميل ملصق الباركود بنجاح', 'success');
+  } catch (err) {
+    showToast('فشل تحميل الباركود: ' + err.message, 'error');
+  }
+}
+
+function updateLabelPreviewText() {
+  const size = document.getElementById('label-size').value;
+  const desc = document.getElementById('guide-size-desc');
+  if (!desc) return;
+  
+  if (size === 'small') {
+    desc.innerHTML = `📄 <strong>قالب 58mm:</strong> قالب طباعة حراري أحادي العمود، مثالي لطابعات الفواتير الصغيرة أو طابعات الموازين الإلكترونية.`;
+  } else if (size === 'medium') {
+    desc.innerHTML = `📄 <strong>قالب 80mm:</strong> قالب طباعة حراري ثنائي الأعمدة، مناسب لطابعات الباركود المخصصة للمحلات التجارية الكبيرة.`;
+  } else if (size === 'large') {
+    desc.innerHTML = `📄 <strong>قالب A4:</strong> ورقة طباعة مكتبية قياسية، تحتوي على شبكة من 24 ملصقاً (3 أعمدة × 8 صفوف)، مناسبة للطابعات المكتبية العادية.`;
+  }
+}
+
 function printPriceLabels() {
   const productId = document.getElementById('label-product-select').value;
   const qty = parseInt(document.getElementById('label-qty').value) || 1;
@@ -6275,15 +6496,22 @@ async function toggleCameraScanner() {
 
     if ('BarcodeDetector' in window) {
       const barcodeDetector = new BarcodeDetector({ formats: ['code_128', 'ean_13', 'ean_8', 'qr_code'] });
+      let lastCode = null;
+      let cooldown = false;
       scannerInterval = setInterval(async () => {
+        if (cooldown) return;
         try {
           const barcodes = await barcodeDetector.detect(video);
           if (barcodes.length > 0) {
             const code = barcodes[0].rawValue;
+            if (code === lastCode) return; // تجاهل نفس الباركود متتالياً
+            lastCode = code;
+            cooldown = true;
             document.getElementById('barcode-scanner-input').value = code;
             lookupScannedBarcode(code);
-            showToast('تم التقاط الباركود تلقائياً', 'success');
-            stopCameraScanner();
+            showToast('✅ تم التقاط الباركود — الكاميرا لا تزال مفتوحة', 'success');
+            // تأخير 2 ثانية قبل السماح بقراءة جديدة (لتجنب التكرار)
+            setTimeout(() => { cooldown = false; lastCode = null; }, 2000);
           }
         } catch (e) {}
       }, 500);
@@ -6344,23 +6572,30 @@ async function openGlobalScanner(targetFieldId, onSuccessCallback = null) {
 
     if ('BarcodeDetector' in window) {
       const barcodeDetector = new BarcodeDetector({ formats: ['code_128', 'ean_13', 'ean_8', 'qr_code'] });
+      let lastCode = null;
+      let cooldown = false;
       globalScannerInterval = setInterval(async () => {
+        if (cooldown) return;
         try {
           const barcodes = await barcodeDetector.detect(video);
           if (barcodes.length > 0) {
             const code = barcodes[0].rawValue;
+            if (code === lastCode) return; // تجاهل نفس الباركود متتالياً
+            lastCode = code;
+            cooldown = true;
             if (globalScannerTargetField) {
               globalScannerTargetField.value = code;
               globalScannerTargetField.dispatchEvent(new Event('input', { bubbles: true }));
               globalScannerTargetField.dispatchEvent(new Event('change', { bubbles: true }));
             }
-            showToast('تم قراءة الرمز: ' + code, 'success');
-            
+            showToast('✅ تم قراءة الرمز: ' + code + ' — الكاميرا لا تزال مفتوحة', 'success');
+
             if (typeof globalScannerOnSuccess === 'function') {
               globalScannerOnSuccess(code);
             }
-            
-            closeGlobalScanner();
+
+            // تأخير 2 ثانية قبل السماح بقراءة جديدة (لتجنب التكرار)
+            setTimeout(() => { cooldown = false; lastCode = null; }, 2000);
           }
         } catch (e) {}
       }, 500);
@@ -6444,82 +6679,281 @@ function testPrint() {
 // ============================================================
 // الإشعارات - Notifications Page
 // ============================================================
-function loadNotificationsPage() {
-  const products = DB.getProducts();
-  const now = new Date();
+// ============================================================
+// نظام التنبيهات الكامل - Full Notifications System
+// ============================================================
 
-  const lowStockProds = products.filter(p => p.stock <= p.minStock && p.stock >= 0);
-  const expiringProds = products.filter(p => {
+// بناء قائمة التنبيهات الكاملة من بيانات النظام
+function buildNotifications() {
+  const products  = DB.getProducts();
+  const allDebts  = DB.getDebts  ? DB.getDebts()  : [];
+  const now       = new Date();
+  const read      = JSON.parse(localStorage.getItem('pos_read_notifs') || '[]');
+  const notifs    = [];
+
+  // 1. نقص المخزون
+  products.filter(p => p.stock <= (p.minStock || 0) && p.stock > 0).forEach(p => {
+    notifs.push({
+      id:       `stock-low-${p.id}`,
+      cat:      'stock',
+      priority: 'warning',
+      icon:     '⚠️',
+      title:    'نقص في المخزون',
+      msg:      `${p.name} — الكمية: ${p.stock} (الحد الأدنى: ${p.minStock || 0})`,
+      time:     null,
+      action:   () => showPage('inventory')
+    });
+  });
+
+  // 2. مخزون نفد بالكامل
+  products.filter(p => p.stock === 0).forEach(p => {
+    notifs.push({
+      id:       `stock-out-${p.id}`,
+      cat:      'stock',
+      priority: 'danger',
+      icon:     '🚫',
+      title:    'نفد المخزون',
+      msg:      `${p.name} — لا توجد كميات متاحة`,
+      time:     null,
+      action:   () => showPage('inventory')
+    });
+  });
+
+  // 3. صلاحية قريبة (خلال 30 يوم)
+  products.filter(p => {
     if (!p.expiryDate) return false;
-    const diff = (new Date(p.expiryDate) - now) / (1000 * 60 * 60 * 24);
-    return diff <= 30 && diff >= 0;
-  });
-  const expiredProds = products.filter(p => {
-    if (!p.expiryDate) return false;
-    return new Date(p.expiryDate) < now;
-  });
-
-  const allDebts = DB.getDebts ? DB.getDebts() : [];
-  const pendingDebts = allDebts.filter(d => (d.remaining || 0) > 0);
-
-  const el = (id) => document.getElementById(id);
-  if (el('notif-low-stock-count')) el('notif-low-stock-count').textContent = lowStockProds.length;
-  if (el('notif-expiry-count')) el('notif-expiry-count').textContent = expiringProds.length + expiredProds.length;
-  if (el('notif-debt-count')) el('notif-debt-count').textContent = pendingDebts.length;
-
-  const list = document.getElementById('notifications-page-list');
-  const empty = document.getElementById('notifications-page-empty');
-
-  const notifications = [];
-
-  lowStockProds.forEach(p => {
-    notifications.push({ type: 'warning', icon: '⚠️', title: 'نقص في المخزون', msg: `${p.name} - الكمية: ${p.stock} (الحد الأدنى: ${p.minStock})`, action: () => showPage('inventory') });
+    const diff = (new Date(p.expiryDate) - now) / (1000*60*60*24);
+    return diff >= 0 && diff <= 30;
+  }).forEach(p => {
+    const diff = Math.ceil((new Date(p.expiryDate) - now) / (1000*60*60*24));
+    notifs.push({
+      id:       `expiry-soon-${p.id}`,
+      cat:      'expiry',
+      priority: diff <= 7 ? 'danger' : 'warning',
+      icon:     '📅',
+      title:    'قريب انتهاء الصلاحية',
+      msg:      `${p.name} — باقي ${diff} يوم (${new Date(p.expiryDate).toLocaleDateString('ar-IQ')})`,
+      time:     p.expiryDate,
+      action:   () => showPage('inventory')
+    });
   });
 
-  expiringProds.forEach(p => {
-    const diff = Math.ceil((new Date(p.expiryDate) - now) / (1000 * 60 * 60 * 24));
-    notifications.push({ type: 'danger', icon: '📅', title: 'قريب انتهاء الصلاحية', msg: `${p.name} - باقي ${diff} يوم`, action: () => showPage('inventory') });
+  // 4. صلاحية منتهية
+  products.filter(p => p.expiryDate && new Date(p.expiryDate) < now).forEach(p => {
+    notifs.push({
+      id:       `expiry-out-${p.id}`,
+      cat:      'expiry',
+      priority: 'danger',
+      icon:     '❌',
+      title:    'انتهت الصلاحية',
+      msg:      `${p.name} — انتهت في ${new Date(p.expiryDate).toLocaleDateString('ar-IQ')}`,
+      time:     p.expiryDate,
+      action:   () => showPage('inventory')
+    });
   });
 
-  expiredProds.forEach(p => {
-    notifications.push({ type: 'danger', icon: '❌', title: 'انتهت الصلاحية', msg: `${p.name} - انتهت في ${new Date(p.expiryDate).toLocaleDateString('ar-IQ')}`, action: () => showPage('inventory') });
+  // 5. ديون مستحقة
+  allDebts.filter(d => (d.remaining || 0) > 0).forEach(d => {
+    notifs.push({
+      id:       `debt-${d.id || d.customer}`,
+      cat:      'debt',
+      priority: 'info',
+      icon:     '💳',
+      title:    'تسديد ديون',
+      msg:      `${d.customer || 'عميل'} — المبلغ المتبقي: ${formatIQD(d.remaining || 0)}`,
+      time:     d.date || null,
+      payAction:`openGlobalDebtPayModal('${d.customerId || ''}')`,
+      action:   () => showPage('debts')
+    });
   });
 
-  pendingDebts.forEach(d => {
-    notifications.push({ type: 'info', icon: '💳', title: 'دين مستحق', msg: `دين بقيمة ${formatIQD(d.remaining || 0)}`, action: () => showPage('debts') });
+  // 6. إشعارات الدفعات المستلمة (آخر 7 أيام)
+  const activities = JSON.parse(localStorage.getItem('pos_activity_log') || '[]');
+  const recentPays = activities.filter(a => (a.type === 'debt_pay' || a.type === 'old_debt_pay') && a.timestamp);
+  
+  recentPays.forEach(pay => {
+    const payTime = new Date(pay.timestamp);
+    if ((now - payTime) / (1000*60*60*24) > 7) return; 
+
+    notifs.push({
+      id:       `pay-${pay.timestamp}`,
+      cat:      'pay',
+      priority: 'success',
+      icon:     '✅',
+      title:    'دفعة مستلمة',
+      msg:      `تم استلام مبلغ ${formatIQD(pay.amount)} من العميل ${pay.customer}`,
+      time:     pay.timestamp,
+      action:   () => showPage('activitylog')
+    });
   });
 
-  if (list) {
-    if (notifications.length === 0) {
-      list.innerHTML = '';
-      if (empty) empty.style.display = 'block';
-    } else {
-      if (empty) empty.style.display = 'none';
-      const colors = { warning: 'rgba(245,158,11,0.1)', danger: 'rgba(239,68,68,0.1)', info: 'rgba(6,182,212,0.1)' };
-      const borderColors = { warning: 'rgba(245,158,11,0.3)', danger: 'rgba(239,68,68,0.3)', info: 'rgba(6,182,212,0.3)' };
-      list.innerHTML = notifications.map((n, i) => `
-        <div style="padding:16px; background:${colors[n.type]}; border-right:4px solid ${borderColors[n.type]}; border-radius:var(--radius-md); display:flex; align-items:center; gap:12px; cursor:pointer;" onclick="notifAction(${i})">
-          <span style="font-size:24px;">${n.icon}</span>
-          <div>
-            <div style="font-weight:700;">${n.title}</div>
-            <div style="font-size:13px; color:var(--text-secondary);">${n.msg}</div>
-          </div>
-        </div>
-      `).join('');
-      window._notifActions = notifications.map(n => n.action);
-    }
+  // إضافة حقل isRead لكل تنبيه
+  notifs.forEach(n => { n.isRead = read.includes(n.id); });
+  return notifs;
+}
+
+// تحديث أرقام الإحصاء وشارات الهيدر/الرئيسية
+function syncNotifBadges(notifs) {
+  const el = id => document.getElementById(id);
+  const stock  = notifs.filter(n => n.cat === 'stock').length;
+  const expiry = notifs.filter(n => n.cat === 'expiry').length;
+  const debt   = notifs.filter(n => n.cat === 'debt').length;
+  const pay    = notifs.filter(n => n.cat === 'pay').length;
+  const unread = notifs.filter(n => !n.isRead).length;
+  const total  = notifs.length;
+
+  if (el('notif-low-stock-count')) el('notif-low-stock-count').textContent = stock;
+  if (el('notif-expiry-count'))    el('notif-expiry-count').textContent    = expiry;
+  if (el('notif-debt-count'))      el('notif-debt-count').textContent      = debt;
+  if (el('notif-pay-count'))       el('notif-pay-count').textContent       = pay;
+  if (el('notif-total-count'))     el('notif-total-count').textContent     = total;
+
+  // شارة الهيدر (جرس)
+  const headerBadge = el('notif-count');
+  if (headerBadge) headerBadge.textContent = unread;
+
+  // شارة بطاقة الرئيسية
+  const homeBadge = el('home-notif-badge');
+  if (homeBadge) {
+    homeBadge.textContent   = unread;
+    homeBadge.style.display = unread > 0 ? 'block' : 'none';
   }
 }
 
+// الحالة الحالية للفلتر
+let _notifCurrentFilter = 'all';
+let _notifAllData       = [];
+
+function loadNotificationsPage() {
+  _notifAllData = buildNotifications();
+  syncNotifBadges(_notifAllData);
+  renderNotifList(_notifAllData, _notifCurrentFilter);
+}
+
+function renderNotifList(notifs, filter) {
+  const list  = document.getElementById('notifications-page-list');
+  const empty = document.getElementById('notifications-page-empty');
+  if (!list) return;
+
+  // تحديث أزرار الفلترة النشطة
+  ['all','stock','expiry','debt','pay','unread'].forEach(f => {
+    const btn = document.getElementById(`notif-filter-${f}`);
+    if (btn) btn.classList.toggle('active', f === filter);
+  });
+
+  // تطبيق الفلتر
+  let filtered = notifs;
+  if (filter === 'stock')  filtered = notifs.filter(n => n.cat === 'stock');
+  if (filter === 'expiry') filtered = notifs.filter(n => n.cat === 'expiry');
+  if (filter === 'debt')   filtered = notifs.filter(n => n.cat === 'debt');
+  if (filter === 'pay')    filtered = notifs.filter(n => n.cat === 'pay');
+  if (filter === 'unread') filtered = notifs.filter(n => !n.isRead);
+
+  if (filtered.length === 0) {
+    list.innerHTML = '';
+    if (empty) empty.style.display = 'block';
+    return;
+  }
+  if (empty) empty.style.display = 'none';
+
+  const colors  = { warning:'rgba(245,158,11,0.1)',  danger:'rgba(239,68,68,0.1)',  info:'rgba(6,182,212,0.1)', success:'rgba(16,185,129,0.1)' };
+  const borders = { warning:'rgba(245,158,11,0.35)', danger:'rgba(239,68,68,0.35)', info:'rgba(6,182,212,0.35)', success:'rgba(16,185,129,0.35)' };
+  const labels  = { stock:'مخزون', expiry:'صلاحية', debt:'ديون', pay:'تسديدات' };
+  const lblClr  = { stock:'#f59e0b', expiry:'#ef4444', debt:'#06b6d4', pay:'#10b981' };
+
+  list.innerHTML = filtered.map((n, i) => `
+    <div id="notif-card-${i}"
+      style="
+        padding:16px 20px;
+        background:${n.isRead ? 'var(--bg-card)' : colors[n.priority]};
+        border-right:4px solid ${n.isRead ? 'var(--border-color)' : borders[n.priority]};
+        border-radius:var(--radius-md);
+        display:flex; align-items:center; gap:14px;
+        box-shadow:var(--shadow-sm);
+        opacity:${n.isRead ? '0.65' : '1'};
+        transition:all 0.2s;
+      "
+      onmouseenter="this.style.transform='translateX(-3px)'"
+      onmouseleave="this.style.transform='translateX(0)'"
+    >
+      <span style="font-size:26px;flex-shrink:0;">${n.icon}</span>
+      <div style="flex:1;min-width:0;cursor:pointer;" onclick="notifAction(${i})">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+          <span style="font-weight:700;font-size:14px;">${n.title}</span>
+          <span style="font-size:10px;padding:2px 8px;border-radius:20px;background:${lblClr[n.cat]}22;color:${lblClr[n.cat]};font-weight:600;">${labels[n.cat]}</span>
+          ${!n.isRead ? '<span style="width:8px;height:8px;border-radius:50%;background:#ef4444;display:inline-block;flex-shrink:0;"></span>' : ''}
+        </div>
+        <div style="font-size:13px;color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${n.msg}</div>
+        ${n.time ? `<div style="font-size:11px;color:var(--text-muted);margin-top:4px;">📆 ${new Date(n.time).toLocaleDateString('ar-IQ')}</div>` : ''}
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0;">
+        ${n.payAction ? `
+        <button onclick="${n.payAction}" title="تسديد الدين"
+          style="border:none;background:#10b981;color:white;cursor:pointer;font-size:12px;padding:4px 8px;border-radius:4px;font-weight:bold;display:flex;align-items:center;gap:4px;">
+          <span>💸</span> تسديد
+        </button>
+        ` : ''}
+        <button onclick="markNotifRead(${i})" title="تعليم كمقروء"
+          style="border:none;background:transparent;cursor:pointer;font-size:18px;padding:4px;" ${n.isRead ? 'disabled' : ''}>
+          ${n.isRead ? '✅' : '👁️'}
+        </button>
+        <button onclick="notifAction(${i})" title="اذهب للقسم"
+          style="border:none;background:transparent;cursor:pointer;font-size:16px;padding:4px;">
+          ↗️
+        </button>
+      </div>
+    </div>
+  `).join('');
+
+  window._notifFiltered = filtered;
+}
+
+function filterNotifs(filter) {
+  _notifCurrentFilter = filter;
+  renderNotifList(_notifAllData, filter);
+}
+
 function notifAction(i) {
-  if (window._notifActions && window._notifActions[i]) {
-    window._notifActions[i]();
+  const n = window._notifFiltered && window._notifFiltered[i];
+  if (n && typeof n.action === 'function') {
+    markNotifReadById(n.id);
+    n.action();
+  }
+}
+
+function markNotifRead(i) {
+  const n = window._notifFiltered && window._notifFiltered[i];
+  if (!n) return;
+  markNotifReadById(n.id);
+  loadNotificationsPage();
+}
+
+function markNotifReadById(id) {
+  const read = JSON.parse(localStorage.getItem('pos_read_notifs') || '[]');
+  if (!read.includes(id)) {
+    read.push(id);
+    localStorage.setItem('pos_read_notifs', JSON.stringify(read));
   }
 }
 
 function markAllNotificationsRead() {
-  showToast('تم تعليم جميع الإشعارات كمقروءة', 'success');
+  const ids  = buildNotifications().map(n => n.id);
+  const read = JSON.parse(localStorage.getItem('pos_read_notifs') || '[]');
+  ids.forEach(id => { if (!read.includes(id)) read.push(id); });
+  localStorage.setItem('pos_read_notifs', JSON.stringify(read));
+  showToast('✅ تم تعليم جميع الإشعارات كمقروءة', 'success');
+  loadNotificationsPage();
 }
+
+// تحديث تلقائي كل دقيقة عند وجود الصفحة مفتوحة
+setInterval(() => {
+  if (state.currentPage === 'notifications') loadNotificationsPage();
+  else {
+    // تحديث الشارات فقط في الخلفية
+    const notifs = buildNotifications();
+    syncNotifBadges(notifs);
+  }
+}, 60000);
 
 // ============================================================
 // النسخ الاحتياطي - Backup
@@ -6648,16 +7082,22 @@ function toggleAutoBackup() {
 // ============================================================
 function logActivity(type, details) {
   const logs = JSON.parse(localStorage.getItem('pos_activity_log') || '[]');
-  logs.unshift({
+  const entry = {
     id: Date.now().toString(),
     type,
     details,
     user: document.getElementById('current-user') ? document.getElementById('current-user').textContent : 'admin',
     timestamp: new Date().toISOString()
-  });
+  };
+  logs.unshift(entry);
   // الاحتفاظ بآخر 500 سجل فقط
   if (logs.length > 500) logs.pop();
   localStorage.setItem('pos_activity_log', JSON.stringify(logs));
+
+  // مزامنة النشاط مع Firebase إذا كانت مفعلة
+  if (typeof window.pushActivityToFirebase === 'function') {
+    window.pushActivityToFirebase(entry);
+  }
 }
 
 function loadActivityLogPage() {
@@ -6718,4 +7158,103 @@ function clearActivityLog() {
     loadActivityLogPage();
   });
 }
+
+// ==========================================
+// نظام التقارير التلقائية (كل 6 ساعات)
+// ==========================================
+let lastReportTimeVal = 0;
+let isSendingAutoReport = false;
+let isAutoReportCheckerInitialized = false;
+
+function initAutoReportChecker() {
+  if (isAutoReportCheckerInitialized) return;
+  
+  if (typeof window.listenToFirebaseLastReportTime === 'function') {
+    isAutoReportCheckerInitialized = true;
+    window.listenToFirebaseLastReportTime((timestamp) => {
+      if (timestamp) {
+        lastReportTimeVal = Number(timestamp);
+      }
+    });
+    console.log('🤖 Auto report checker initialized with Firebase listener');
+  }
+}
+
+function checkAndSendAutoReport() {
+  if (!isAutoReportCheckerInitialized) {
+    initAutoReportChecker();
+  }
+  
+  if (!window.FIREBASE_ENABLED || isSendingAutoReport) return;
+  
+  const now = Date.now();
+  
+  // إذا لم يكن هناك تاريخ سابق، نقوم بتعيينه للوقت الحالي حتى لا يرسل فوراً عند أول تشغيل للمتجر الجديد
+  if (lastReportTimeVal === 0) {
+    lastReportTimeVal = now;
+    if (typeof window.setFirebaseLastReportTime === 'function') {
+      window.setFirebaseLastReportTime(now);
+    }
+    return;
+  }
+  
+  const diffHours = (now - lastReportTimeVal) / (1000 * 60 * 60);
+  if (diffHours >= 6) {
+    isSendingAutoReport = true;
+    
+    // تحديث التوقيت فوراً في Firebase لمنع الأجهزة/التبويبات الأخرى المفتوحة من الإرسال المتزامن
+    lastReportTimeVal = now;
+    if (typeof window.setFirebaseLastReportTime === 'function') {
+      window.setFirebaseLastReportTime(now);
+    }
+    
+    sendAutoReport();
+  }
+}
+
+function sendAutoReport() {
+  const todayStr = new Date().toISOString().split('T')[0];
+  
+  const invoices = DB.getInvoices().filter(inv => {
+    return inv.date.split('T')[0] === todayStr;
+  });
+
+  const totalSales = invoices.reduce((s, inv) => s + inv.total, 0);
+  const totalProfit = invoices.reduce((s, inv) => s + calculateInvoiceProfit(inv), 0);
+  const itemsSold = invoices.reduce((s, inv) => s + inv.items.reduce((q, i) => q + i.qty, 0), 0);
+  const avgInvoice = invoices.length ? totalSales / invoices.length : 0;
+
+  const msg = `🤖 *تقرير دوري تلقائي (كل 6 ساعات)*
+📅 التاريخ: ${todayStr} (اليوم)
+💰 إجمالي مبيعات اليوم: ${formatIQD(totalSales)}
+📈 إجمالي أرباح اليوم: ${formatIQD(totalProfit)}
+🧾 عدد فواتير اليوم: ${invoices.length}
+📦 المنتجات المباعة اليوم: ${itemsSold}
+📊 متوسط الفاتورة: ${formatIQD(avgInvoice)}
+================
+👤 النظام التلقائي للكاشير`;
+
+  // إرسال التقرير لتليجرام
+  sendTelegramMessage(msg);
+  
+  // مزامنة التقرير مع لوحة التحكم للآدمن تلقائياً
+  logActivity('report_submit', {
+    from: todayStr,
+    to: todayStr,
+    totalSales: totalSales,
+    totalProfit: totalProfit,
+    invoicesCount: invoices.length,
+    itemsSold: itemsSold,
+    avgInvoice: avgInvoice,
+    cashier: 'النظام التلقائي'
+  });
+  
+  isSendingAutoReport = false;
+  showToast('تم إرسال التقرير الدوري التلقائي للمدير بنجاح', 'info');
+}
+
+// بدء الفحص الدوري للتقرير التلقائي
+setInterval(checkAndSendAutoReport, 30000); // فحص كل 30 ثانية
+setTimeout(checkAndSendAutoReport, 5000); // فحص بعد 5 ثوانٍ من التحميل
+
 

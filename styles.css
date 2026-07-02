@@ -33,6 +33,7 @@
   --shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.12);
   --radius: 12px;
   --radius-lg: 16px;
+  --radius-md: 12px;
   --radius-sm: 8px;
 
   --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -1555,11 +1556,52 @@ body {
 .inv-stat-card {
   background: var(--bg-card);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 20px;
+  border-radius: var(--radius-lg);
+  padding: 20px 24px;
   display: flex;
   align-items: center;
   gap: 16px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.inv-stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.08), 0 8px 16px -8px rgba(0, 0, 0, 0.04);
+}
+
+.inv-stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--primary-light);
+  opacity: 0.8;
+}
+
+.inv-stat-card.warning::before {
+  background: var(--warning);
+}
+
+.inv-stat-card.danger::before {
+  background: var(--danger);
+}
+
+.inv-stat-card:nth-child(1)::before {
+  background: var(--success);
+}
+.inv-stat-card:nth-child(2)::before {
+  background: var(--primary);
+}
+.inv-stat-card:nth-child(3)::before {
+  background: var(--info);
+}
+.inv-stat-card:nth-child(6)::before {
+  background: #f43f5e;
 }
 
 .inv-stat-card.warning {
@@ -1576,8 +1618,8 @@ body {
 
 .inv-stat-value {
   display: block;
-  font-size: 28px;
-  font-weight: 900;
+  font-size: 24px;
+  font-weight: 800;
   color: var(--text-primary);
 }
 
@@ -1586,6 +1628,7 @@ body {
   font-size: 13px;
   color: var(--text-secondary);
   font-weight: 600;
+  margin-top: 2px;
 }
 
 /* ========= CUSTOMERS ========= */
@@ -1665,7 +1708,7 @@ body {
 /* ========= REPORTS ========= */
 .reports-stats {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 16px;
   margin-bottom: 20px;
 }
@@ -1673,17 +1716,47 @@ body {
 .report-stat-card {
   background: var(--bg-card);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border-radius: var(--radius-lg);
   padding: 20px;
   display: flex;
   align-items: center;
   gap: 16px;
-  transition: var(--transition);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  position: relative;
+  overflow: hidden;
 }
 
 .report-stat-card:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--shadow);
+  transform: translateY(-4px);
+  box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.08), 0 8px 16px -8px rgba(0, 0, 0, 0.04);
+}
+
+.report-stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--primary-light);
+  opacity: 0.8;
+}
+
+.report-stat-card:nth-of-type(1)::before {
+  background: var(--success);
+}
+.report-stat-card:nth-of-type(2)::before {
+  background: var(--primary);
+}
+.report-stat-card:nth-of-type(3)::before {
+  background: var(--info);
+}
+.report-stat-card:nth-of-type(4)::before {
+  background: var(--warning);
+}
+.report-stat-card:nth-of-type(5)::before {
+  background: #f43f5e;
 }
 
 .report-stat-icon {
@@ -2592,17 +2665,47 @@ body {
 .debt-summary-card {
   background: var(--bg-card);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 18px 16px;
+  border-radius: var(--radius-lg);
+  padding: 18px 20px;
   display: flex;
   align-items: center;
-  gap: 14px;
-  transition: var(--transition);
+  gap: 16px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  position: relative;
+  overflow: hidden;
 }
 
 .debt-summary-card:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--shadow);
+  transform: translateY(-4px);
+  box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.08), 0 8px 16px -8px rgba(0, 0, 0, 0.04);
+}
+
+.debt-summary-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--primary-light);
+  opacity: 0.8;
+}
+
+.debt-summary-card.red::before {
+  background: var(--danger);
+}
+
+.debt-summary-card.orange::before {
+  background: #ff6b35;
+}
+
+.debt-summary-card.yellow::before {
+  background: var(--warning);
+}
+
+.debt-summary-card.green::before {
+  background: var(--success);
 }
 
 .debt-summary-card.red {
@@ -3923,7 +4026,8 @@ body {
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   padding: 6px;
-  width: fit-content;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .archive-tab {

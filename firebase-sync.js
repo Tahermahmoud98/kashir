@@ -100,6 +100,23 @@ function listenToFirebaseSettings(callback) {
   });
 }
 
+async function setFirebaseLastReportTime(timestamp) {
+  if (!window.FIREBASE_ENABLED || !window._fbDB) return;
+  try {
+    const { set } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js');
+    const ref = window._fbRef(window._fbDB, 'last_report_time');
+    await set(ref, timestamp);
+  } catch(e) { console.warn('Firebase set last report time failed:', e); }
+}
+
+function listenToFirebaseLastReportTime(callback) {
+  if (!window.FIREBASE_ENABLED || !window._fbDB) { callback(null); return; }
+  const ref = window._fbRef(window._fbDB, 'last_report_time');
+  window._fbOn(ref, (snapshot) => {
+    callback(snapshot.val());
+  });
+}
+
 // تهيئة Firebase عند تحميل الصفحة
 initFirebase();
 
@@ -110,4 +127,6 @@ window.syncSettingsToFirebase = syncSettingsToFirebase;
 window.syncProductsToFirebase = syncProductsToFirebase;
 window.listenToFirebaseProducts = listenToFirebaseProducts;
 window.listenToFirebaseSettings = listenToFirebaseSettings;
+window.setFirebaseLastReportTime = setFirebaseLastReportTime;
+window.listenToFirebaseLastReportTime = listenToFirebaseLastReportTime;
 

@@ -285,6 +285,31 @@
       .menu-toggle-btn {
         display: flex !important;
       }
+      
+      /* Force single column for container, products visible, cart hidden by default on mobile page load */
+      .pos-container {
+        display: block !important;
+      }
+      .pos-products {
+        display: block !important;
+        height: auto !important;
+      }
+      .pos-cart {
+        display: none !important;
+        height: auto !important;
+      }
+
+      /* Force exactly 2 columns for products grid on mobile screens */
+      .products-grid {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 8px !important;
+        padding: 8px !important;
+      }
+      .product-card {
+        width: 100% !important;
+        box-sizing: border-box !important;
+      }
     }
   </style>
 </head>
@@ -371,96 +396,61 @@
       </div>
 
       <nav class="sidebar-nav">
+        <!-- قسم المبيعات والكاشير -->
         <div class="nav-section">
-          <span class="nav-section-title">القائمة الرئيسية</span>
-          <a href="#" class="nav-item" onclick="showPage('dashboard')" id="nav-dashboard">
-            <span class="nav-icon">📊</span>
-            <span>لوحة التحكم</span>
-          </a>
+          <span class="nav-section-title">المبيعات والكاشير</span>
           <a href="#" class="nav-item active" onclick="showPage('pos')" id="nav-pos">
             <span class="nav-icon">🏪</span>
             <span>الكاشير</span>
           </a>
+        </div>
+
+        <!-- قسم إدارة المتجر -->
+        <div class="nav-section">
+          <span class="nav-section-title">إدارة المتجر</span>
           <a href="#" class="nav-item" onclick="showPage('products')" id="nav-products">
             <span class="nav-icon">📦</span>
-            <span>المنتجات</span>
+            <span>المنتجات والمخزون</span>
           </a>
-          <a href="#" class="nav-item" onclick="showPage('inventory')" id="nav-inventory">
-            <span class="nav-icon">🏭</span>
-            <span>المخزون</span>
+          <a href="#" class="nav-item" onclick="showPage('debts')" id="nav-debts">
+            <span class="nav-icon">👥</span>
+            <span>العملاء والديون</span>
+            <span class="debt-nav-badge" id="debt-nav-count" style="display:none"></span>
           </a>
           <a href="#" class="nav-item" onclick="showPage('purchases')" id="nav-purchases">
             <span class="nav-icon">🛒</span>
             <span>المشتريات</span>
           </a>
-          <a href="#" class="nav-item" onclick="showPage('sales')" id="nav-sales">
-            <span class="nav-icon">💰</span>
-            <span>المبيعات</span>
-          </a>
-          <a href="#" class="nav-item" onclick="showPage('customers')" id="nav-customers">
-            <span class="nav-icon">👥</span>
-            <span>العملاء</span>
-          </a>
-          <a href="#" class="nav-item" onclick="showPage('suppliers')" id="nav-suppliers">
-            <span class="nav-icon">🚚</span>
-            <span>الموردون</span>
-          </a>
-          <a href="#" class="nav-item" onclick="showPage('debts')" id="nav-debts">
-            <span class="nav-icon">💳</span>
-            <span>ديون العملاء</span>
-            <span class="debt-nav-badge" id="debt-nav-count" style="display:none"></span>
-          </a>
         </div>
+
+        <!-- قسم المالية والتقارير -->
         <div class="nav-section">
           <span class="nav-section-title">المالية والتقارير</span>
-          <a href="#" class="nav-item" onclick="showPage('accounts')" id="nav-accounts">
+          <a href="#" class="nav-item" onclick="showPage('dashboard')" id="nav-dashboard">
             <span class="nav-icon">🏦</span>
-            <span>الحسابات</span>
+            <span>المالية والتقارير</span>
           </a>
-          <a href="#" class="nav-item" onclick="showPage('reports')" id="nav-reports">
-            <span class="nav-icon">📈</span>
-            <span>التقارير</span>
-          </a>
-
           <a href="#" class="nav-item" onclick="showPage('discounts')" id="nav-discounts">
             <span class="nav-icon">🎁</span>
             <span>العروض والخصومات</span>
           </a>
         </div>
+
+        <!-- قسم النظام والإدارة -->
         <div class="nav-section">
-          <span class="nav-section-title">الأدوات والإعدادات</span>
-          <a href="#" class="nav-item" onclick="showPage('barcode')" id="nav-barcode">
-            <span class="nav-icon">📷</span>
-            <span>الباركود</span>
-          </a>
-          <a href="#" class="nav-item" onclick="showPage('printing')" id="nav-printing">
-            <span class="nav-icon">🖨️</span>
-            <span>الطباعة</span>
+          <span class="nav-section-title">النظام والإدارة</span>
+          <a href="#" class="nav-item" onclick="showPage('settings')" id="nav-settings">
+            <span class="nav-icon">⚙️</span>
+            <span>الإعدادات والنظام</span>
           </a>
           <a href="#" class="nav-item" onclick="showPage('notifications')" id="nav-notifications">
             <span class="nav-icon">🔔</span>
             <span>الإشعارات</span>
           </a>
-          <a href="#" class="nav-item" onclick="showPage('backup')" id="nav-backup">
-            <span class="nav-icon">💾</span>
-            <span>النسخ الاحتياطي</span>
-          </a>
-          <a href="#" class="nav-item" onclick="showPage('activitylog')" id="nav-activitylog">
-            <span class="nav-icon">📋</span>
-            <span>سجل العمليات</span>
-          </a>
-          <a href="#" class="nav-item" onclick="showPage('settings')" id="nav-settings">
-            <span class="nav-icon">⚙️</span>
-            <span>الإعدادات</span>
-          </a>
-          <a href="admin.html" target="_blank" class="nav-item"
-            style="background: rgba(0, 200, 150, 0.08); border: 1px dashed rgba(0, 200, 150, 0.3); border-radius: 8px; margin-top: 8px;">
+          <a href="admin.html" target="_blank" class="nav-item" id="nav-admin"
+            style="display:none; background: rgba(0, 200, 150, 0.08); border: 1px dashed rgba(0, 200, 150, 0.3); border-radius: 8px; margin-top: 8px;">
             <span class="nav-icon">👑</span>
             <span style="color: var(--primary); font-weight: 700;">لوحة الإدارة</span>
-          </a>
-          <a href="#" class="nav-item" onclick="showPage('archive')" id="nav-archive">
-            <span class="nav-icon">🗂️</span>
-            <span>الأرشيف</span>
           </a>
         </div>
       </nav>
@@ -540,159 +530,67 @@
               <div class="home-card-desc">واجهة البيع السريع ونظام الفواتير</div>
             </div>
 
-            <!-- المنتجات -->
-            <div class="home-nav-card products" onclick="showPage('products')">
-              <div class="home-card-icon-wrapper">📦</div>
-              <div class="home-card-title">المنتجات</div>
-              <div class="home-card-desc">إضافة وتعديل المنتجات وأسعارها</div>
+            <!-- المنتجات والمخزون -->
+            <div class="home-nav-card products" onclick="showPage('products')" style="background: linear-gradient(135deg, rgba(6,182,212,0.15), rgba(6,182,212,0.05)); border: 1px solid rgba(6,182,212,0.2);">
+              <div class="home-card-icon-wrapper" style="background: rgba(6,182,212,0.2);">📦</div>
+              <div class="home-card-title">المنتجات والمخزون</div>
+              <div class="home-card-desc">دليل السلع، مستويات المخازن، والباركود والملصقات</div>
             </div>
 
-            <!-- المخزون -->
-            <div class="home-nav-card inventory" onclick="showPage('inventory')">
-              <div class="home-card-icon-wrapper">📊</div>
-              <div class="home-card-title">المخزون</div>
-              <div class="home-card-desc">مراقبة كميات السلع وتنبيهات النفاذ</div>
-            </div>
-
-            <!-- العملاء -->
-            <div class="home-nav-card customers" onclick="showPage('customers')">
-              <div class="home-card-icon-wrapper">👥</div>
-              <div class="home-card-title">العملاء</div>
-              <div class="home-card-desc">دليل العملاء وبيانات الاتصال بهم</div>
-            </div>
-
-            <!-- ديون العملاء -->
+            <!-- العملاء والديون -->
             <div class="home-nav-card debts" onclick="showPage('debts')">
               <div class="home-card-badge-el" id="home-debt-badge" style="display:none">0</div>
-              <div class="home-card-icon-wrapper">💳</div>
-              <div class="home-card-title">ديون العملاء</div>
-              <div class="home-card-desc">إدارة السلف، الديون، وتسجيل الدفعات</div>
-            </div>
-
-            <!-- التقارير -->
-            <div class="home-nav-card reports" onclick="showPage('reports')">
-              <div class="home-card-icon-wrapper">📈</div>
-              <div class="home-card-title">التقارير</div>
-              <div class="home-card-desc">إحصائيات المبيعات، الأرباح، والفواتير</div>
-            </div>
-
-
-
-            <!-- الإعدادات -->
-            <div class="home-nav-card settings" onclick="showPage('settings')">
-              <div class="home-card-icon-wrapper">⚙️</div>
-              <div class="home-card-title">الإعدادات</div>
-              <div class="home-card-desc">تعديل بيانات المحل وسعر صرف العملة</div>
-            </div>
-
-            <!-- الأرشيف -->
-            <div class="home-nav-card archive" onclick="showPage('archive')">
-              <div class="home-card-icon-wrapper">🗂️</div>
-              <div class="home-card-title">الأرشيف</div>
-              <div class="home-card-desc">سجل المبيعات اليومية والشهرية والسنوية</div>
-            </div>
-
-            <!-- لوحة التحكم -->
-            <div class="home-nav-card"
-              style="background: linear-gradient(135deg, rgba(99,102,241,0.15), rgba(99,102,241,0.05)); border: 1px solid rgba(99,102,241,0.2);"
-              onclick="showPage('dashboard')">
-              <div class="home-card-icon-wrapper" style="background: rgba(99,102,241,0.2);">📊</div>
-              <div class="home-card-title">لوحة التحكم</div>
-              <div class="home-card-desc">ملخص المبيعات والأرباح والإحصائيات</div>
+              <div class="home-card-icon-wrapper">👥</div>
+              <div class="home-card-title">العملاء والديون</div>
+              <div class="home-card-desc">دليل العملاء، ديون العملاء، وتسجيل السداد</div>
             </div>
 
             <!-- المشتريات -->
-            <div class="home-nav-card"
-              style="background: linear-gradient(135deg, rgba(245,158,11,0.15), rgba(245,158,11,0.05)); border: 1px solid rgba(245,158,11,0.2);"
-              onclick="showPage('purchases')">
+            <div class="home-nav-card" style="background: linear-gradient(135deg, rgba(245,158,11,0.15), rgba(245,158,11,0.05)); border: 1px solid rgba(245,158,11,0.2);" onclick="showPage('purchases')">
               <div class="home-card-icon-wrapper" style="background: rgba(245,158,11,0.2);">🛒</div>
               <div class="home-card-title">المشتريات</div>
-              <div class="home-card-desc">الموردون وفواتير الشراء والمرتجعات</div>
+              <div class="home-card-desc">فواتير الشراء، الموردين، مرتجعات المشتريات والدفعات</div>
             </div>
 
-            <!-- المبيعات -->
-            <div class="home-nav-card"
-              style="background: linear-gradient(135deg, rgba(16,185,129,0.15), rgba(16,185,129,0.05)); border: 1px solid rgba(16,185,129,0.2);"
-              onclick="showPage('sales')">
-              <div class="home-card-icon-wrapper" style="background: rgba(16,185,129,0.2);">💰</div>
-              <div class="home-card-title">المبيعات</div>
-              <div class="home-card-desc">جميع الفواتير والمرتجعات وعروض الأسعار</div>
+            <!-- المالية والتقارير -->
+            <div class="home-nav-card reports" onclick="showPage('dashboard')">
+              <div class="home-card-icon-wrapper">📈</div>
+              <div class="home-card-title">المالية والتقارير</div>
+              <div class="home-card-desc">لوحة التحكم، المبيعات والمصروفات، الأرشيف وسجل العمليات</div>
             </div>
-
-            <!-- الموردون -->
-            <div class="home-nav-card"
-              style="background: linear-gradient(135deg, rgba(239,68,68,0.15), rgba(239,68,68,0.05)); border: 1px solid rgba(239,68,68,0.2);"
-              onclick="showPage('suppliers')">
-              <div class="home-card-icon-wrapper" style="background: rgba(239,68,68,0.2);">🚚</div>
-              <div class="home-card-title">الموردون</div>
-              <div class="home-card-desc">بيانات الموردين والديون وسجل المشتريات</div>
-            </div>
-
-            <!-- الحسابات -->
-            <div class="home-nav-card"
-              style="background: linear-gradient(135deg, rgba(20,184,166,0.15), rgba(20,184,166,0.05)); border: 1px solid rgba(20,184,166,0.2);"
-              onclick="showPage('accounts')">
-              <div class="home-card-icon-wrapper" style="background: rgba(20,184,166,0.2);">🏦</div>
-              <div class="home-card-title">الحسابات</div>
-              <div class="home-card-desc">الإيرادات والمصروفات والأرباح والخسائر</div>
-            </div>
-
-
 
             <!-- العروض والخصومات -->
-            <div class="home-nav-card"
-              style="background: linear-gradient(135deg, rgba(236,72,153,0.15), rgba(236,72,153,0.05)); border: 1px solid rgba(236,72,153,0.2);"
-              onclick="showPage('discounts')">
+            <div class="home-nav-card" style="background: linear-gradient(135deg, rgba(236,72,153,0.15), rgba(236,72,153,0.05)); border: 1px solid rgba(236,72,153,0.2);" onclick="showPage('discounts')">
               <div class="home-card-icon-wrapper" style="background: rgba(236,72,153,0.2);">🎁</div>
               <div class="home-card-title">العروض والخصومات</div>
-              <div class="home-card-desc">الخصومات وكوبونات وعروض الاشتراك</div>
+              <div class="home-card-desc">الخصومات، كوبونات البيع، وعروض الاشتراك</div>
             </div>
 
-            <!-- الباركود -->
-            <div class="home-nav-card"
-              style="background: linear-gradient(135deg, rgba(6,182,212,0.15), rgba(6,182,212,0.05)); border: 1px solid rgba(6,182,212,0.2);"
-              onclick="showPage('barcode')">
-              <div class="home-card-icon-wrapper" style="background: rgba(6,182,212,0.2);">📷</div>
-              <div class="home-card-title">الباركود</div>
-              <div class="home-card-desc">إنشاء وطباعة الباركود وملصقات الأسعار</div>
+            <!-- الإعدادات والنظام -->
+            <div class="home-nav-card settings" onclick="showPage('settings')">
+              <div class="home-card-icon-wrapper">⚙️</div>
+              <div class="home-card-title">الإعدادات والنظام</div>
+              <div class="home-card-desc">بيانات المتجر والعملة، إعدادات الطباعة، والتنبيهات والنسخ الاحتياطي</div>
             </div>
 
-            <!-- الطباعة -->
-            <div class="home-nav-card"
-              style="background: linear-gradient(135deg, rgba(107,114,128,0.15), rgba(107,114,128,0.05)); border: 1px solid rgba(107,114,128,0.2);"
-              onclick="showPage('printing')">
-              <div class="home-card-icon-wrapper" style="background: rgba(107,114,128,0.2);">🖨️</div>
-              <div class="home-card-title">الطباعة</div>
-              <div class="home-card-desc">طباعة الفواتير والباركود والملصقات</div>
-            </div>
-
-            <!-- الإشعارات -->
-            <div class="home-nav-card"
-              style="background: linear-gradient(135deg, rgba(251,191,36,0.15), rgba(251,191,36,0.05)); border: 1px solid rgba(251,191,36,0.2);"
+            <!-- التنبيهات -->
+            <div class="home-nav-card" id="home-card-notifications"
+              style="background: linear-gradient(135deg, rgba(255, 180, 0, 0.12), rgba(255, 140, 0, 0.06)); border: 1px solid rgba(255, 180, 0, 0.25);"
               onclick="showPage('notifications')">
-              <div class="home-card-icon-wrapper" style="background: rgba(251,191,36,0.2);">🔔</div>
-              <div class="home-card-title">الإشعارات</div>
-              <div class="home-card-desc">نقص المخزون والصلاحيات والديون المستحقة</div>
+              <div class="home-card-icon-wrapper" style="background: rgba(255, 180, 0, 0.18); position:relative;">
+                🔔
+                <span id="home-notif-badge" style="
+                  display:none;
+                  position:absolute; top:-6px; right:-6px;
+                  background:#ef4444; color:#fff;
+                  font-size:10px; font-weight:700;
+                  border-radius:50%; width:18px; height:18px;
+                  line-height:18px; text-align:center;
+                ">0</span>
+              </div>
+              <div class="home-card-title">التنبيهات</div>
+              <div class="home-card-desc">إشعارات المخزون والديون والعمليات الجديدة</div>
             </div>
-
-            <!-- النسخ الاحتياطي -->
-            <div class="home-nav-card"
-              style="background: linear-gradient(135deg, rgba(52,211,153,0.15), rgba(52,211,153,0.05)); border: 1px solid rgba(52,211,153,0.2);"
-              onclick="showPage('backup')">
-              <div class="home-card-icon-wrapper" style="background: rgba(52,211,153,0.2);">💾</div>
-              <div class="home-card-title">النسخ الاحتياطي</div>
-              <div class="home-card-desc">نسخ احتياطي تلقائي واستعادة البيانات</div>
-            </div>
-
-            <!-- سجل العمليات -->
-            <div class="home-nav-card"
-              style="background: linear-gradient(135deg, rgba(139,92,246,0.15), rgba(139,92,246,0.05)); border: 1px solid rgba(139,92,246,0.2);"
-              onclick="showPage('activitylog')">
-              <div class="home-card-icon-wrapper" style="background: rgba(139,92,246,0.2);">📋</div>
-              <div class="home-card-title">سجل العمليات</div>
-              <div class="home-card-desc">تسجيل جميع العمليات وسجل الدخول</div>
-            </div>
-
           </div>
 
           <!-- Actions Panel / Footer -->
@@ -774,6 +672,7 @@
                     style="padding:6px 10px; border:1px solid var(--border-color); border-radius:var(--radius-sm); width:180px; font-family:inherit; font-size:14px; background:var(--bg-secondary); color:var(--text-primary);">
                   <datalist id="cart-customers-list"></datalist>
                   <button class="btn-clear-cart" onclick="clearCart()">🗑️ مسح</button>
+                  <button type="button" class="btn-barcode" style="padding:6px 10px; font-size:12px; font-weight:700; background:linear-gradient(135deg, var(--info), #1488cc); color:white; border:none; border-radius:var(--radius-sm); cursor:pointer; display:flex; align-items:center; gap:4px; font-family:inherit;" onclick="openGlobalScanner('pos-search', handleScannedBarcode)" title="مسح باركود بالكاميرا">📷 مسح</button>
                 </div>
                 <div id="customer-points-display"
                   style="display:none; font-size:12px; color:var(--primary); font-weight:700; margin-top:2px;"></div>
@@ -936,12 +835,17 @@
         <div class="page-header-bar">
           <h3>💳 ديون العملاء</h3>
           <div class="page-actions" style="display:flex; gap:10px; align-items:center;">
-            <input type="text" class="search-input" placeholder="🔍 ابحث عن عميل..." oninput="searchDebts(this.value)">
             <button class="btn-pay-debt-main" onclick="openGlobalDebtPayModal(selectedDebtorId)">
               <span class="btn-pay-icon">💳</span>
               <span class="btn-pay-text">تسديد ديون عميل</span>
             </button>
           </div>
+        </div>
+
+        <!-- شريط التبويبات الفرعي للعملاء والديون -->
+        <div class="archive-tabs-bar" style="margin-bottom: 20px; background: var(--bg-card); padding: 10px; border-radius: var(--radius-md); box-shadow: var(--shadow-sm); display:flex; gap:8px;">
+          <button class="archive-tab active" onclick="showPage('debts')">💳 ديون العملاء</button>
+          <button class="archive-tab" onclick="showPage('customers')">👥 دليل العملاء</button>
         </div>
 
         <!-- ملخص الديون -->
@@ -980,8 +884,11 @@
         <div class="debts-main-container">
           <!-- قائمة العملاء -->
           <div class="debtors-list-panel">
-            <h4>👥 العملاء المدينون</h4>
-            <div class="debtors-list" id="debtors-list"></div>
+            <h4 style="border-bottom:none; padding-bottom:8px;">👥 العملاء المدينون</h4>
+            <div style="padding:0 16px 12px 16px; border-bottom:1px solid var(--border);">
+              <input type="text" class="search-input" placeholder="🔍 ابحث عن عميل..." oninput="searchDebts(this.value)" style="width:100%; box-sizing:border-box; margin:0; padding:10px 14px; border-radius:var(--radius-sm); border:1px solid var(--border); background:var(--bg-secondary); color:var(--text-primary); outline:none; transition:border-color 0.2s;">
+            </div>
+            <div class="debtors-list" id="debtors-list" style="flex:1;"></div>
           </div>
 
           <!-- تفاصيل الدين -->
@@ -1006,6 +913,13 @@
             </select>
             <button class="btn-primary" onclick="openProductModal()">+ إضافة منتج</button>
           </div>
+        </div>
+
+        <!-- شريط التبويبات الفرعي للمنتجات والمخزون -->
+        <div class="archive-tabs-bar" style="margin-bottom: 20px; background: var(--bg-card); padding: 10px; border-radius: var(--radius-md); box-shadow: var(--shadow-sm); display:flex; gap:8px;">
+          <button class="archive-tab active" onclick="showPage('products')">📦 دليل المنتجات</button>
+          <button class="archive-tab" onclick="showPage('inventory')">🏭 المخزون والكميات</button>
+          <button class="archive-tab" onclick="showPage('barcode')">📷 الباركود والملصقات</button>
         </div>
         <div class="products-table-container">
           <table class="data-table" id="products-table">
@@ -1034,6 +948,13 @@
             <button class="btn-outline" onclick="openTransferModal()">🔄 تحويل مخزوني</button>
             <button class="btn-primary" onclick="openStockModal()">+ إضافة مخزون</button>
           </div>
+        </div>
+
+        <!-- شريط التبويبات الفرعي للمنتجات والمخزون -->
+        <div class="archive-tabs-bar" style="margin-bottom: 20px; background: var(--bg-card); padding: 10px; border-radius: var(--radius-md); box-shadow: var(--shadow-sm); display:flex; gap:8px;">
+          <button class="archive-tab" onclick="showPage('products')">📦 دليل المنتجات</button>
+          <button class="archive-tab active" onclick="showPage('inventory')">🏭 المخزون والكميات</button>
+          <button class="archive-tab" onclick="showPage('barcode')">📷 الباركود والملصقات</button>
         </div>
         <div class="inventory-stats">
           <div class="inv-stat-card">
@@ -1088,13 +1009,28 @@
               طباعة</button>
           </div>
         </div>
+
+        <!-- شريط التبويبات الفرعي للعملاء والديون -->
+        <div class="archive-tabs-bar" style="margin-bottom: 20px; background: var(--bg-card); padding: 10px; border-radius: var(--radius-md); box-shadow: var(--shadow-sm); display:flex; gap:8px;">
+          <button class="archive-tab" onclick="showPage('debts')">💳 ديون العملاء</button>
+          <button class="archive-tab active" onclick="showPage('customers')">👥 دليل العملاء</button>
+        </div>
         <div class="customers-grid" id="customers-grid"></div>
       </div>
 
       <!-- Archive Page -->
       <div id="page-archive" class="page">
-        <div class="archive-container">
+        <!-- شريط التبويبات الفرعي للمالية والتقارير -->
+        <div class="archive-tabs-bar" style="margin-bottom: 20px; background: var(--bg-card); padding: 10px; border-radius: var(--radius-md); box-shadow: var(--shadow-sm); display:flex; gap:8px; flex-wrap:wrap;">
+          <button class="archive-tab" onclick="showPage('dashboard')">📊 لوحة التحكم</button>
+          <button class="archive-tab" onclick="showPage('reports')">📈 التقارير</button>
+          <button class="archive-tab" onclick="showPage('sales')">🧾 المبيعات</button>
+          <button class="archive-tab active" onclick="showPage('archive')">🗂️ الأرشيف</button>
+          <button class="archive-tab" onclick="showPage('accounts')">🏦 الحسابات</button>
+          <button class="archive-tab" onclick="showPage('activitylog')">📋 سجل العمليات</button>
+        </div>
 
+        <div class="archive-container">
           <!-- Archive Header Bar -->
           <div class="archive-header-bar">
             <div class="archive-tabs-bar">
@@ -1175,9 +1111,19 @@
               <input type="date" id="report-to" onchange="loadReports()">
             </div>
             <button class="btn-primary" onclick="exportReport()">📥 طباعة</button>
-            <button class="btn-outline" onclick="sendDailyReportToTelegram()"
-              style="border-color: #0088cc; color: #0088cc;">✈️ إرسال التقرير لتليجرام</button>
+            <button class="btn-outline" onclick="sendReportsToAdmin()"
+              style="border-color: #0088cc; color: #0088cc; display:inline-flex; align-items:center; gap:6px;">✈️ إرسال التقرير للمدير</button>
           </div>
+        </div>
+
+        <!-- شريط التبويبات الفرعي للمالية والتقارير -->
+        <div class="archive-tabs-bar" style="margin-bottom: 20px; background: var(--bg-card); padding: 10px; border-radius: var(--radius-md); box-shadow: var(--shadow-sm); display:flex; gap:8px; flex-wrap:wrap;">
+          <button class="archive-tab" onclick="showPage('dashboard')">📊 لوحة التحكم</button>
+          <button class="archive-tab active" onclick="showPage('reports')">📈 التقارير</button>
+          <button class="archive-tab" onclick="showPage('sales')">🧾 المبيعات</button>
+          <button class="archive-tab" onclick="showPage('archive')">🗂️ الأرشيف</button>
+          <button class="archive-tab" onclick="showPage('accounts')">🏦 الحسابات</button>
+          <button class="archive-tab" onclick="showPage('activitylog')">📋 سجل العمليات</button>
         </div>
 
         <div class="reports-stats">
@@ -1288,9 +1234,18 @@
           </div>
         </div>
 
+        <!-- شريط التبويبات الفرعي للمالية والتقارير -->
+        <div class="archive-tabs-bar" style="margin-bottom: 20px; background: var(--bg-card); padding: 10px; border-radius: var(--radius-md); box-shadow: var(--shadow-sm); display:flex; gap:8px; flex-wrap:wrap;">
+          <button class="archive-tab active" onclick="showPage('dashboard')">📊 لوحة التحكم</button>
+          <button class="archive-tab" onclick="showPage('reports')">📈 التقارير</button>
+          <button class="archive-tab" onclick="showPage('sales')">🧾 المبيعات</button>
+          <button class="archive-tab" onclick="showPage('archive')">🗂️ الأرشيف</button>
+          <button class="archive-tab" onclick="showPage('accounts')">🏦 الحسابات</button>
+          <button class="archive-tab" onclick="showPage('activitylog')">📋 سجل العمليات</button>
+        </div>
+
         <!-- Stats Cards -->
-        <div class="inventory-stats"
-          style="grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); margin-bottom:20px;">
+        <div class="inventory-stats" style="margin-bottom:20px;">
           <div class="inv-stat-card">
             <span class="inv-stat-icon">💰</span>
             <div>
@@ -1476,6 +1431,16 @@
           </div>
         </div>
 
+        <!-- شريط التبويبات الفرعي للمالية والتقارير -->
+        <div class="archive-tabs-bar" style="margin-bottom: 20px; background: var(--bg-card); padding: 10px; border-radius: var(--radius-md); box-shadow: var(--shadow-sm); display:flex; gap:8px; flex-wrap:wrap;">
+          <button class="archive-tab" onclick="showPage('dashboard')">📊 لوحة التحكم</button>
+          <button class="archive-tab" onclick="showPage('reports')">📈 التقارير</button>
+          <button class="archive-tab active" onclick="showPage('sales')">🧾 المبيعات</button>
+          <button class="archive-tab" onclick="showPage('archive')">🗂️ الأرشيف</button>
+          <button class="archive-tab" onclick="showPage('accounts')">🏦 الحسابات</button>
+          <button class="archive-tab" onclick="showPage('activitylog')">📋 سجل العمليات</button>
+        </div>
+
         <div class="archive-tabs-bar"
           style="margin-bottom:20px; background:var(--bg-card); padding:10px; border-radius:var(--radius-md);">
           <button class="archive-tab active" onclick="switchSalesTab('all', this)">🧾 جميع الفواتير</button>
@@ -1649,6 +1614,16 @@
           <div class="page-actions">
             <button class="btn-primary" onclick="openExpenseModal()">+ إضافة مصروف</button>
           </div>
+        </div>
+
+        <!-- شريط التبويبات الفرعي للمالية والتقارير -->
+        <div class="archive-tabs-bar" style="margin-bottom: 20px; background: var(--bg-card); padding: 10px; border-radius: var(--radius-md); box-shadow: var(--shadow-sm); display:flex; gap:8px; flex-wrap:wrap;">
+          <button class="archive-tab" onclick="showPage('dashboard')">📊 لوحة التحكم</button>
+          <button class="archive-tab" onclick="showPage('reports')">📈 التقارير</button>
+          <button class="archive-tab" onclick="showPage('sales')">🧾 المبيعات</button>
+          <button class="archive-tab" onclick="showPage('archive')">🗂️ الأرشيف</button>
+          <button class="archive-tab active" onclick="showPage('accounts')">🏦 الحسابات</button>
+          <button class="archive-tab" onclick="showPage('activitylog')">📋 سجل العمليات</button>
         </div>
 
         <div class="archive-tabs-bar"
@@ -1889,77 +1864,106 @@
           <h3>📷 إدارة الباركود</h3>
         </div>
 
+        <!-- شريط التبويبات الفرعي للمنتجات والمخزون -->
+        <div class="archive-tabs-bar" style="margin-bottom: 20px; background: var(--bg-card); padding: 10px; border-radius: var(--radius-md); box-shadow: var(--shadow-sm); display:flex; gap:8px;">
+          <button class="archive-tab" onclick="showPage('products')">📦 دليل المنتجات</button>
+          <button class="archive-tab" onclick="showPage('inventory')">🏭 المخزون والكميات</button>
+          <button class="archive-tab active" onclick="showPage('barcode')">📷 الباركود والملصقات</button>
+        </div>
+
         <div class="archive-tabs-bar"
-          style="margin-bottom:20px; background:var(--bg-card); padding:10px; border-radius:var(--radius-md);">
+          style="margin-bottom:20px; background:var(--bg-card); padding:6px 12px; border-radius:var(--radius-lg); border:1px solid var(--border); box-sizing:border-box;">
           <button class="archive-tab active" onclick="switchBarcodeTab('generate', this)">🔢 إنشاء باركود</button>
           <button class="archive-tab" onclick="switchBarcodeTab('labels', this)">🏷️ طباعة الملصقات</button>
           <button class="archive-tab" onclick="switchBarcodeTab('scanner', this)">📷 قارئ الباركود</button>
         </div>
 
         <div id="barcode-tab-generate">
-          <div class="settings-container">
-            <div class="settings-card">
-              <h4>🔢 إنشاء باركود جديد</h4>
-              <div class="settings-form">
-                <div class="form-row">
-                  <div class="form-group">
-                    <label>اختر المنتج</label>
-                    <select id="barcode-product-select"
-                      style="width:100%;padding:10px;border-radius:var(--radius-sm);border:1px solid var(--border-color);background:var(--bg-secondary);color:var(--text-primary);"
-                      onchange="generateBarcodePreview()"></select>
-                  </div>
-                  <div class="form-group">
-                    <label>أو أدخل رقماً يدوياً</label>
-                    <div style="display:flex; gap:6px;">
-                      <input type="text" id="barcode-manual-input" placeholder="مثال: 1234567890"
-                        oninput="generateBarcodePreview()" style="flex:1;">
-                      <button type="button" class="btn-outline"
-                        style="padding:6px 12px; border-radius:var(--radius-sm); border:1px solid var(--border-color); cursor:pointer;"
-                        onclick="openGlobalScanner('barcode-manual-input', (code) => { generateBarcodePreview(); })"
-                        title="مسح باركود بالكاميرا">📷</button>
-                    </div>
+          <div class="settings-container" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:24px; max-width:100%; padding: 4px;">
+            <!-- Card 1: Data Input Settings -->
+            <div class="settings-card" style="background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow-md); padding:24px; display:flex; flex-direction:column; gap:20px; transition:transform 0.2s;">
+              <h4 style="margin:0; font-size:16px; font-weight:700; color:var(--primary); display:flex; align-items:center; gap:8px; border-bottom:1px solid var(--border); padding-bottom:12px;">🔢 إعدادات الباركود</h4>
+              <div class="settings-form" style="display:flex; flex-direction:column; gap:20px;">
+                <div class="form-group">
+                  <label style="font-weight:700; margin-bottom:8px; display:block; color:var(--text-primary); font-size:13px;">اختر المنتج</label>
+                  <select id="barcode-product-select"
+                    style="width:100%;padding:12px;border-radius:var(--radius);border:1px solid var(--border-color);background:var(--bg-secondary);color:var(--text-primary);font-family:inherit;font-size:14px; outline:none; transition:border-color 0.2s;"
+                    onchange="generateBarcodePreview()"></select>
+                </div>
+                <div class="form-group">
+                  <label style="font-weight:700; margin-bottom:8px; display:block; color:var(--text-primary); font-size:13px;">أو أدخل كود يدوياً</label>
+                  <div style="display:flex; gap:8px;">
+                    <input type="text" id="barcode-manual-input" placeholder="مثال: 628123456789"
+                      oninput="generateBarcodePreview()" style="flex:1; padding:12px; font-family:inherit; font-size:14px; border-radius:var(--radius); border:1px solid var(--border-color); background:var(--bg-secondary); color:var(--text-primary); outline:none; transition:border-color 0.2s;">
+                    <button type="button" class="btn-outline"
+                      style="padding:10px 16px; border-radius:var(--radius); border:1px solid var(--border-color); cursor:pointer; font-size:16px; display:flex; align-items:center; justify-content:center; background:var(--bg-card); transition:all 0.2s;"
+                      onclick="openGlobalScanner('barcode-manual-input', (code) => { generateBarcodePreview(); })"
+                      title="مسح باركود بالكاميرا">📷</button>
                   </div>
                 </div>
+              </div>
+            </div>
+
+            <!-- Card 2: Barcode Preview & Actions -->
+            <div class="settings-card" style="background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow-md); padding:24px; display:flex; flex-direction:column; justify-content:space-between; gap:20px; transition:transform 0.2s;">
+              <h4 style="margin:0; font-size:16px; font-weight:700; color:var(--primary); display:flex; align-items:center; gap:8px; border-bottom:1px solid var(--border); padding-bottom:12px;">👁️ معاينة ملصق الباركود</h4>
+              <div class="settings-form" style="flex:1; display:flex; flex-direction:column; justify-content:space-between; gap:20px;">
                 <div id="barcode-preview-area"
-                  style="text-align:center; padding:30px; background:white; border-radius:var(--radius-md); margin-top:16px; min-height:120px; border:2px dashed var(--border-color);">
-                  <p style="color:#999;">اختر منتجاً أو أدخل رقماً لعرض الباركود</p>
+                  style="text-align:center; padding:24px; background:var(--bg-secondary); border-radius:var(--radius); border:2px dashed var(--border-color); display:flex; align-items:center; justify-content:center; min-height:170px;">
+                  <p style="color:var(--text-secondary); font-size:14px; margin:0;">اختر منتجاً أو أدخل رقماً لعرض الباركود</p>
                 </div>
-                <div style="display:flex; gap:12px; margin-top:16px;">
-                  <button class="btn-primary" onclick="printBarcodeLabel()">🖨️ طباعة الملصق</button>
+                <div style="display:flex; gap:12px;">
+                  <button class="btn-primary" onclick="printBarcodeLabel()" style="flex:1; padding:12px; font-family:inherit; font-weight:700; display:flex; align-items:center; justify-content:center; gap:8px; border-radius:var(--radius); border:none; background:linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); color:white; cursor:pointer; box-shadow:0 4px 12px rgba(108,99,255,0.2); transition:all 0.2s;">🖨️ طباعة الملصق</button>
                   <button class="btn-secondary" onclick="downloadBarcode()"
-                    style="background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border-color);">⬇️
-                    تحميل</button>
+                    style="flex:1; padding:12px; background:var(--bg-card); color:var(--text-primary); border:1px solid var(--border-color); font-family:inherit; font-weight:700; display:flex; align-items:center; justify-content:center; gap:8px; border-radius:var(--radius); cursor:pointer; transition:all 0.2s;">⬇️ تحميل الباركود</button>
                 </div>
               </div>
             </div>
           </div>
         </div>
         <div id="barcode-tab-labels" style="display:none;">
-          <div class="settings-container">
-            <div class="settings-card">
-              <h4>🏷️ طباعة ملصقات الأسعار</h4>
-              <div class="settings-form">
-                <div class="form-row">
-                  <div class="form-group">
-                    <label>اختر المنتجات</label>
-                    <select id="label-product-select"
-                      style="width:100%;padding:10px;border-radius:var(--radius-sm);border:1px solid var(--border-color);background:var(--bg-secondary);color:var(--text-primary);"></select>
-                  </div>
-                  <div class="form-group">
-                    <label>عدد الملصقات</label>
-                    <input type="number" id="label-qty" placeholder="1" min="1" value="1">
-                  </div>
-                </div>
+          <div class="settings-container" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:24px; max-width:100%; padding: 4px;">
+            <!-- Card 1: Printer Settings -->
+            <div class="settings-card" style="background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow-md); padding:24px; display:flex; flex-direction:column; gap:20px;">
+              <h4 style="margin:0; font-size:16px; font-weight:700; color:var(--primary); display:flex; align-items:center; gap:8px; border-bottom:1px solid var(--border); padding-bottom:12px;">🏷️ إعدادات ملصقات الأسعار</h4>
+              <div class="settings-form" style="display:flex; flex-direction:column; gap:16px;">
                 <div class="form-group">
-                  <label>حجم الملصق</label>
-                  <select id="label-size"
-                    style="width:100%;padding:10px;border-radius:var(--radius-sm);border:1px solid var(--border-color);background:var(--bg-secondary);color:var(--text-primary);">
-                    <option value="small">صغير (58mm)</option>
-                    <option value="medium" selected>متوسط (80mm)</option>
-                    <option value="large">كبير (A4)</option>
-                  </select>
+                  <label style="font-weight:700; margin-bottom:8px; display:block; color:var(--text-primary); font-size:13px;">اختر المنتج</label>
+                  <select id="label-product-select"
+                    style="width:100%;padding:12px;border-radius:var(--radius);border:1px solid var(--border-color);background:var(--bg-secondary);color:var(--text-primary);font-family:inherit;font-size:14px; outline:none; transition:border-color 0.2s;"></select>
                 </div>
-                <button class="btn-primary" onclick="printPriceLabels()">🖨️ طباعة الملصقات</button>
+                <div class="form-row" style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+                  <div class="form-group">
+                    <label style="font-weight:700; margin-bottom:8px; display:block; color:var(--text-primary); font-size:13px;">عدد الملصقات</label>
+                    <input type="number" id="label-qty" placeholder="1" min="1" value="1" style="width:100%; padding:12px; font-family:inherit; font-size:14px; border-radius:var(--radius); border:1px solid var(--border-color); background:var(--bg-secondary); color:var(--text-primary); outline:none;">
+                  </div>
+                  <div class="form-group">
+                    <label style="font-weight:700; margin-bottom:8px; display:block; color:var(--text-primary); font-size:13px;">حجم الملصق</label>
+                    <select id="label-size"
+                      style="width:100%;padding:12px;border-radius:var(--radius);border:1px solid var(--border-color);background:var(--bg-secondary);color:var(--text-primary);font-family:inherit;font-size:14px; outline:none;"
+                      onchange="updateLabelPreviewText()">
+                      <option value="small">صغير (58mm)</option>
+                      <option value="medium" selected>متوسط (80mm)</option>
+                      <option value="large">كبير (A4)</option>
+                    </select>
+                  </div>
+                </div>
+                <button class="btn-primary" onclick="printPriceLabels()" style="width:100%; padding:12px; font-family:inherit; font-weight:700; display:flex; align-items:center; justify-content:center; gap:8px; border-radius:var(--radius); border:none; background:linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); color:white; cursor:pointer; box-shadow:0 4px 12px rgba(108,99,255,0.2); transition:all 0.2s; margin-top: 8px;">🖨️ طباعة الملصقات</button>
+              </div>
+            </div>
+
+            <!-- Card 2: Help & Printing Layout Guide -->
+            <div class="settings-card" style="background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow-md); padding:24px; display:flex; flex-direction:column; gap:20px;">
+              <h4 style="margin:0; font-size:16px; font-weight:700; color:var(--primary); display:flex; align-items:center; gap:8px; border-bottom:1px solid var(--border); padding-bottom:12px;">📋 دليل المعاينة والتعليمات</h4>
+              <div style="flex:1; display:flex; flex-direction:column; justify-content:space-between; gap:16px;">
+                <div id="print-guide-area" style="background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius); padding:16px; font-size:13px; color:var(--text-secondary); line-height:1.6; display:flex; flex-direction:column; gap:10px;">
+                  <div style="font-weight:700; color:var(--text-primary); font-size:14px; margin-bottom:4px; display:flex; align-items:center; gap:6px;">ℹ️ مواصفات القالب المختار:</div>
+                  <div id="guide-size-desc">📄 <strong>قالب 80mm:</strong> قالب طباعة حراري ثنائي الأعمدة، مناسب لطابعات الباركود المخصصة للمحلات التجارية الكبيرة.</div>
+                  <div style="margin-top:6px; border-top:1px dashed var(--border-color); padding-top:10px; color:#c29302; font-weight:600; display:flex; align-items:flex-start; gap:6px;">
+                    <span>💡</span>
+                    <span>تأكد من اختيار مقاس الورق الصحيح (Paper Size) في نافذة خيارات الطباعة للمتصفح لتجنب انحراف الباركود.</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -2003,6 +2007,13 @@
       <div id="page-printing" class="page">
         <div class="page-header-bar">
           <h3>🖨️ إعدادات الطباعة</h3>
+        </div>
+
+        <!-- شريط التبويبات الفرعي للإعدادات والنظام -->
+        <div class="archive-tabs-bar" style="margin-bottom: 20px; background: var(--bg-card); padding: 10px; border-radius: var(--radius-md); box-shadow: var(--shadow-sm); display:flex; gap:8px; flex-wrap:wrap;">
+          <button class="archive-tab" onclick="showPage('settings')">⚙️ إعدادات المتجر</button>
+          <button class="archive-tab active" onclick="showPage('printing')">🖨️ إعدادات الطباعة</button>
+          <button class="archive-tab" onclick="showPage('backup')">💾 النسخ الاحتياطي</button>
         </div>
 
         <div class="settings-container">
@@ -2071,43 +2082,71 @@
       <div id="page-notifications" class="page">
         <div class="page-header-bar">
           <h3>🔔 الإشعارات والتنبيهات</h3>
-          <div class="page-actions">
+          <div class="page-actions" style="display:flex;gap:8px;">
+            <button class="btn-outline" onclick="loadNotificationsPage()" style="font-size:13px;">🔄 تحديث</button>
             <button class="btn-secondary" onclick="markAllNotificationsRead()"
-              style="background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border-color);">✅
-              تعليم الكل كمقروء</button>
+              style="background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border-color);">✅ تعليم الكل كمقروء</button>
           </div>
         </div>
 
-        <div class="inventory-stats" style="margin-bottom:20px;">
-          <div class="inv-stat-card warning">
+
+        <!-- بطاقات الإحصاء -->
+        <div class="inventory-stats" style="margin-bottom:20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+          <div class="inv-stat-card warning" style="cursor:pointer;" onclick="filterNotifs('stock')">
             <span class="inv-stat-icon">⚠️</span>
             <div>
               <span class="inv-stat-value" id="notif-low-stock-count">0</span>
               <span class="inv-stat-label">نقص مخزون</span>
             </div>
           </div>
-          <div class="inv-stat-card danger">
+          <div class="inv-stat-card danger" style="cursor:pointer;" onclick="filterNotifs('expiry')">
             <span class="inv-stat-icon">📅</span>
             <div>
               <span class="inv-stat-value" id="notif-expiry-count">0</span>
               <span class="inv-stat-label">انتهاء صلاحية</span>
             </div>
           </div>
-          <div class="inv-stat-card">
+          <div class="inv-stat-card" style="cursor:pointer;" onclick="filterNotifs('debt')">
             <span class="inv-stat-icon">💳</span>
             <div>
               <span class="inv-stat-value" id="notif-debt-count">0</span>
               <span class="inv-stat-label">ديون مستحقة</span>
             </div>
           </div>
+          <div class="inv-stat-card" style="cursor:pointer;" onclick="filterNotifs('pay')">
+            <span class="inv-stat-icon" style="background:rgba(16,185,129,0.1);color:#10b981;">💵</span>
+            <div>
+              <span class="inv-stat-value" id="notif-pay-count">0</span>
+              <span class="inv-stat-label">تسديدات مستلمة</span>
+            </div>
+          </div>
+          <div class="inv-stat-card" style="background:rgba(139,92,246,0.08);border-color:rgba(139,92,246,0.2);cursor:pointer;" onclick="filterNotifs('all')">
+            <span class="inv-stat-icon">🔔</span>
+            <div>
+              <span class="inv-stat-value" id="notif-total-count">0</span>
+              <span class="inv-stat-label">إجمالي</span>
+            </div>
+          </div>
         </div>
 
-        <div id="notifications-page-list" style="display:flex; flex-direction:column; gap:12px;"></div>
+        <!-- أزرار الفلترة -->
+        <div style="display:flex; gap:8px; margin-bottom:20px; flex-wrap:wrap; align-items:center; background:var(--bg-card); padding:10px; border-radius:var(--radius-md); box-shadow:var(--shadow-sm);">
+          <button id="notif-filter-all"    class="archive-tab active" onclick="filterNotifs('all')">🔔 الكل</button>
+          <button id="notif-filter-stock"  class="archive-tab"        onclick="filterNotifs('stock')">⚠️ مخزون</button>
+          <button id="notif-filter-expiry" class="archive-tab"        onclick="filterNotifs('expiry')">📅 صلاحية</button>
+          <button id="notif-filter-debt"   class="archive-tab"        onclick="filterNotifs('debt')">💳 ديون</button>
+          <button id="notif-filter-pay"    class="archive-tab"        onclick="filterNotifs('pay')">💵 تسديدات</button>
+          <button id="notif-filter-unread" class="archive-tab"        onclick="filterNotifs('unread')">🔴 غير مقروءة</button>
+        </div>
 
-        <div id="notifications-page-empty"
-          style="text-align:center; padding:60px; color:var(--text-secondary); display:none;">
-          <div style="font-size:50px; margin-bottom:16px;">🔔</div>
-          <p>لا توجد إشعارات حالياً</p>
+        <!-- قائمة التنبيهات -->
+        <div id="notifications-page-list" style="display:flex;flex-direction:column;gap:10px;"></div>
+
+        <!-- حالة فارغة -->
+        <div id="notifications-page-empty" style="text-align:center;padding:60px;color:var(--text-secondary);display:none;">
+          <div style="font-size:60px;margin-bottom:16px;">🎉</div>
+          <h3 style="margin-bottom:8px;">كل شيء على ما يرام!</h3>
+          <p>لا توجد إشعارات تستحق الانتباه حالياً</p>
         </div>
       </div>
 
@@ -2117,6 +2156,13 @@
       <div id="page-backup" class="page">
         <div class="page-header-bar">
           <h3>💾 النسخ الاحتياطي والاستعادة</h3>
+        </div>
+
+        <!-- شريط التبويبات الفرعي للإعدادات والنظام -->
+        <div class="archive-tabs-bar" style="margin-bottom: 20px; background: var(--bg-card); padding: 10px; border-radius: var(--radius-md); box-shadow: var(--shadow-sm); display:flex; gap:8px; flex-wrap:wrap;">
+          <button class="archive-tab" onclick="showPage('settings')">⚙️ إعدادات المتجر</button>
+          <button class="archive-tab" onclick="showPage('printing')">🖨️ إعدادات الطباعة</button>
+          <button class="archive-tab active" onclick="showPage('backup')">💾 النسخ الاحتياطي</button>
         </div>
 
         <div class="settings-container">
@@ -2190,6 +2236,16 @@
           </div>
         </div>
 
+        <!-- شريط التبويبات الفرعي للمالية والتقارير -->
+        <div class="archive-tabs-bar" style="margin-bottom: 20px; background: var(--bg-card); padding: 10px; border-radius: var(--radius-md); box-shadow: var(--shadow-sm); display:flex; gap:8px; flex-wrap:wrap;">
+          <button class="archive-tab" onclick="showPage('dashboard')">📊 لوحة التحكم</button>
+          <button class="archive-tab" onclick="showPage('reports')">📈 التقارير</button>
+          <button class="archive-tab" onclick="showPage('sales')">🧾 المبيعات</button>
+          <button class="archive-tab" onclick="showPage('archive')">🗂️ الأرشيف</button>
+          <button class="archive-tab" onclick="showPage('accounts')">🏦 الحسابات</button>
+          <button class="archive-tab active" onclick="showPage('activitylog')">📋 سجل العمليات</button>
+        </div>
+
         <div class="archive-tabs-bar"
           style="margin-bottom:20px; background:var(--bg-card); padding:10px; border-radius:var(--radius-md);">
           <button class="archive-tab active" onclick="switchActivityTab('all', this)">📋 جميع العمليات</button>
@@ -2221,6 +2277,17 @@
 
       <!-- Settings Page -->
       <div id="page-settings" class="page">
+        <div class="page-header-bar">
+          <h3>⚙️ إعدادات المتجر</h3>
+        </div>
+
+        <!-- شريط التبويبات الفرعي للإعدادات والنظام -->
+        <div class="archive-tabs-bar" style="margin-bottom: 20px; background: var(--bg-card); padding: 10px; border-radius: var(--radius-md); box-shadow: var(--shadow-sm); display:flex; gap:8px; flex-wrap:wrap;">
+          <button class="archive-tab active" onclick="showPage('settings')">⚙️ إعدادات المتجر</button>
+          <button class="archive-tab" onclick="showPage('printing')">🖨️ إعدادات الطباعة</button>
+          <button class="archive-tab" onclick="showPage('backup')">💾 النسخ الاحتياطي</button>
+        </div>
+
         <div class="settings-container">
           <div class="settings-card">
             <h4>⚙️ معلومات المتجر</h4>

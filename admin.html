@@ -868,10 +868,31 @@
           <h2>لوحة الإدارة</h2><span>مرحباً، المسؤول الرئيسي</span>
         </div>
       </div>
-      <div class="ah-actions" style="display:flex;gap:8px;align-items:center">
+      <div class="ah-actions" style="display:flex;gap:8px;align-items:center;position:relative">
         <div class="lv">
           <div class="ld"></div>مباشر
         </div>
+        
+        <!-- حاوية الإشعارات النسبية -->
+        <div style="position:relative; display:inline-block;">
+          <!-- زر الإشعارات 🔔 -->
+          <button class="br" id="noti-bell-btn" onclick="toggleNotificationsDropdown()" style="position:relative; display:inline-flex; align-items:center; gap:6px;">
+            🔔 الإشعارات
+            <span id="noti-badge" style="display:none; position:absolute; top:-6px; right:-6px; background:var(--danger); color:white; font-size:10px; font-weight:700; border-radius:50%; min-width:18px; height:18px; padding:2px; box-shadow:0 2px 6px rgba(255, 60, 99, 0.4); align-items:center; justify-content:center;">0</span>
+          </button>
+
+          <!-- قائمة الإشعارات المنسدلة -->
+          <div id="noti-dropdown" style="display:none; position:absolute; top:45px; left:0; width:340px; max-width:calc(100vw - 32px); background:var(--card); border:1px solid var(--brd); border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,0.3); z-index:9999; text-align:right; animation: slideDown 0.2s ease;">
+            <div style="padding:12px 16px; border-bottom:1px solid var(--brd); display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-weight:800; font-size:14px; color:var(--txt)">🔔 التنبيهات الأخيرة</span>
+              <button onclick="clearAllNotifications()" style="background:transparent; border:none; color:var(--muted); font-size:11px; cursor:pointer; font-family:inherit;">مسح الكل</button>
+            </div>
+            <div id="noti-list" style="max-height:300px; overflow-y:auto; font-size:12px; color:var(--muted);">
+              <!-- سيتم حقن التنبيهات هنا -->
+            </div>
+          </div>
+        </div>
+
         <button class="br" onclick="openAdminEmployeesModal()">👥 الموظفون</button>
         <button class="br" id="theme-toggle-btn" onclick="toggleAdminTheme()" title="تبديل الوضع">🌙 داكن</button>
         <button class="br" onclick="ra()">&#x1F504; تحديث</button>
@@ -1104,7 +1125,10 @@
     function gs() { try { return Object.assign({ storeName: 'المتجر', currency: 'د.ع', exchangeRate: 1500 }, JSON.parse(localStorage.getItem('pos_settings') || '{}')) } catch (e) { return { storeName: 'المتجر', currency: 'د.ع', exchangeRate: 1500 } } }
 
     let cachedLog = [];
+    try { cachedLog = JSON.parse(localStorage.getItem('pos_activity_log') || '[]'); } catch (e) { cachedLog = []; }
+
     let cachedProducts = [];
+    try { cachedProducts = JSON.parse(localStorage.getItem('pos_products') || '[]'); } catch (e) { cachedProducts = []; }
 
     async function fetchActivities() {
       if (window.FIREBASE_ENABLED && typeof window.listenToFirebaseActivities === 'function') {
@@ -1135,7 +1159,7 @@
     function fm(n) { if (!n && n !== 0) return '—'; const s = gs(); return Math.round(n).toLocaleString('ar-IQ') + ' ' + (s.currency || 'د.ع') }
     function ta(iso) { const d = Date.now() - new Date(iso).getTime(), m = Math.floor(d / 6e4), h = Math.floor(m / 60); return m < 1 ? 'الآن' : m < 60 ? 'منذ ' + m + ' دقيقة' : h < 24 ? 'منذ ' + h + ' ساعة' : new Date(iso).toLocaleDateString('ar-IQ') }
     function ft2(iso) { return new Date(iso).toLocaleTimeString('ar-IQ', { hour: '2-digit', minute: '2-digit' }) }
-    const TC = { sale: { ic: '🛒', lb: 'مبيعات كاش', cl: 'sale', ac: 'ag' }, return: { ic: '↩️', lb: 'استرجاع مبيعات', cl: 'ret', ac: 'ard' }, debt_sale: { ic: '📋', lb: 'بيع بالآجل', cl: 'debt', ac: 'ao' }, debt_pay: { ic: '💳', lb: 'تسديد دين', cl: 'pay', ac: 'abu' }, old_debt_pay: { ic: '⏳', lb: 'تسديد دين قديم', cl: 'pay', ac: 'abu' }, product_add: { ic: '📦', lb: 'إضافة منتج', cl: 'prod', ac: 'ag' }, stock_add: { ic: '📥', lb: 'إضافة مخزون', cl: 'stk', ac: 'ag' }, customer_add: { ic: '👤', lb: 'عميل جديد', cl: 'cust', ac: 'ag' }, item_delete: { ic: '🗑️', lb: 'عملية حذف', cl: 'ret', ac: 'ard' } };
+    const TC = { sale: { ic: '🛒', lb: 'مبيعات كاش', cl: 'sale', ac: 'ag' }, return: { ic: '↩️', lb: 'استرجاع مبيعات', cl: 'ret', ac: 'ard' }, debt_sale: { ic: '📋', lb: 'بيع بالآجل', cl: 'debt', ac: 'ao' }, debt_pay: { ic: '💳', lb: 'تسديد دين', cl: 'pay', ac: 'abu' }, old_debt_pay: { ic: '⏳', lb: 'تسديد دين قديم', cl: 'pay', ac: 'abu' }, product_add: { ic: '📦', lb: 'إضافة منتج', cl: 'prod', ac: 'ag' }, stock_add: { ic: '📥', lb: 'إضافة مخزون', cl: 'stk', ac: 'ag' }, customer_add: { ic: '👤', lb: 'عميل جديد', cl: 'cust', ac: 'ag' }, item_delete: { ic: '🗑️', lb: 'عملية حذف', cl: 'ret', ac: 'ard' }, report_submit: { ic: '📊', lb: 'تقرير مبيعات مرسل', cl: 'sale', ac: 'ag' } };
     let cf = 'all';
     function sf(t, b) { cf = t; document.querySelectorAll('.ftb').forEach(x => x.classList.remove('ac')); b.classList.add('ac'); ral() }
     function dl() { const p = document.getElementById('ap').value; if (p === PASS) { localStorage.setItem('ads', Date.now()); document.getElementById('ls').style.display = 'none'; document.getElementById('db').style.display = 'block'; startDashboard() } else { document.getElementById('le').style.display = 'block'; document.getElementById('ap').value = '' } }
@@ -1182,9 +1206,38 @@
           case 'stock_add': cnt = `+${d.qty || 0}`; pill = `<div class="ai-pill">&#x1F4E6; ${d.product || ''}</div>`; break;
           case 'customer_add': pill = `<div class="ai-pill">&#x1F4F1; ${d.phone || ''}</div>`; cnt = (d.name || '') + (d.oldDebt > 0 ? ` <span style="color:var(--warn);font-size:11px;">(دين قديم: ${fm(d.oldDebt)})</span>` : ''); break;
           case 'item_delete': pill = `<div class="ai-pill" style="color:var(--danger);border-color:var(--danger)">&#x1F5D1; ${d.target || ''}</div>`; cnt = d.name || ''; break;
+          case 'report_submit': pill = `<div class="ai-pill" style="color:var(--primary);border-color:var(--primary)">📊 من: ${d.cashier || a.user}</div>`; cnt = `الفترة: ${d.from} إلى ${d.to}`; am = `<span class="${c.ac}">${fm(d.totalSales)}</span>`; break;
         }
-        if (d.items && d.items.length) { itemsHtml = '<div class="ai-body">' + d.items.map(i => `<div class="ai-item"><div class="ai-item-r"><span>&#x1F4E6;</span><span>${i.name}</span></div><div class="ai-item-l"><span class="ai-item-q">${i.qty} x</span><span class="ai-item-p">${fm((i.priceIQD || i.price || 0) * i.qty)}</span></div></div>`).join('') + '</div>'; }
-        return `<div class="ai-wrap" ${itemsHtml ? 'onclick="this.classList.toggle(\'open\')" style="cursor:pointer"' : ''}><div class="ai-head"><div class="ai-r"><div class="ai-ic ${c.cl}">${c.ic}</div><div class="ai-tt"><div class="ai-title">${c.lb} ${d.cashier ? '<span style="font-size:10px;color:var(--muted);font-weight:normal">(&#x1F464; ' + d.cashier + ')</span>' : ''}</div><div class="ai-date">${ft2(a.timestamp)} &mdash; ${ta(a.timestamp)}</div></div></div><div class="ai-l"><div class="ai-amt">${am}</div>${pill}${cnt ? '<div class="ai-count">' + cnt + '</div>' : ''}${itemsHtml ? '<div class="ai-arr">&#x25BC;</div>' : ''}</div></div>${itemsHtml}</div>`
+        let detailBodyHtml = '';
+        if (d.items && d.items.length) {
+          detailBodyHtml = '<div class="ai-body">' + d.items.map(i => `<div class="ai-item"><div class="ai-item-r"><span>&#x1F4E6;</span><span>${i.name}</span></div><div class="ai-item-l"><span class="ai-item-q">${i.qty} x</span><span class="ai-item-p">${fm((i.priceIQD || i.price || 0) * i.qty)}</span></div></div>`).join('') + '</div>';
+        } else if (a.type === 'report_submit') {
+          detailBodyHtml = `
+            <div class="ai-body" style="padding: 12px 16px; background: rgba(108, 99, 255, 0.04); border-top: 1px dashed var(--border); font-size: 13px; border-radius: 0 0 var(--radius-md) var(--radius-md);">
+              <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px dashed rgba(255,255,255,0.05); padding-bottom:6px; margin-bottom:8px;">
+                <span style="color:var(--text-secondary);">💰 إجمالي المبيعات:</span>
+                <strong style="color:var(--success); font-weight:700;">${fm(d.totalSales)}</strong>
+              </div>
+              <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px dashed rgba(255,255,255,0.05); padding-bottom:6px; margin-bottom:8px;">
+                <span style="color:var(--text-secondary);">📈 إجمالي الأرباح:</span>
+                <strong style="color:var(--primary); font-weight:700;">${fm(d.totalProfit)}</strong>
+              </div>
+              <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px dashed rgba(255,255,255,0.05); padding-bottom:6px; margin-bottom:8px;">
+                <span style="color:var(--text-secondary);">🧾 عدد الفواتير:</span>
+                <strong style="color:var(--text-primary); font-weight:700;">${d.invoicesCount || 0} فاتورة</strong>
+              </div>
+              <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px dashed rgba(255,255,255,0.05); padding-bottom:6px; margin-bottom:8px;">
+                <span style="color:var(--text-secondary);">📦 المنتجات المباعة:</span>
+                <strong style="color:var(--text-primary); font-weight:700;">${d.itemsSold || 0} قطعة</strong>
+              </div>
+              <div style="display:flex; justify-content:space-between; align-items:center; padding-bottom:4px;">
+                <span style="color:var(--text-secondary);">📊 متوسط الفاتورة:</span>
+                <strong style="color:var(--text-primary); font-weight:700;">${fm(d.avgInvoice)}</strong>
+              </div>
+            </div>
+          `;
+        }
+        return `<div class="ai-wrap" ${detailBodyHtml ? 'onclick="this.classList.toggle(\'open\')" style="cursor:pointer"' : ''}><div class="ai-head"><div class="ai-r"><div class="ai-ic ${c.cl}">${c.ic}</div><div class="ai-tt"><div class="ai-title">${c.lb} ${d.cashier ? '<span style="font-size:10px;color:var(--muted);font-weight:normal">(&#x1F464; ' + d.cashier + ')</span>' : ''}</div><div class="ai-date">${ft2(a.timestamp)} &mdash; ${ta(a.timestamp)}</div></div></div><div class="ai-l"><div class="ai-amt">${am}</div>${pill}${cnt ? '<div class="ai-count">' + cnt + '</div>' : ''}${detailBodyHtml ? '<div class="ai-arr">&#x25BC;</div>' : ''}</div></div>${detailBodyHtml}</div>`
       }).join('')
     }
 
@@ -1252,22 +1305,160 @@
       document.getElementById('odl').innerHTML = lateDebtors.map(d => `<div style="display:flex;justify-content:space-between;padding:8px 10px;border-bottom:1px solid rgba(255,255,255,.05);font-size:13px"><span>${d.name}</span><span style="color:#ffa502;font-weight:700">${fm(d.debt)} (${d.days} يوم)</span></div>`).join('');
     }
 
+    function showReportNotificationModal(report) {
+      let modal = document.getElementById('admin-report-modal');
+      if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'admin-report-modal';
+        modal.style.cssText = `
+          display: none;
+          position: fixed;
+          inset: 0;
+          background: rgba(0,0,0,0.8);
+          backdrop-filter: blur(8px);
+          z-index: 99999;
+          align-items: center;
+          justify-content: center;
+        `;
+        modal.innerHTML = `
+          <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg); width:420px; max-width:90%; padding:24px; box-shadow:var(--shadow-lg); display:flex; flex-direction:column; gap:20px; text-align:right;">
+            <h3 style="margin:0; font-size:18px; font-weight:800; color:var(--primary); border-bottom:1px solid var(--border); padding-bottom:12px; display:flex; align-items:center; gap:8px;">📊 تقرير مبيعات جديد مستلم</h3>
+            <div id="admin-report-content" style="font-size:13px; color:var(--text-secondary); display:flex; flex-direction:column; gap:12px; line-height:1.6;">
+            </div>
+            <div style="display:flex; justify-content:center; margin-top:10px;">
+              <button onclick="document.getElementById('admin-report-modal').style.display='none'" style="background:var(--primary); color:white; border:none; padding:10px 24px; border-radius:var(--radius-sm); font-weight:700; cursor:pointer; font-family:inherit; font-size:14px; box-shadow:0 4px 12px rgba(108,99,255,0.2);">إغلاق التقرير</button>
+            </div>
+          </div>
+        `;
+        document.body.appendChild(modal);
+      }
+      
+      const d = report.details || {};
+      const content = document.getElementById('admin-report-content');
+      if (content) {
+        content.innerHTML = `
+          <div style="display:flex; justify-content:space-between; border-bottom:1px dashed var(--border-light); padding-bottom:8px;">
+            <strong>👤 الكاشير المرسل:</strong>
+            <span style="color:var(--text-primary); font-weight:700;">${report.user || d.cashier || 'غير معروف'}</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; border-bottom:1px dashed var(--border-light); padding-bottom:8px;">
+            <strong>📅 فترة التقرير:</strong>
+            <span style="color:var(--text-primary); font-weight:700; direction:ltr;">من ${d.from} إلى ${d.to}</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; border-bottom:1px dashed var(--border-light); padding-bottom:8px;">
+            <strong>💰 إجمالي المبيعات:</strong>
+            <span style="color:var(--success); font-weight:800;">${fm(d.totalSales)}</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; border-bottom:1px dashed var(--border-light); padding-bottom:8px;">
+            <strong>📈 إجمالي الأرباح:</strong>
+            <span style="color:var(--primary); font-weight:800;">${fm(d.totalProfit)}</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; border-bottom:1px dashed var(--border-light); padding-bottom:8px;">
+            <strong>🧾 عدد الفواتير:</strong>
+            <span style="color:var(--text-primary); font-weight:700;">${d.invoicesCount || 0}</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; border-bottom:1px dashed var(--border-light); padding-bottom:8px;">
+            <strong>📦 المنتجات المباعة:</strong>
+            <span style="color:var(--text-primary); font-weight:700;">${d.itemsSold || 0}</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; padding-bottom:8px;">
+            <strong>📊 متوسط الفاتورة:</strong>
+            <span style="color:var(--text-primary); font-weight:700;">${fm(d.avgInvoice)}</span>
+          </div>
+        `;
+      }
+      
+      modal.style.display = 'flex';
+      
+      try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(523.25, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.2);
+      } catch(e) {}
+    }
+
     let fbListenersInitialized = false;
+    let lastNotifiedReportId = localStorage.getItem('last_notified_report_id') || '';
 
     function init() {
+      // عرض البيانات المخزنة مؤقتاً فوراً عند فتح الصفحة لمنع بقاء الصفحة فارغة أثناء تحميل Firebase
       rh();
+      rst();
+      ral();
+      rls();
+      rld();
+
+      let initialDataProcessed = false;
+      const processedNewActivities = new Set();
+
       if (window.FIREBASE_ENABLED && typeof window.listenToFirebaseActivities === 'function' && !fbListenersInitialized) {
         fbListenersInitialized = true;
 
         window.listenToFirebaseActivities((data) => {
-          cachedLog = data;
+          // المرة الأولى نقوم فقط بتسجيل المعرفات الحالية لتجنب إرسال إشعارات تاريخية قديمة
+          if (!initialDataProcessed) {
+            initialDataProcessed = true;
+            if (Array.isArray(data)) {
+              data.forEach(a => processedNewActivities.add(a.id));
+            }
+            if (Array.isArray(data) && data.length > 0) {
+              cachedLog = data;
+              localStorage.setItem('pos_activity_log', JSON.stringify(data));
+            } else if (Array.isArray(data)) {
+              cachedLog = data;
+            }
+            rst();
+            ral();
+            rls();
+            renderNotifications(); // رسم التنبيهات الحالية
+            return;
+          }
+
+          // الكشف عن العمليات الجديدة القادمة بالترتيب الزمني
+          if (Array.isArray(data)) {
+            for (let i = data.length - 1; i >= 0; i--) {
+              const a = data[i];
+              if (!processedNewActivities.has(a.id)) {
+                processedNewActivities.add(a.id);
+                triggerActivityNotification(a);
+              }
+            }
+          }
+
+          if (Array.isArray(data) && data.length > 0) {
+            cachedLog = data;
+            localStorage.setItem('pos_activity_log', JSON.stringify(data));
+          } else if (Array.isArray(data)) {
+            cachedLog = data;
+          }
           rst();
           ral();
           rls();
+          
+          if (Array.isArray(data)) {
+            const latestReport = data.find(a => a.type === 'report_submit');
+            if (latestReport && latestReport.id !== lastNotifiedReportId) {
+              lastNotifiedReportId = latestReport.id;
+              localStorage.setItem('last_notified_report_id', latestReport.id);
+              showReportNotificationModal(latestReport);
+            }
+          }
         });
 
         window.listenToFirebaseProducts((data) => {
-          cachedProducts = data;
+          if (Array.isArray(data) && data.length > 0) {
+            cachedProducts = data;
+            localStorage.setItem('pos_products', JSON.stringify(data));
+          } else if (Array.isArray(data)) {
+            cachedProducts = data;
+          }
           rst();
           ral();
           rls();
@@ -1516,6 +1707,151 @@
         cancelBtn.onclick = () => cleanup(false);
       });
     }
+
+    // ==========================================
+    // نظام الإشعارات والتنبيهات للآدمن الرئيسي
+    // ==========================================
+    let notifications = [];
+    try { notifications = JSON.parse(localStorage.getItem('admin_notifications') || '[]'); } catch(e) { notifications = []; }
+
+    function addNotification(type, title, text, timestamp) {
+      const noti = { id: Date.now() + Math.random().toString(36).substr(2, 5), type, title, text, timestamp: timestamp || new Date().toISOString(), read: false };
+      notifications.unshift(noti);
+      if (notifications.length > 50) notifications.pop();
+      localStorage.setItem('admin_notifications', JSON.stringify(notifications));
+      renderNotifications();
+    }
+
+    function renderNotifications() {
+      const list = document.getElementById('noti-list');
+      const badge = document.getElementById('noti-badge');
+      if (!list || !badge) return;
+      
+      const unreadCount = notifications.filter(n => !n.read).length;
+      if (unreadCount > 0) {
+        badge.textContent = unreadCount;
+        badge.style.display = 'inline-flex';
+      } else {
+        badge.style.display = 'none';
+      }
+      
+      if (notifications.length === 0) {
+        list.innerHTML = '<div style="padding:20px; text-align:center; color:var(--muted)">لا توجد إشعارات حالياً</div>';
+        return;
+      }
+      
+      list.innerHTML = notifications.map(n => `
+        <div onclick="markAsRead('${n.id}')" style="padding:12px 16px; border-bottom:1px solid var(--brd); cursor:pointer; background:${n.read ? 'transparent' : 'rgba(0, 200, 150, 0.05)'}; display:flex; gap:10px; align-items:flex-start; transition:background 0.2s;">
+          <div style="font-size:16px;">${getNotificationIcon(n.type)}</div>
+          <div style="flex:1;">
+            <div style="font-weight:700; color:var(--txt); margin-bottom:2px;">${n.title}</div>
+            <div style="color:var(--muted); line-height:1.4;">${n.text}</div>
+            <div style="font-size:10px; color:var(--muted); margin-top:4px;">${ta(n.timestamp)}</div>
+          </div>
+          ${n.read ? '' : '<div style="width:8px; height:8px; background:var(--p); border-radius:50%; margin-top:4px;"></div>'}
+        </div>
+      `).join('');
+    }
+
+    function getNotificationIcon(type) {
+      const icons = { sale: '🛒', return: '↩️', debt_sale: '📋', debt_pay: '💳', old_debt_pay: '💳', report_submit: '📊', product_add: '📦', stock_add: '📥', customer_add: '👤' };
+      return icons[type] || '🔔';
+    }
+
+    function markAsRead(id) {
+      const noti = notifications.find(n => n.id === id);
+      if (noti) {
+        noti.read = true;
+        localStorage.setItem('admin_notifications', JSON.stringify(notifications));
+        renderNotifications();
+      }
+    }
+
+    function clearAllNotifications() {
+      notifications = [];
+      localStorage.setItem('admin_notifications', JSON.stringify(notifications));
+      renderNotifications();
+    }
+
+    function toggleNotificationsDropdown() {
+      const dropdown = document.getElementById('noti-dropdown');
+      if (dropdown) {
+        const isHidden = dropdown.style.display === 'none';
+        dropdown.style.display = isHidden ? 'block' : 'none';
+        if (isHidden) {
+          notifications.forEach(n => n.read = true);
+          localStorage.setItem('admin_notifications', JSON.stringify(notifications));
+          renderNotifications();
+        }
+      }
+    }
+
+    function triggerActivityNotification(a) {
+      const c = TC[a.type] || { ic: '🔔', lb: a.type };
+      const d = a.details || {};
+      let title = c.lb;
+      let text = '';
+      
+      switch (a.type) {
+        case 'sale':
+          text = `تم تسجيل مبيعات كاش جديدة بقيمة ${fm(d.total)} بواسطة الموظف ${d.cashier || a.user}`;
+          break;
+        case 'return':
+          text = `تم استرجاع مبيعات بقيمة ${fm(d.total)} بواسطة الموظف ${d.cashier || a.user}`;
+          break;
+        case 'debt_sale':
+          text = `تم تسجيل بيع بالآجل بقيمة ${fm(d.total)} للعميل ${d.customer || 'غير معروف'}`;
+          break;
+        case 'debt_pay':
+        case 'old_debt_pay':
+          text = `تم تسديد دين بقيمة ${fm(d.amount)} من العميل ${d.customer || 'غير معروف'}`;
+          break;
+        case 'product_add':
+          text = `تم إضافة منتج جديد: ${d.name} بسعر ${fm(d.priceIQD || d.price)}`;
+          break;
+        case 'stock_add':
+          text = `تم إضافة كمية ${d.qty} جديدة للمنتج: ${d.product}`;
+          break;
+        case 'customer_add':
+          text = `تم إضافة عميل جديد: ${d.name}`;
+          break;
+        case 'report_submit':
+          text = `تم استلام تقرير مبيعات جديد من الكاشير ${d.cashier || a.user}`;
+          break;
+        default:
+          text = d.name || d.details || 'عملية جديدة تم تسجيلها';
+      }
+      
+      addNotification(a.type, title, text, a.timestamp);
+      showAdminToast(`${c.ic} ${title}: ${text}`, 'success');
+      
+      try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(587.33, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.15);
+      } catch(e) {}
+    }
+
+    // إغلاق القائمة عند الضغط خارجها
+    window.addEventListener('click', (e) => {
+      const dropdown = document.getElementById('noti-dropdown');
+      const btn = document.getElementById('noti-bell-btn');
+      if (dropdown && btn && !dropdown.contains(e.target) && !btn.contains(e.target)) {
+        dropdown.style.display = 'none';
+      }
+    });
+
+    // تصدير الدوال للنطاق العام
+    window.toggleNotificationsDropdown = toggleNotificationsDropdown;
+    window.clearAllNotifications = clearAllNotifications;
+    window.markAsRead = markAsRead;
 
     // Export functions to window scope for onclick handlers in dynamically generated HTML
     window.openAdminEmployeesModal = openAdminEmployeesModal;
