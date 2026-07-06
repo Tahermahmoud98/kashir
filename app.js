@@ -1916,11 +1916,21 @@ function processPayment() {
   setTimeout(() => {
   }, 500);
 
-  let itemsList = invoice.items.map(item => `- ${item.name} (${item.qty} × ${formatIQD(item.priceIQD)}) = ${formatIQD(item.qty * item.priceIQD)}`).join('\n');
+  let itemsList = invoice.items.map(item => {
+    const price = item.priceIQD || item.price || 0;
+    return `- ${item.name} (${item.qty} × ${formatIQD(price)}) = ${formatIQD(item.qty * price)}`;
+  }).join('\n');
+
+  let customerName = 'زبون عام';
+  if (state.selectedCustomer) {
+    const customer = DB.getCustomers().find(c => c.id === state.selectedCustomer);
+    if (customer) customerName = customer.name;
+  }
 
   const saleMsg = `🛒 *عملية بيع جديدة*
 رقم الفاتورة: ${invoice.id}
-طريقة الدفع: ${payLabels[state.paymentMethod] || state.paymentMethod}
+طريقة الدفع: ${payLabels[state.paymentMethod] || (state.paymentMethod === 'debt' ? '🧾 دين على الحساب' : state.paymentMethod)}
+العميل: ${customerName}
 الكاشير: ${invoice.cashier}
 ----------------
 📦 *المواد المباعة:*
@@ -2289,6 +2299,8 @@ async function deleteProduct(id) {
   if (!p) return;
   if (!(await showConfirm(`هل تريد حذف المنتج "${p.name}"؟`))) return;
   DB.deleteProduct(id);
+  const msg = `🗑️ *حذف مادة نهائياً*\nاسم المادة: ${p.name}`;
+  if (typeof sendTelegramMessage === 'function') sendTelegramMessage(msg);
   DB.addActivity('item_delete', { target: 'منتج', name: p.name });
   loadProductsPage();
   showToast('تم حذف المنتج', 'success');
@@ -2344,6 +2356,8 @@ function saveProduct() {
   if (id) {
     DB.updateProduct(id, data);
     showToast('تم تحديث المنتج بنجاح', 'success');
+    const msg = `✏️ *تعديل مادة*\nالاسم: ${data.name}\nالسعر: ${formatIQD(data.priceIQD)}\nالكمية: ${data.stock}`;
+    if (typeof sendTelegramMessage === 'function') sendTelegramMessage(msg);
     DB.addActivity('product_update', { name: data.name, price: data.priceIQD, stock: data.stock, category: data.category });
   } else {
     const newProduct = DB.addProduct(data);
@@ -3008,12 +3022,19 @@ function saveCustomer() {
   if (id) {
     DB.updateCustomer(id, data);
     showToast('تم تحديث العميل', 'success');
+    const msg = `✏️ *تعديل بيانات عميل*\nالاسم: ${data.name}\nالهاتف: ${data.phone || 'غير محدد'}`;
+    if (typeof sendTelegramMessage === 'function') sendTelegramMessage(msg);
     DB.addActivity('customer_update', { name: data.name, phone: data.phone });
   } else {
     data.oldDebt = oldDebtInput ? parseFloat(oldDebtInput) : 0;
     data.oldDebtPaid = 0;
     DB.addCustomer(data);
     showToast('تمت إضافة العميل', 'success');
+    const msg = `👥 *إضافة عميل جديد*
+الاسم: ${data.name}
+الهاتف: ${data.phone || 'غير محدد'}
+الديون السابقة: ${formatIQD(data.oldDebt || 0)}`;
+    if (typeof sendTelegramMessage === 'function') sendTelegramMessage(msg);
     DB.addActivity('customer_add', { name: data.name, phone: data.phone, oldDebt: data.oldDebt });
   }
 
@@ -3042,6 +3063,8 @@ async function deleteCustomer(id) {
     
     // Delete customer
     DB.deleteCustomer(id);
+    const msg = `🗑️ *حذف عميل نهائياً*\nاسم العميل: ${c.name}`;
+    if (typeof sendTelegramMessage === 'function') sendTelegramMessage(msg);
     
     // Delete associated debts
     const allDebts = DB.getDebts().filter(d => d.customerId !== id);
@@ -3751,7 +3774,10 @@ function processDebtSale() {
   clearCart(false);
   renderProducts();
 
-  let itemsList = debt.items.map(item => `- ${item.name} (${item.qty} × ${formatIQD(item.priceIQD)}) = ${formatIQD(item.qty * item.priceIQD)}`).join('\n');
+  let itemsList = debt.items.map(item => {
+    const price = item.priceIQD || item.price || 0;
+    return `- ${item.name} (${item.qty} × ${formatIQD(price)}) = ${formatIQD(item.qty * price)}`;
+  }).join('\n');
 
   const debtMsg = `📋 *عملية بيع بالدين*
 رقم السجل: ${debt.id}
@@ -3948,9 +3974,9 @@ function showDebtorDetail(customerId) {
   const customer = DB.getCustomers().find(c => c.id === customerId);
   const settings = DB.getSettings();
 
-  const totalDebt = debts.reduce((s, d) => s + Math.max(0, d.totalIQD - d.paidAmount), 0);
-  const totalOriginal = debts.reduce((s, d) => s + d.totalIQD, 0);
-  const totalPaid = debts.reduce((s, d) => s + d.paidAmount, 0);
+  const totalOriginal = debts.reduce((s, d) => s + (d.totalIQD || 0), 0);
+  const totalPaid = debts.reduce((s, d) => s + (d.paidAmount || 0), 0);
+  const totalDebt = Math.max(0, totalOriginal - totalPaid);
 
   const oldDebtAmount = customer?.oldDebt || 0;
   const oldDebtPaid = customer?.oldDebtPaid || 0;
@@ -4110,11 +4136,11 @@ function renderDebtTransactionCard(debt, idx) {
 
         <!-- المنتجات المشتراة -->
         <div class="debt-txn-items-title">🛒 <span data-translate="المنتجات المشتراة">المنتجات المشتراة</span></div>
-        <ul class="debt-txn-items-list">
+        <ul class="debt-txn-items-list" style="list-style:none; padding:0; margin:10px 0;">
           ${(debt.items || []).map(i => `
-            <li>
-              <span>${i.name || 'منتج'}</span>
-              <span>${i.qty || 1} x ${formatIQD(i.price || 0)}</span>
+            <li style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed rgba(0,0,0,0.1);">
+              <span style="font-weight: 500; color: var(--text-primary);">${i.name || 'منتج'}</span>
+              <span style="color: var(--text-muted); direction: ltr;">${i.qty || 1} × ${formatIQD(i.priceIQD || i.price || 0)}</span>
             </li>
           `).join('')}
         </ul>
@@ -4122,7 +4148,7 @@ function renderDebtTransactionCard(debt, idx) {
         <!-- سجل المدفوعات لهذه الفاتورة -->
         ${(debt.payments && debt.payments.length > 0) ? `
         <div class="debt-txn-payments-title">💳 <span data-translate="سجل الدفعات">سجل الدفعات</span></div>
-        <ul class="debt-txn-payments-list">
+        <ul class="debt-txn-payments-list" style="list-style:none; padding:0; margin:10px 0;">
           ${debt.payments.map(p => {
     let pDate = new Date();
     try {
@@ -4130,9 +4156,9 @@ function renderDebtTransactionCard(debt, idx) {
       if (isNaN(pDate.getTime())) pDate = new Date();
     } catch (e) { }
     return `
-            <li>
-              <span>${typeof formatCustomDate === 'function' ? formatCustomDate(pDate) : pDate.toLocaleDateString()}</span>
-              <span>${formatIQD(p.amount || 0)}</span>
+            <li style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed rgba(0,0,0,0.1);">
+              <span style="color: var(--text-muted);">${typeof formatCustomDate === 'function' ? formatCustomDate(pDate) : pDate.toLocaleDateString()}</span>
+              <span style="font-weight: bold; color: var(--success);">${formatIQD(p.amountIQD || p.amount || 0)}</span>
             </li>
             `;
   }).join('')}
@@ -8287,3 +8313,64 @@ window.addManualProductToCart = function() {
     showToast('??? ????? ?????? ??????', 'success');
   }
 };
+
+// ============================================================
+// نظام التقرير الدوري التلقائي (كل 6 ساعات)
+// ============================================================
+function checkAndSendPeriodicReport() {
+  if (typeof sendTelegramMessage !== 'function') return;
+
+  const now = new Date();
+  const lastReportStr = localStorage.getItem('pos_last_6h_report');
+  
+  if (lastReportStr) {
+    const lastReportTime = new Date(lastReportStr);
+    const hoursPassed = (now - lastReportTime) / (1000 * 60 * 60);
+    // إذا لم تمر 6 ساعات، لا تفعل شيئاً
+    if (hoursPassed < 6) return;
+  } else {
+    // أول مرة يتم فيها تشغيل النظام، نسجل الوقت الحالي وننتظر 6 ساعات
+    localStorage.setItem('pos_last_6h_report', now.toISOString());
+    return;
+  }
+
+  // إذا مرت 6 ساعات، نقوم بجمع الإحصائيات
+  const today = now.toISOString().split('T')[0];
+  const invoices = typeof DB !== 'undefined' && DB.getInvoices ? DB.getInvoices() : [];
+  const todayInv = invoices.filter(inv => !inv.isReturn && new Date(inv.date).toISOString().split('T')[0] === today);
+  const todaySales = todayInv.reduce((s, inv) => s + (inv.total || 0), 0);
+  const todayProfit = todayInv.reduce((s, inv) => s + (typeof calculateInvoiceProfit === 'function' ? calculateInvoiceProfit(inv) : 0), 0);
+  const todayCount = todayInv.length;
+
+  const allDebts = typeof DB !== 'undefined' && DB.getDebts ? DB.getDebts() : [];
+  const todayDebts = allDebts.filter(d => {
+    let dDate;
+    try { dDate = new Date(d.date).toISOString().split('T')[0]; } catch(e){ dDate=''; }
+    return dDate === today;
+  });
+  const todayDebtAmt = todayDebts.reduce((s, d) => s + (d.totalIQD || 0), 0);
+
+  const expenses = typeof DB !== 'undefined' && DB.getExpenses ? DB.getExpenses() : [];
+  const todayExp = expenses.filter(e => {
+    let eDate;
+    try { eDate = new Date(e.date).toISOString().split('T')[0]; } catch(e){ eDate=''; }
+    return eDate === today;
+  });
+  const todayExpAmt = todayExp.reduce((s, e) => s + (e.amount || 0), 0);
+
+  const msg = `📊 *تقرير دوري (آخر 6 ساعات تشغيل)*
+⏰ الوقت: ${now.toLocaleTimeString('ar-IQ')}
+
+💰 مبيعات اليوم حتى الآن: ${typeof formatIQD === 'function' ? formatIQD(todaySales) : todaySales}
+💵 أرباح اليوم حتى الآن: ${typeof formatIQD === 'function' ? formatIQD(todayProfit) : todayProfit}
+🧾 عدد الفواتير اليوم: ${todayCount}
+💳 ديون مسجلة اليوم: ${typeof formatIQD === 'function' ? formatIQD(todayDebtAmt) : todayDebtAmt}
+🔻 مصروفات اليوم: ${typeof formatIQD === 'function' ? formatIQD(todayExpAmt) : todayExpAmt}`;
+
+  sendTelegramMessage(msg);
+  // تحديث وقت آخر تقرير
+  localStorage.setItem('pos_last_6h_report', now.toISOString());
+}
+
+// فحص التقرير الدوري كل 5 دقائق
+setInterval(checkAndSendPeriodicReport, 5 * 60 * 1000);

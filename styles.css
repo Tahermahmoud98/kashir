@@ -1708,7 +1708,7 @@ body::after {
 /* ========= INVENTORY ========= */
 .inventory-stats {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 16px;
   margin-bottom: 20px;
 }
@@ -1954,7 +1954,7 @@ body::after {
 
 .reports-charts {
   display: grid;
-  grid-template-columns: 2fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 16px;
   margin-bottom: 20px;
 }
@@ -1999,7 +1999,7 @@ body::after {
 /* ========= DASHBOARD ========= */
 .dashboard-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 16px;
   margin-bottom: 20px;
 }
@@ -2122,14 +2122,14 @@ body::after {
 
 .dashboard-charts {
   display: grid;
-  grid-template-columns: 2fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 16px;
   margin-bottom: 20px;
 }
 
 .dashboard-tables {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 16px;
 }
 
