@@ -3123,6 +3123,8 @@ async function deleteCustomer(id) {
   DB.saveDeleteRequests(newReqs);
 
   DB.addDeleteRequest('customer', id, `حذف العميل ${c.name}`);
+  const msg = `🔔 *طلب إذن جديد*\nيطلب الكاشير الموافقة على حذف العميل: ${c.name}`;
+  if (typeof sendTelegramMessage === 'function') sendTelegramMessage(msg);
   
   showToast('تم إرسال طلب الحذف للإدارة. بانتظار الموافقة ⏳', 'info');
   loadCustomersPage();
@@ -4233,6 +4235,8 @@ async function deleteDebtEntry(debtId) {
   const debt = DB.getDebts().find(d => d.id === debtId);
   const custName = DB.getCustomers().find(c => c.id === debt?.customerId)?.name || 'غير معروف';
   DB.addDeleteRequest('debt', debtId, `حذف دين للعميل ${custName} بقيمة ${formatIQD(debt?.totalIQD || 0)}`);
+  const msg = `🔔 *طلب إذن جديد*\nيطلب الكاشير الموافقة على حذف دين للعميل ${custName} بقيمة ${formatIQD(debt?.totalIQD || 0)}`;
+  if (typeof sendTelegramMessage === 'function') sendTelegramMessage(msg);
 
   showToast('تم إرسال طلب الحذف للإدارة. بانتظار الموافقة ⏳', 'info');
   if (typeof updateDebtNavBadge === 'function') updateDebtNavBadge();
@@ -7482,31 +7486,26 @@ function renderNotifList(notifs, filter) {
   const lblClr = { stock: '#f59e0b', expiry: '#ef4444', debt: '#06b6d4', pay: '#10b981' };
 
   list.innerHTML = filtered.map((n, i) => `
-    <div id="notif-card-${i}"
+    <div id="notif-card-${i}" class="notif-card"
       style="
-        padding:16px 20px;
         background:${n.isRead ? 'var(--bg-card)' : colors[n.priority]};
         border-right:4px solid ${n.isRead ? 'var(--border-color)' : borders[n.priority]};
-        border-radius:var(--radius-md);
-        display:flex; align-items:center; gap:14px;
-        box-shadow:var(--shadow-sm);
         opacity:${n.isRead ? '0.65' : '1'};
-        transition:all 0.2s;
       "
-      onmouseenter="this.style.transform='translateX(-3px)'"
+      onmouseenter="if(window.innerWidth > 768) this.style.transform='translateX(-3px)'"
       onmouseleave="this.style.transform='translateX(0)'"
     >
       <span style="font-size:26px;flex-shrink:0;">${n.icon}</span>
       <div style="flex:1;min-width:0;cursor:pointer;" onclick="notifAction(${i})">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;flex-wrap:wrap;">
           <span style="font-weight:700;font-size:14px;">${n.title}</span>
           <span style="font-size:10px;padding:2px 8px;border-radius:20px;background:${lblClr[n.cat]}22;color:${lblClr[n.cat]};font-weight:600;">${labels[n.cat]}</span>
           ${!n.isRead ? '<span style="width:8px;height:8px;border-radius:50%;background:#ef4444;display:inline-block;flex-shrink:0;"></span>' : ''}
         </div>
-        <div style="font-size:13px;color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${n.msg}</div>
-        ${n.time ? `<div style="font-size:11px;color:var(--text-muted);margin-top:4px;">📆 ${new Date(n.time).toLocaleDateString((window.CURRENT_LANG === 'en' ? 'en-US' : (window.CURRENT_LANG === 'ku' || window.CURRENT_LANG === 'kbd' ? 'ku-IQ' : 'ar-IQ')))}</div>` : ''}
+        <div style="font-size:13px;color:var(--text-secondary);word-wrap:break-word;white-space:normal;line-height:1.4;">${n.msg}</div>
+        ${n.time ? `<div style="font-size:11px;color:var(--text-muted);margin-top:6px;">📆 ${new Date(n.time).toLocaleDateString((window.CURRENT_LANG === 'en' ? 'en-US' : (window.CURRENT_LANG === 'ku' || window.CURRENT_LANG === 'kbd' ? 'ku-IQ' : 'ar-IQ')))}</div>` : ''}
       </div>
-      <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0;">
+      <div class="notif-card-actions" style="display:flex;flex-direction:column;gap:6px;flex-shrink:0;">
         ${n.payAction ? `
         <button onclick="${n.payAction}" title="تسديد الدين"
           style="border:none;background:#10b981;color:white;cursor:pointer;font-size:12px;padding:4px 8px;border-radius:4px;font-weight:bold;display:flex;align-items:center;gap:4px;">

@@ -8713,3 +8713,30 @@ body {
 
 
 /* === END MERGED responsive.css === */
+/* تصميم بطاقات الإشعارات للموبايل */
+.notif-card {
+  padding: 16px 20px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s;
+}
+
+.notif-card:hover {
+  transform: translateX(-3px);
+}
+
+@media (max-width: 768px) {
+  .notif-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .notif-card-actions {
+    flex-direction: row !important;
+    width: 100%;
+    justify-content: flex-end;
+    margin-top: 10px;
+  }
+}
