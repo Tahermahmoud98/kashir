@@ -27,6 +27,15 @@
   }
 })();
 
+window.t = function(key) {
+  if (!key) return '';
+  const lang = DB.getSettings().language || 'kbd';
+  const dict = (window.LANGUAGES && window.LANGUAGES[lang]) ? 
+    { ...window.LANGUAGES[lang].translations, ...window.LANGUAGES[lang].domPhrases, ...(window.LANGUAGES[lang].statusMap || {}) } : 
+    (TRANSLATIONS[lang] || TRANSLATIONS['ar']);
+  return dict[key] || key;
+};
+
 // ========= الحالة العامة =========
 let state = {
   cart: [],
@@ -356,6 +365,43 @@ async function logout() {
 
 // ========= تهيئة النظام =========
 function initApp() {
+  if (!localStorage.getItem('pos_kbd_default_migrated')) {
+    const s = DB.getSettings();
+    s.language = 'kbd';
+    DB.saveSettings(s);
+    localStorage.setItem('pos_kbd_default_migrated', 'true');
+  }
+
+  // تحديث الأقسام لإضافة الـ 15 قسم الافتراضي للمستخدمين الحاليين
+  if (!localStorage.getItem('pos_categories_migrated_v3')) {
+    let cats = DB.getCategories();
+    const defaultCats = [
+      { id: 'default_cat', name: 'عامة', icon: '📦' },
+      { id: 'cat_weight', name: 'مواد بالوزن', icon: '⚖️' },
+      { id: 'cat_dairy', name: 'ألبان وأجبان', icon: '🧀' },
+      { id: 'cat_canned', name: 'معلبات', icon: '🥫' },
+      { id: 'cat_beverage', name: 'مشروبات وعصائر', icon: '🧃' },
+      { id: 'cat_meat', name: 'لحوم ودواجن', icon: '🥩' },
+      { id: 'cat_veg', name: 'خضار وفواكه', icon: '🥦' },
+      { id: 'cat_bakery', name: 'مخبوزات وحلويات', icon: '🥐' },
+      { id: 'cat_spices', name: 'بهارات وعطارة', icon: '🧂' },
+      { id: 'cat_cleaning', name: 'منظفات', icon: '🧼' },
+      { id: 'cat_personal', name: 'عناية شخصية', icon: '🧴' },
+      { id: 'cat_baby', name: 'مستلزمات أطفال', icon: '🍼' },
+      { id: 'cat_snacks', name: 'وجبات خفيفة وشيبس', icon: '🍿' },
+      { id: 'cat_home', name: 'أدوات منزلية', icon: '🍽️' },
+      { id: 'cat_stationery', name: 'قرطاسية', icon: '✏️' }
+    ];
+    let changed = false;
+    defaultCats.forEach(dc => {
+      if (!cats.find(c => c.name === dc.name)) {
+        cats.push(dc);
+        changed = true;
+      }
+    });
+    if (changed) DB.saveCategories(cats);
+    localStorage.setItem('pos_categories_migrated_v3', 'true');
+  }
   const settings = DB.getSettings();
   applyLanguage(settings.language || 'kbd');
   document.getElementById('store-name-display').textContent = settings.storeName;
@@ -494,7 +540,8 @@ function showPage(page) {
     activitylog: 'سجل العمليات'
   };
 
-  document.getElementById('page-title').textContent = titles[page] || page;
+  const baseTitle = titles[page] || page;
+  document.getElementById('page-title').textContent = (window.activeTranslations && window.activeTranslations[baseTitle]) ? window.activeTranslations[baseTitle] : baseTitle;
   state.currentPage = page;
 
   // التحكم بظهور زر الرجوع للرئيسية في الترويسة العليا
@@ -534,6 +581,10 @@ function showPage(page) {
       sidebar.classList.remove('open');
       sidebar.classList.remove('active');
     }
+  }
+
+  if (typeof applyLanguage === 'function') {
+    applyLanguage();
   }
 }
 
@@ -1046,15 +1097,16 @@ function loadPOS() {
 function loadCategoryTabs() {
   const cats = DB.getCategories();
   const container = document.getElementById('category-tabs');
-  container.innerHTML = `<button class="cat-tab ${state.productFilter === 'all' ? 'active' : ''}" onclick="filterByCategory('all', this)">الكل</button>
-  <button class="cat-tab ${state.productFilter === 'weight' ? 'active' : ''}" onclick="filterByCategory('weight', this)" style="background:var(--secondary);color:white">مواد بالوزن ⚖️</button>`;
+  container.innerHTML = `<button class="cat-tab ${state.productFilter === 'all' ? 'active' : ''}" onclick="filterByCategory('all', this)"><span data-translate>الكل</span></button>
+  <button class="cat-tab ${state.productFilter === 'weight' ? 'active' : ''}" onclick="filterByCategory('weight', this)" style="background:var(--secondary);color:white"><span data-translate>مواد بالوزن</span> ⚖️</button>`;
   cats.forEach(cat => {
     const btn = document.createElement('button');
     btn.className = `cat-tab ${state.productFilter === cat.id ? 'active' : ''}`;
-    btn.textContent = `${cat.icon} ${cat.name}`;
+    btn.textContent = `${cat.icon} ${t(cat.name)}`;
     btn.onclick = function () { filterByCategory(cat.id, this); };
     container.appendChild(btn);
   });
+  if(typeof applyLanguage === 'function') applyLanguage();
 }
 
 function filterByCategory(catId, btn) {
@@ -1090,7 +1142,8 @@ function renderProducts() {
   }
 
   if (!products.length) {
-    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-muted);">🔍 لا توجد منتجات</div>';
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-muted);"><span data-translate>🔍 لا توجد منتجات</span></div>';
+    if(typeof applyLanguage === 'function') applyLanguage();
     return;
   }
 
@@ -1102,16 +1155,17 @@ function renderProducts() {
       <div class="product-card ${isOut ? 'out-of-stock' : ''}" 
            onclick="${isOut ? '' : `addToCart('${p.id}')`}"
            title="${p.name}">
-        ${isLow ? '<span class="product-stock-badge low">⚠️ منخفض</span>' : ''}
-        ${isOut ? '<span class="product-stock-badge out">نفد</span>' : ''}
+        ${isLow ? `<span class="product-stock-badge low">⚠️ <span>${t('منخفض')}</span></span>` : ''}
+        ${isOut ? `<span class="product-stock-badge out">${t('نفد')}</span>` : ''}
         <span class="product-emoji">${renderEmojiHTML(p.emoji)}</span>
         <div class="product-name">${p.name}</div>
         <div class="product-price">${formatIQD(p.priceIQD)}</div>
         <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">$${p.priceUSD.toFixed(2)}</div>
-        <div style="font-size:11px;color:var(--text-muted);">المخزون: ${p.stock}</div>
+        <div style="font-size:11px;color:var(--text-muted);"><span>${t('المخزون')}:</span> ${p.stock}</div>
       </div>
     `;
   }).join('');
+  if(typeof applyLanguage === 'function') applyLanguage();
 }
 
 function addToCart(productId, forcedQty = null) {
@@ -1292,9 +1346,10 @@ function renderCart() {
     container.innerHTML = `
       <div class="cart-empty">
         <span>🛒</span>
-        <p>السلة فارغة</p>
-        <small>أضف منتجات من القائمة</small>
+        <p data-translate>السلة فارغة</p>
+        <small data-translate>أضف منتجات من القائمة</small>
       </div>`;
+    if(typeof applyLanguage === 'function') applyLanguage();
     return;
   }
 
@@ -1303,7 +1358,7 @@ function renderCart() {
       <span class="cart-item-emoji">${renderEmojiHTML(item.emoji)}</span>
       <div class="cart-item-info">
         <div class="cart-item-name">${item.name}</div>
-        <div class="cart-item-price">${formatIQD(item.priceIQD)} / ${item.unit || 'قطعة'}</div>
+        <div class="cart-item-price">${formatIQD(item.priceIQD)} / <span data-translate>${item.unit || 'قطعة'}</span></div>
       </div>
       <div class="cart-item-qty">
         <button class="qty-btn" onclick="updateQty(${idx}, -1)">−</button>
@@ -1316,6 +1371,7 @@ function renderCart() {
   `).join('');
 
   updateCartTotals();
+  if(typeof applyLanguage === 'function') applyLanguage();
 }
 
 function updateCartTotals() {
@@ -1375,9 +1431,11 @@ function updateCartTotals() {
   totalDiscount = Math.min(totalDiscount, subtotalIQD);
 
   const afterDiscount = subtotalIQD - totalDiscount;
-  const taxAmt = afterDiscount * (settings.taxRate / 100);
+  const taxRate = settings.taxRate || 0;
+  const exchangeRate = settings.exchangeRate || 1500;
+  const taxAmt = afterDiscount * (taxRate / 100);
   const totalIQD = afterDiscount + taxAmt;
-  const totalUSD = totalIQD / settings.exchangeRate;
+  const totalUSD = totalIQD / exchangeRate;
 
   document.getElementById('subtotal-iqd').textContent = formatIQD(subtotalIQD);
   document.getElementById('discount-amount').textContent = '- ' + formatIQD(totalDiscount);
@@ -2066,20 +2124,31 @@ function loadProductsPage() {
 
 function loadCategoryFilterSelect() {
   const cats = DB.getCategories();
-  const sels = document.querySelectorAll('#page-products .filter-select, #pm-category');
-  sels.forEach(sel => {
+  
+  // Populate filter selects
+  const filterSels = document.querySelectorAll('#page-products .filter-select');
+  filterSels.forEach(sel => {
     const currentVal = sel.value;
-    sel.innerHTML = sel.id === 'pm-category'
-      ? '<option value="">-- اختر الفئة --</option>'
-      : '<option value="">كل الفئات</option>';
+    sel.innerHTML = `<option value="">${t('كل الفئات')}</option>`;
     cats.forEach(c => {
       const opt = document.createElement('option');
       opt.value = c.id;
-      opt.textContent = `${c.icon} ${c.name}`;
+      opt.textContent = `${c.icon} ${t(c.name)}`;
       sel.appendChild(opt);
     });
     if (currentVal) sel.value = currentVal;
   });
+
+  // Populate datalist for product modal
+  const pmCatList = document.getElementById('pm-category-list');
+  if (pmCatList) {
+    pmCatList.innerHTML = '';
+    cats.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = t(c.name);
+      pmCatList.appendChild(opt);
+    });
+  }
 }
 
 function searchProductsPage(query) {
@@ -2110,13 +2179,13 @@ function renderProductsTable(products) {
       <tr>
         <td><code style="color:var(--info);font-size:11px">${p.barcode}</code></td>
         <td><span style="font-size:18px;display:inline-block;width:24px;height:24px;vertical-align:middle;">${renderEmojiHTML(p.emoji)}</span> ${p.name}</td>
-        <td><span class="status-badge active">${cat ? cat.icon + ' ' + cat.name : '-'}</span></td>
+        <td><span class="status-badge active">${cat ? cat.icon + ' ' + t(cat.name) : '-'}</span></td>
         <td><strong style="color:var(--success)">${formatIQD(p.priceIQD)}</strong></td>
         <td style="color:var(--info)">$${p.priceUSD.toFixed(2)}</td>
         <td><strong style="color:${isOut ? 'var(--danger)' : isLow ? 'var(--warning)' : 'var(--text-primary)'}">${p.stock}</strong></td>
         <td>
           <span class="status-badge ${isOut ? 'out' : isLow ? 'low' : 'active'}">
-            ${isOut ? '🚫 نفد' : isLow ? '⚠️ منخفض' : '✅ متوفر'}
+            ${isOut ? '🚫 ' + t('نفد') : isLow ? '⚠️ ' + t('منخفض') : '✅ ' + t('متوفر')}
           </span>
         </td>
         <td>
@@ -2126,6 +2195,7 @@ function renderProductsTable(products) {
       </tr>
     `;
   }).join('');
+  if (typeof applyLanguage === 'function') applyLanguage();
 }
 
 function toggleBagCalculator() {
@@ -2176,7 +2246,9 @@ function openProductModal(productId = null) {
     document.getElementById('pm-id').value = p.id;
     document.getElementById('pm-barcode').value = p.barcode;
     document.getElementById('pm-name').value = p.name;
-    document.getElementById('pm-category').value = p.category;
+    const cats = DB.getCategories();
+    const catObj = cats.find(c => c.id === p.category);
+    document.getElementById('pm-category').value = catObj ? catObj.name : p.category;
     document.getElementById('pm-unit').value = p.unit || 'قطعة';
     document.getElementById('pm-price-iqd').value = p.priceIQD;
     document.getElementById('pm-price-usd').value = p.priceUSD;
@@ -2226,12 +2298,25 @@ function saveProduct() {
   const id = document.getElementById('pm-id').value;
   const barcode = document.getElementById('pm-barcode').value.trim();
   const name = document.getElementById('pm-name').value.trim();
-  const category = document.getElementById('pm-category').value;
+  const categoryName = document.getElementById('pm-category').value.trim();
   const priceIQD = parseFloat(document.getElementById('pm-price-iqd').value || 0);
 
-  if (!barcode || !name || !category || !priceIQD) {
+  if (!barcode || !name || !categoryName || !priceIQD) {
     showToast('يرجى ملء جميع الحقول المطلوبة', 'warning');
     return;
+  }
+
+  // Handle manual category typing (auto-create if doesn't exist)
+  let cats = DB.getCategories();
+  let existingCat = cats.find(c => c.name.toLowerCase() === categoryName.toLowerCase());
+  let categoryId = "";
+  if (existingCat) {
+    categoryId = existingCat.id;
+  } else {
+    categoryId = 'CAT_' + Date.now();
+    cats.push({ id: categoryId, name: categoryName, color: '#00c896', icon: '📁' });
+    DB.saveCategories(cats);
+    if (typeof loadCategoryFilterSelect === 'function') loadCategoryFilterSelect();
   }
 
   const settings = DB.getSettings();
@@ -2242,7 +2327,7 @@ function saveProduct() {
   const data = {
     barcode,
     name,
-    category,
+    category: categoryId,
     unit: unit,
     priceIQD,
     priceUSD: parseFloat(document.getElementById('pm-price-usd').value || (priceIQD / (settings.exchangeRate || 1500)).toFixed(2)),
@@ -2306,7 +2391,7 @@ function renderCategoriesList() {
   const list = document.getElementById('categories-list');
   list.innerHTML = cats.map(c => `
     <div class="category-item">
-      <span>${c.icon} ${c.name}</span>
+      <span>${c.icon} ${t(c.name)}</span>
       <button class="btn-icon delete" onclick="deleteCategory('${c.id}')">🗑️</button>
     </div>
   `).join('');
@@ -2358,7 +2443,7 @@ function loadInventoryPage() {
     return `
       <tr>
         <td><span style="font-size:18px;display:inline-block;width:24px;height:24px;vertical-align:middle;">${renderEmojiHTML(p.emoji)}</span> ${p.name}</td>
-        <td>${cat ? cat.icon + ' ' + cat.name : '-'}</td>
+        <td>${cat ? cat.icon + ' ' + t(cat.name) : '-'}</td>
         <td>
           <strong style="font-size:18px;color:${isOut ? 'var(--danger)' : isLow ? 'var(--warning)' : 'var(--success)'}">
             ${p.stock}
@@ -2455,7 +2540,7 @@ function searchCustomers(query) {
 function renderCustomersGrid(customers) {
   const grid = document.getElementById('customers-grid');
   if (!customers.length) {
-    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-muted)">👥 لا يوجد عملاء</div>';
+    grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-muted)">👥 ${t('لا يوجد عملاء')}</div>`;
     return;
   }
   
@@ -2463,12 +2548,12 @@ function renderCustomersGrid(customers) {
 
   grid.innerHTML = customers.map(c => {
     const existingReq = reqs.find(r => r.targetId === c.id && r.type === 'customer');
-    let deleteBtnHtml = `<button class="btn-icon delete" onclick="deleteCustomer('${c.id}')">🗑️ حذف</button>`;
+    let deleteBtnHtml = `<button class="btn-icon delete" onclick="deleteCustomer('${c.id}')">🗑️ ${t('حذف')}</button>`;
     if (existingReq) {
       if (existingReq.status === 'pending') {
-        deleteBtnHtml = `<button class="btn-icon" style="color:var(--warning); border-color:var(--warning);" onclick="deleteCustomer('${c.id}')">⏳ قيد المراجعة</button>`;
+        deleteBtnHtml = `<button class="btn-icon" style="color:var(--warning); border-color:var(--warning);" onclick="deleteCustomer('${c.id}')">⏳ ${t('قيد المراجعة')}</button>`;
       } else if (existingReq.status === 'approved') {
-        deleteBtnHtml = `<button class="btn-icon" style="color:var(--success); border-color:var(--success);" onclick="deleteCustomer('${c.id}')">✅ تأكيد الحذف</button>`;
+        deleteBtnHtml = `<button class="btn-icon" style="color:var(--success); border-color:var(--success);" onclick="deleteCustomer('${c.id}')">✅ ${t('تأكيد الحذف')}</button>`;
       }
     }
 
@@ -2482,22 +2567,23 @@ function renderCustomersGrid(customers) {
         </div>
       </div>
       <div style="font-size:13px;color:var(--text-muted);margin-bottom:8px">
-        📍 ${c.address || 'غير محدد'}
+        📍 ${c.address || t('غير محدد')}
       </div>
       <div class="customer-card-stats">
-        <span>🛒 ${c.totalPurchases || 0} مشتريات</span>
+        <span>🛒 ${c.totalPurchases || 0} ${t('مشتريات')}</span>
         <span>💰 ${formatIQD(c.totalSpent || 0)}</span>
       </div>
       <div style="font-size:12px; color:var(--primary); font-weight:700; margin-top:4px;">
-        ⭐ نقاط الولاء: ${c.loyaltyPoints || 0}
+        ⭐ ${t('نقاط الولاء')}: ${c.loyaltyPoints || 0}
       </div>
-      <div style="font-size:11px;color:var(--text-muted);margin-top:6px">📅 منذ ${c.joinDate}</div>
+      <div style="font-size:11px;color:var(--text-muted);margin-top:6px">📅 ${t('منذ')} ${c.joinDate}</div>
       <div class="customer-card-actions">
-        <button class="btn-icon edit" onclick="editCustomer('${c.id}')">✏️ تعديل</button>
+        <button class="btn-icon edit" onclick="editCustomer('${c.id}')">✏️ ${t('تعديل')}</button>
         ${deleteBtnHtml}
       </div>
     </div>
   `}).join('');
+  if (typeof applyLanguage === 'function') applyLanguage();
 }
 
 function printCustomersTable() {
@@ -3218,19 +3304,27 @@ function changeLanguage(lang) {
   DB.saveSettings(s);
   applyLanguage(lang);
   showToast(lang === 'ar' ? 'تم تغيير اللغة بنجاح' : lang === 'ku' ? 'زمانەکە بە سەرکەوتوویی گۆڕدرا' : 'Language changed successfully', 'success');
+  if (state.currentPage) {
+    showPage(state.currentPage);
+  }
 }
 
 function applyLanguage(lang) {
+  if (!lang) {
+    lang = DB.getSettings().language || 'kbd';
+  }
   let t = {};
   if (window.LANGUAGES && window.LANGUAGES[lang]) {
-    t = window.LANGUAGES[lang].translations;
+    t = { ...window.LANGUAGES[lang].translations, ...(window.LANGUAGES[lang].domPhrases || {}), ...(window.LANGUAGES[lang].statusMap || {}) };
   } else if (TRANSLATIONS[lang]) {
     t = TRANSLATIONS[lang];
   } else if (window.LANGUAGES && window.LANGUAGES['ar']) {
-    t = window.LANGUAGES['ar'].translations;
+    t = { ...window.LANGUAGES['ar'].translations, ...(window.LANGUAGES['ar'].domPhrases || {}), ...(window.LANGUAGES['ar'].statusMap || {}) };
   } else {
     t = TRANSLATIONS['ar'];
   }
+  
+  window.activeTranslations = t;
 
   if (lang === 'en') {
     document.documentElement.dir = 'ltr';
@@ -3242,8 +3336,14 @@ function applyLanguage(lang) {
 
   // Auto-translate all elements with data-translate attribute
   document.querySelectorAll('[data-translate]').forEach(el => {
-    const key = el.getAttribute('data-translate');
-    if (t[key]) {
+    let key = el.getAttribute('data-translate');
+    if (!key) {
+      if (!el.dataset.originalText) {
+        el.dataset.originalText = el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' ? el.placeholder : el.textContent.trim();
+      }
+      key = el.dataset.originalText;
+    }
+    if (key && t[key]) {
       if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
         el.placeholder = t[key];
       } else {
@@ -3251,6 +3351,22 @@ function applyLanguage(lang) {
       }
     }
   });
+
+  // Update dynamic page title
+  const pageTitleEl = document.getElementById('page-title');
+  if (pageTitleEl && state.currentPage) {
+    const titles = {
+      home: 'الرئيسية', pos: 'الكاشير', products: 'إدارة المنتجات', inventory: 'إدارة المخزون',
+      customers: 'إدارة العملاء', debts: 'ديون العملاء', reports: 'التقارير', settings: 'الإعدادات',
+      archive: 'الأرشيف', dashboard: 'لوحة التحكم', purchases: 'المشتريات', sales: 'المبيعات',
+      suppliers: 'الموردون', accounts: 'الحسابات', employees: 'الموظفون', discounts: 'العروض والخصومات',
+      barcode: 'الباركود', printing: 'إعدادات الطباعة', notifications: 'الإشعارات', backup: 'النسخ الاحتياطي',
+      activitylog: 'سجل العمليات'
+    };
+    const baseTitle = titles[state.currentPage] || state.currentPage;
+    pageTitleEl.textContent = t[baseTitle] || baseTitle;
+  }
+
 
   const langText = document.getElementById('active-lang-text');
   if (langText) {
@@ -3461,6 +3577,7 @@ function closeModal(id) {
 }
 
 function showToast(message, type = 'info') {
+  message = t(message);
   const container = document.getElementById('toast-container');
   const toast = document.createElement('div');
   toast.className = `toast ${type}`;
@@ -3494,6 +3611,7 @@ document.querySelectorAll('.modal-overlay').forEach(overlay => {
 });
 
 function showConfirm(message) {
+  message = t(message);
   return new Promise((resolve) => {
     const modal = document.getElementById('confirm-modal');
     const msgEl = document.getElementById('confirm-modal-message');
@@ -3504,19 +3622,20 @@ function showConfirm(message) {
     msgEl.textContent = message;
 
     // تخصيص الأيقونة والأزرار حسب نص الرسالة
-    if (message.includes('حذف') || message.includes('مسح') || message.includes('تراجع') || message.includes('تنبيه')) {
+    if (message.includes('حذف') || message.includes('مسح') || message.includes('تراجع') || message.includes('تنبيه') || message.includes('ژێبرن') || message.includes('رەشکرن')) {
       iconEl.textContent = '⚠️';
       btnYes.style.background = 'linear-gradient(135deg, var(--danger), #ff1f44)';
-      btnYes.textContent = 'نعم، إتمام الإجراء';
+      btnYes.textContent = t('نعم، إتمام الإجراء');
     } else if (message.includes('خروج')) {
       iconEl.textContent = '🚪';
       btnYes.style.background = 'linear-gradient(135deg, var(--primary), var(--primary-dark))';
-      btnYes.textContent = 'نعم، خروج';
+      btnYes.textContent = t('نعم، خروج');
     } else {
       iconEl.textContent = '❓';
       btnYes.style.background = 'linear-gradient(135deg, var(--success), #00a882)';
-      btnYes.textContent = 'موافق';
+      btnYes.textContent = t('موافق');
     }
+    btnNo.textContent = t('إلغاء');
 
     modal.style.display = 'flex';
 
@@ -8082,3 +8201,89 @@ function showArchivedDebtorDetailPage(customerId) {
     </div>
   `;
 }
+
+window.openManualProductModal = function() {
+  if (document.getElementById('mpm-name')) {
+    document.getElementById('mpm-name').value = '';
+    document.getElementById('mpm-price').value = '';
+    document.getElementById('mpm-qty').value = '1';
+    openModal('manual-product-modal');
+  }
+};
+
+window.addManualProductToCart = function() {
+  const name = document.getElementById('mpm-name').value.trim();
+  const price = parseFloat(document.getElementById('mpm-price').value);
+  const qty = parseFloat(document.getElementById('mpm-qty').value) || 1;
+
+  if(!name || isNaN(price) || price < 0 || qty <= 0) {
+    showToast('???? ??? ????? ?????? ??????? ???? ????', 'warning');
+    return;
+  }
+
+  const settings = DB.getSettings();
+  const pseudoProduct = {
+    id: 'MANUAL_' + Date.now(),
+    name: name,
+    priceIQD: price,
+    priceUSD: price / (settings.exchangeRate || 1500),
+    stock: 999999,
+    cost: 0,
+    barcode: 'MANUAL',
+    emoji: '??',
+    isManual: true
+  };
+  
+  // Check if cart is defined in scope, it usually is global in app.js
+  if (typeof cart !== 'undefined') {
+    cart.push({ ...pseudoProduct, cartItemId: Date.now() + Math.random(), qty: qty });
+    if(typeof renderCart === 'function') renderCart();
+    closeModal('manual-product-modal');
+    showToast('??? ????? ?????? ??????', 'success');
+  }
+};
+
+
+window.openManualProductModal = function() {
+  if (document.getElementById('mpm-name')) {
+    document.getElementById('mpm-name').value = '';
+    document.getElementById('mpm-price').value = '';
+    document.getElementById('mpm-qty').value = '1';
+    openModal('manual-product-modal');
+  }
+};
+
+window.addManualProductToCart = function() {
+  const name = document.getElementById('mpm-name').value.trim();
+  const price = parseFloat(document.getElementById('mpm-price').value);
+  const qty = parseFloat(document.getElementById('mpm-qty').value) || 1;
+
+  if(!name || isNaN(price) || price < 0 || qty <= 0) {
+    showToast('???? ??? ????? ?????? ??????? ???? ????', 'warning');
+    return;
+  }
+
+  const settings = DB.getSettings();
+  const pseudoProduct = {
+    id: 'MANUAL_' + Date.now(),
+    name: name,
+    priceIQD: price,
+    priceUSD: price / (settings.exchangeRate || 1500),
+    stock: 999999,
+    maxQty: 999999,
+    cost: 0,
+    barcode: 'MANUAL',
+    emoji: '??',
+    isManual: true,
+    qty: qty,
+    unit: '????'
+  };
+  
+  if (typeof state !== 'undefined' && state.cart) {
+    state.cart.push(pseudoProduct);
+    if(typeof renderCart === 'function') renderCart();
+    if(typeof updateCartTotals === 'function') updateCartTotals();
+    closeModal('manual-product-modal');
+    showToast('??? ????? ?????? ??????', 'success');
+  }
+};

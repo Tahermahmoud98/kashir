@@ -400,12 +400,12 @@
         <input type="hidden" id="odpm-customer-id">
 
         <div class="debt-remaining-box" style="margin-bottom:20px; text-align:center;">
-          <div style="font-size:12px; color:var(--muted)">إجمالي الدين القديم المتبقي</div>
-          <div class="debt-remaining-display" id="odpm-remaining">0 د.ع</div>
+          <div style="font-size:12px; color:var(--muted)" data-translate>إجمالي الدين القديم المتبقي</div>
+          <div class="debt-remaining-display" id="odpm-remaining" data-translate>0 د.ع</div>
         </div>
 
         <div class="form-group">
-          <label>المبلغ المدفوع (د.ع) <span class="required">*</span></label>
+          <label data-translate>المبلغ المدفوع (د.ع) <span class="required">*</span></label>
           <input type="number" id="odpm-amount" placeholder="0" min="1" oninput="calcOldDebtRemaining()">
         </div>
 
@@ -467,8 +467,8 @@
       <div class="sidebar-header">
         <div class="store-logo">🛒</div>
         <div class="store-info">
-          <h3 id="store-name-display">السوبر ماركيت</h3>
-          <span class="store-badge">متصل</span>
+          <h3 id="store-name-display" data-translate>السوبر ماركيت</h3>
+          <span class="store-badge" data-translate>متصل</span>
         </div>
       </div>
 
@@ -554,22 +554,22 @@
         <div class="header-right">
           <button class="btn-home-header" id="btn-back-home" onclick="showPage('home')" style="display: none;">🏠 <span
               data-translate="home">الرئيسية</span></button>
-          <h2 class="page-title" id="page-title">الرئيسية</h2>
+          <h2 class="page-title" id="page-title" data-translate>الرئيسية</h2>
         </div>
         <div class="header-left">
           <div class="header-time" id="header-time"></div>
           <div class="header-user">
             <span class="user-avatar">👤</span>
-            <span id="current-user">كاشير</span>
+            <span id="current-user" data-translate>كاشير</span>
           </div>
           <div class="lang-selector-container">
             <button class="lang-toggle-btn" onclick="toggleLangDropdown(event)" title="تبديل اللغة / Change Language">
-              🌐 <span id="active-lang-text">العربية</span>
+              🌐 <span id="active-lang-text" data-translate>العربية</span>
             </button>
             <div class="lang-dropdown-menu" id="lang-dropdown-menu">
               <div class="lang-option" data-lang="ar" onclick="selectLanguage('ar')">العربية</div>
-              <div class="lang-option" data-lang="kbd" onclick="selectLanguage('kbd')">بادینی</div>
-              <div class="lang-option" data-lang="ku" onclick="selectLanguage('ku')">سورانی</div>
+              <div class="lang-option" data-lang="kbd" onclick="selectLanguage('kbd')" data-translate>بادینی</div>
+              <div class="lang-option" data-lang="ku" onclick="selectLanguage('ku')" data-translate>سورانی</div>
             </div>
           </div>
           <div class="theme-toggle-btn" onclick="toggleTheme()" title="تبديل المظهر">
@@ -583,7 +583,7 @@
 
       <!-- Notifications Panel -->
       <div class="notifications-panel" id="notifications-panel" style="display:none;">
-        <h3>التنبيهات</h3>
+        <h3 data-translate>التنبيهات</h3>
         <div id="notifications-list"></div>
       </div>
 
@@ -597,7 +597,7 @@
               <div class="home-header-logo">🛒</div>
               <div class="home-header-text">
                 <div class="home-header-title-row">
-                  <h1 id="home-store-name">السوبر ماركيت</h1>
+                  <h1 id="home-store-name" data-translate>السوبر ماركيت</h1>
                   <div class="home-status-badge">
                     <span class="status-dot"></span>
                     <span data-translate="active_system">النظام متصل ونشط</span>
@@ -714,15 +714,15 @@
     <div class="pos-view-switcher">
       <button class="pos-view-btn active" id="pos-tab-products" onclick="switchPosMobileView('products')">
         <span class="pvb-icon">🛍️</span>
-        <span class="pvb-label">المنتجات</span>
+        <span class="pvb-label" data-translate>المنتجات</span>
       </button>
       <button class="pos-view-btn" id="pos-tab-both" onclick="switchPosMobileView('both')">
         <span class="pvb-icon">⋅⋅⋅</span>
-        <span class="pvb-label">معاً</span>
+        <span class="pvb-label" data-translate>معاً</span>
       </button>
       <button class="pos-view-btn" id="pos-tab-cart" onclick="switchPosMobileView('cart')">
         <span class="pvb-icon">🛒</span>
-        <span class="pvb-label">السلة <span class="pos-cart-badge" id="pos-cart-badge"
+        <span class="pvb-label" data-translate>السلة <span class="pos-cart-badge" id="pos-cart-badge"
             style="display:none">0</span></span>
       </button>
     </div>
@@ -730,30 +730,11 @@
       <!-- Product Search & Grid -->
       <div class="pos-products">
         <div class="pos-search-bar" style="flex-wrap: wrap; margin-bottom: 10px; align-items: stretch;">
-          <input type="text" id="pos-search" placeholder="🔍 ابحث بالاسم أو الباركود..."
-            oninput="searchProducts(this.value)" style="flex: 1; min-width: 250px;">
-          <div style="display: flex; gap: 10px;">
-            <button class="btn-barcode" onclick="openGlobalScanner('pos-search', handleScannedBarcode)"
-              title="مسح باركود بالكاميرا" style="white-space: nowrap; height: 100%;">📷 كاميرا</button>
-            <button class="btn-barcode-sim"
-              style="padding:10px 14px; background:var(--bg-card); border:1px solid var(--border-color); border-radius:var(--radius); color:var(--text-secondary); cursor:pointer; font-weight:700; font-family:inherit; font-size:12px; display:inline-flex; align-items:center; justify-content:center; white-space: nowrap; height: 100%;"
-              onclick="simulateBarcode()" title="إدخال يدوي">⌨️ محاكاة</button>
-          </div>
-        </div>
-        <div class="pos-branch-warehouse-bar" style="display:none; gap:10px; margin-bottom:10px;">
-          <select id="pos-branch-select"
-            style="flex:1; padding:8px; border-radius:var(--radius-sm); border:1px solid var(--border-color); background:var(--bg-card); color:var(--text-primary); font-family:inherit;"
-            onchange="updatePOSBranch()">
-            <option value="main">الفرع الرئيسي</option>
-          </select>
-          <select id="pos-warehouse-select"
-            style="flex:1; padding:8px; border-radius:var(--radius-sm); border:1px solid var(--border-color); background:var(--bg-card); color:var(--text-primary); font-family:inherit;"
-            onchange="updatePOSWarehouse()">
-            <option value="main">المستودع الرئيسي</option>
-          </select>
+          <input type="text" id="pos-search" data-translate placeholder="🔍 ابحث بالاسم أو الباركود..."
+            style="flex:1; padding:8px; border-radius:var(--radius-sm); border:1px solid var(--border-color); background:var(--bg-card); color:var(--text-primary); font-family:inherit;">
         </div>
         <div class="category-tabs" id="category-tabs">
-          <button class="cat-tab active" onclick="filterByCategory('all', this)">الكل</button>
+<button class="cat-tab active" onclick="filterByCategory('all', this)">الكل</button>
         </div>
         <div class="products-grid" id="products-grid"></div>
       </div>
@@ -777,7 +758,7 @@
           </div>
           <div class="cart-controls"
             style="display:flex; flex-direction:column; gap:4px; align-items:stretch; width:100%;">
-            <input type="text" id="cart-customer-input" list="cart-customers-list" placeholder="-- عميل زائر (بحث) --"
+            <input type="text" id="cart-customer-input" list="cart-customers-list" placeholder="-- عميل زائر (بحث) --" data-translate
               oninput="handleCustomerInput(this.value)"
               style="padding:8px 10px; border:1px solid var(--border-color); border-radius:var(--radius-sm); width:100%; box-sizing: border-box; font-family:inherit; font-size:14px; background:var(--bg-secondary); color:var(--text-primary);">
             <datalist id="cart-customers-list"></datalist>
@@ -785,50 +766,51 @@
               style="display:none; font-size:12px; color:var(--primary); font-weight:700; margin-top:2px;"></div>
             <button id="btn-redeem-points" class="btn-outline"
               style="display:none; padding:4px 8px; font-size:11px; font-weight:700; cursor:pointer;"
-              onclick="redeemPoints()">🎁 استبدال النقاط</button>
+              onclick="redeemPoints()">🎁 <span data-translate>استبدال النقاط</span></button>
           </div>
         </div>
 
         <div class="cart-items" id="cart-items">
           <div class="cart-empty">
             <span>🛒</span>
-            <p>السلة فارغة</p>
-            <small>أضف منتجات من القائمة</small>
+            <p data-translate>السلة فارغة</p>
+            <small data-translate>أضف منتجات من القائمة</small>
           </div>
         </div>
 
         <div class="cart-summary">
           <div class="summary-row">
-            <span>المجموع الفرعي:</span>
-            <span id="subtotal-iqd">0 د.ع</span>
+            <span><span data-translate>المجموع الفرعي:</span></span>
+            <span id="subtotal-iqd" data-translate>0 د.ع</span>
           </div>
           <div class="summary-row discount-row">
             <div class="discount-controls">
-              <input type="number" id="discount-value" placeholder="الخصم" min="0" oninput="applyDiscount()">
+              <input type="number" id="discount-value" placeholder="الخصم" data-translate min="0" oninput="applyDiscount()">
               <select id="discount-type" onchange="applyDiscount()">
                 <option value="percent">× 250</option>
-                <option value="fixed-iqd">د.ع</option>
+                <option value="fixed-iqd" data-translate>د.ع</option>
                 <option value="fixed-usd">$</option>
               </select>
             </div>
-            <span id="discount-amount">- 0 د.ع</span>
+            <span id="discount-amount" data-translate>- 0 د.ع</span>
           </div>
           <div class="summary-row coupon-row">
             <div class="discount-controls">
-              <input type="text" id="coupon-code-input" placeholder="كود الكوبون"
+              <input type="text" id="coupon-code-input" placeholder="كود الكوبون" data-translate
                 style="padding:4px 8px; border:1px solid var(--border-color); border-radius:var(--radius-sm); font-size:12px; background:var(--bg-secondary); color:var(--text-primary); width:110px;"
                 oninput="applyCouponCode()">
             </div>
-            <span id="coupon-discount-amount" style="color:var(--danger)">- 0 د.ع</span>
+            <span id="coupon-discount-amount" style="color:var(--danger)" data-translate>- 0 د.ع</span>
           </div>
           <div class="summary-row tax-row">
             <span><span data-translate="tax_label">الضريبة</span> (<span id="tax-rate-display">0</span>%):</span>
-            <span id="tax-amount">0 د.ع</span>
+            <span id="tax-amount" data-translate>0 د.ع</span>
           </div>
           <div class="summary-row total-row">
-            <span>الإجمالي:</span>
+            <span><span data-translate>الإجمالي:</span></span>
             <div class="total-amounts">
-              <span class="total-iqd" id="total-iqd">0 د.ع</span>
+
+              <span class="total-iqd" id="total-iqd" data-translate>0 د.ع</span>
               <span class="total-usd" id="total-usd">$0.00</span>
             </div>
           </div>
@@ -853,12 +835,12 @@
               <button class="currency-btn" onclick="selectCurrency('USD', this)">دولار أمريكي</button>
             </div>
             <div class="cash-input-group" style="display:flex; flex-direction:column; gap:8px;">
-              <label id="cash-label">المبلغ المدفوع (د.ع):</label>
+              <label id="cash-label" data-translate>المبلغ المدفوع (د.ع):</label>
               <input type="number" id="cash-received" placeholder="0" oninput="calcChange()" min="0">
             </div>
             <div class="change-display" id="change-display" style="display:none;">
-              <span>الباقي:</span>
-              <span id="change-amount" class="change-value">0 د.ع</span>
+              <span data-translate>الباقي:</span>
+              <span id="change-amount" class="change-value" data-translate>0 د.ع</span>
             </div>
             <div class="quick-amounts" id="quick-amounts"></div>
           </div>
@@ -868,10 +850,10 @@
             <div class="card-transfer-info-box">
               <div class="cti-icon">💳</div>
               <div class="cti-text">
-                <strong>الدفع بالبطاقة الائتمانية</strong>
-                <p>سيتم خصم المبلغ تلقائياً عبر الجهاز</p>
+                <strong data-translate>الدفع بالبطاقة الائتمانية</strong>
+                <p data-translate>سيتم خصم المبلغ تلقائياً عبر الجهاز</p>
               </div>
-              <div class="cti-amount" id="card-amount-display">0 د.ع</div>
+              <div class="cti-amount" id="card-amount-display" data-translate>0 د.ع</div>
             </div>
             <div class="card-confirm-hint">
               <span data-translate>اضغط "إتمام البيع" بعد تأكيد الدفع على الجهاز</span>
@@ -883,13 +865,13 @@
             <div class="card-transfer-info-box" style="border-color:rgba(23,162,184,0.3)">
               <div class="cti-icon" style="background:rgba(23,162,184,0.15)">📱</div>
               <div class="cti-text">
-                <strong>الدفع بالتحويل الإلكتروني</strong>
-                <p>تأكد من استلام التحويل قبل إتمام البيع</p>
+                <strong data-translate>الدفع بالتحويل الإلكتروني</strong>
+                <p data-translate>تأكد من استلام التحويل قبل إتمام البيع</p>
               </div>
-              <div class="cti-amount" id="transfer-amount-display" style="color:var(--info)">0 د.ع</div>
+              <div class="cti-amount" id="transfer-amount-display" style="color:var(--info)" data-translate>0 د.ع</div>
             </div>
             <div class="form-group" style="margin-top:10px">
-              <label>رقم التحويل / ملاحظة (اختياري)</label>
+              <label data-translate>رقم التحويل / ملاحظة (اختياري)</label>
               <input type="text" id="transfer-ref" placeholder="رقم الوصل أو اسم المحول..."
                 data-translate="رقم الوصل أو اسم المحول..."
                 style="width:100%;padding:8px 12px;background:var(--bg-dark);border:1px solid var(--border);border-radius:6px;color:var(--text-primary);font-family:'Noto Kufi Arabic',sans-serif">
@@ -904,12 +886,12 @@
             <div class="debt-info-box">
               <span>📋</span>
               <div>
-                <strong>بيع بالدين</strong>
-                <p>يجب اختيار عميل من القائمة أعلاه</p>
+                <strong data-translate>بيع بالدين</strong>
+                <p data-translate>يجب اختيار عميل من القائمة أعلاه</p>
               </div>
             </div>
             <div class="form-group" style="margin-top:10px">
-              <label>ملاحظة الدين (اختياري)</label>
+              <label data-translate>ملاحظة الدين (اختياري)</label>
               <input type="text" id="debt-note" placeholder="مثال: يسدد نهاية الشهر..."
                 data-translate="مثال: يسدد نهاية الشهر..."
                 style="width:100%;padding:8px;background:var(--bg-dark);border:1px solid var(--border);border-radius:6px;color:var(--text-primary);font-family:'Noto Kufi Arabic',sans-serif">
@@ -960,7 +942,7 @@
         <span class="debt-sum-icon">💳</span>
         <div>
           <span class="debt-sum-label" data-translate="إجمالي الديون">إجمالي الديون</span>
-          <span class="debt-sum-value" id="total-debts-iqd">0 د.ع</span>
+          <span class="debt-sum-value" id="total-debts-iqd" data-translate>0 د.ع</span>
         </div>
       </div>
       <div class="debt-summary-card orange">
@@ -981,7 +963,7 @@
         <span class="debt-sum-icon">✅</span>
         <div>
           <span class="debt-sum-label" data-translate="إجمالي المسدد">إجمالي المسدد</span>
-          <span class="debt-sum-value" id="total-paid-debts">0 د.ع</span>
+          <span class="debt-sum-value" id="total-paid-debts" data-translate>0 د.ع</span>
         </div>
       </div>
     </div>
@@ -1157,7 +1139,7 @@
   <!-- Customers Page -->
   <div id="page-customers" class="page">
     <div class="page-header-bar">
-      <h3>إدارة العملاء</h3>
+      <h3 data-translate>إدارة العملاء</h3>
       <div class="page-actions" style="display:flex; gap:10px; align-items:center;">
         <input type="text" class="search-input" placeholder="🔍 ابحث عن عميل..." oninput="searchCustomers(this.value)">
         <button class="btn-primary" onclick="openCustomerModal()" data-translate="+ إضافة عميل">+ إضافة عميل</button>
@@ -1265,7 +1247,7 @@
       <div id="archive-empty-state" style="display:none;" class="archive-empty">
         <span>🛒</span>
         <p data-translate="لا توجد سلال مؤرشفة">لا توجد سلال مؤرشفة</p>
-        <small>عند إتمام عمليات البيع أو الدين ستظهر هنا تلقائياً</small>
+        <small data-translate>عند إتمام عمليات البيع أو الدين ستظهر هنا تلقائياً</small>
       </div>
 
     </div>
@@ -1389,8 +1371,8 @@
       </div>
       <div class="report-table-card" id="table-purchases" style="display:none;">
         <h4 data-translate="📦 المشتريات وإضافة المخزون">📦 المشتريات وإضافة المخزون</h4>
-        <div style="font-size:12px;color:var(--text-muted);margin-bottom:8px;">إجمالي المشتريات: <strong
-            id="total-purchases-cost" style="color:var(--danger)">0 د.ع</strong></div>
+        <div style="font-size:12px;color:var(--text-muted);margin-bottom:8px;" data-translate>إجمالي المشتريات: <<<strong
+            id="total-purchases-cost" style="color:var(--danger)" data-translate>0 د.ع</strong></div>
         <table class="data-table">
           <thead>
             <tr>
@@ -1659,7 +1641,7 @@
   <!-- ============================================================ -->
   <div id="page-sales" class="page">
     <div class="page-header-bar">
-      <h3>💰 المبيعات</h3>
+      <h3 data-translate>💰 المبيعات</h3>
       <div class="page-actions">
         <input type="date" id="sales-date-filter" onchange="loadSalesPage()"
           style="padding:8px;border:1px solid var(--border-color);border-radius:var(--radius-sm);background:var(--bg-secondary);color:var(--text-primary);">
@@ -1703,21 +1685,21 @@
         <div class="report-stat-card">
           <div class="report-stat-icon">💰</div>
           <div class="report-stat-info">
-            <span class="report-stat-label">إجمالي المبيعات</span>
-            <span class="report-stat-value" id="sales-total">0 د.ع</span>
+            <span class="report-stat-label" data-translate>إجمالي المبيعات</span>
+            <span class="report-stat-value" id="sales-total" data-translate>0 د.ع</span>
           </div>
         </div>
         <div class="report-stat-card">
           <div class="report-stat-icon">🧾</div>
           <div class="report-stat-info">
-            <span class="report-stat-label">عدد الفواتير</span>
+            <span class="report-stat-label" data-translate>عدد الفواتير</span>
             <span class="report-stat-value" id="sales-count">0</span>
           </div>
         </div>
         <div class="report-stat-card">
           <div class="report-stat-icon">↩️</div>
           <div class="report-stat-info">
-            <span class="report-stat-label">المرتجعات</span>
+            <span class="report-stat-label" data-translate>المرتجعات</span>
             <span class="report-stat-value" id="sales-returns">0</span>
           </div>
         </div>
@@ -1726,11 +1708,11 @@
         <table class="data-table">
           <thead>
             <tr>
-              <th>رقم الفاتورة</th>
+              <th data-translate>رقم الفاتورة</th>
               <th data-translate="التاريخ">التاريخ</th>
-              <th>العميل</th>
+              <th data-translate>العميل</th>
               <th data-translate="الإجمالي">الإجمالي</th>
-              <th>طريقة الدفع</th>
+              <th data-translate>طريقة الدفع</th>
               <th data-translate="الحالة">الحالة</th>
             </tr>
           </thead>
@@ -1748,9 +1730,9 @@
         <table class="data-table">
           <thead>
             <tr>
-              <th>رقم الفاتورة</th>
+              <th data-translate>رقم الفاتورة</th>
               <th data-translate="التاريخ">التاريخ</th>
-              <th>المبلغ المرتجع</th>
+              <th data-translate>المبلغ المرتجع</th>
               <th data-translate="السبب">السبب</th>
             </tr>
           </thead>
@@ -1772,9 +1754,9 @@
         <table class="data-table">
           <thead>
             <tr>
-              <th>تاريخ العرض</th>
-              <th>العميل</th>
-              <th>قيمة العرض</th>
+              <th data-translate>تاريخ العرض</th>
+              <th data-translate>العميل</th>
+              <th data-translate>قيمة العرض</th>
               <th data-translate="إجراء">إجراء</th>
             </tr>
           </thead>
@@ -1796,11 +1778,11 @@
         <table class="data-table">
           <thead>
             <tr>
-              <th>العميل</th>
-              <th>تاريخ التسليم المتوقع</th>
-              <th>إجمالي الطلبية</th>
-              <th>العربون المدفوع</th>
-              <th>حالة الحجز</th>
+              <th data-translate>العميل</th>
+              <th data-translate>تاريخ التسليم المتوقع</th>
+              <th data-translate>إجمالي الطلبية</th>
+              <th data-translate>العربون المدفوع</th>
+              <th data-translate>حالة الحجز</th>
               <th data-translate="إجراء">إجراء</th>
             </tr>
           </thead>
@@ -1833,14 +1815,14 @@
         <span class="inv-stat-icon">🚚</span>
         <div>
           <span class="inv-stat-value" id="suppliers-count">0</span>
-          <span class="inv-stat-label">إجمالي الموردين</span>
+          <span class="inv-stat-label" data-translate>إجمالي الموردين</span>
         </div>
       </div>
       <div class="inv-stat-card danger">
         <span class="inv-stat-icon">💸</span>
         <div>
-          <span class="inv-stat-value" id="suppliers-debt">0 د.ع</span>
-          <span class="inv-stat-label">إجمالي الديون</span>
+          <span class="inv-stat-value" id="suppliers-debt" data-translate>0 د.ع</span>
+          <span class="inv-stat-label" data-translate>إجمالي الديون</span>
         </div>
       </div>
     </div>
@@ -1849,7 +1831,7 @@
 
     <div id="suppliers-empty" style="text-align:center; padding:60px; color:var(--text-secondary);display:none;">
       <div style="font-size:50px; margin-bottom:16px;">🚚</div>
-      <p>لا يوجد موردون بعد</p>
+      <p data-translate>لا يوجد موردون بعد</p>
       <button class="btn-primary" style="margin-top:16px;" onclick="openSupplierModal()">+ إضافة مورد</button>
     </div>
   </div>
@@ -1859,7 +1841,7 @@
   <!-- ============================================================ -->
   <div id="page-accounts" class="page">
     <div class="page-header-bar">
-      <h3>🏦 الحسابات</h3>
+      <h3 data-translate>🏦 الحسابات</h3>
       <div class="page-actions">
         <button class="btn-primary" onclick="openExpenseModal()" data-translate="إضافة مصروف">+ إضافة مصروف</button>
       </div>
@@ -1904,29 +1886,29 @@
         <div class="report-stat-card">
           <div class="report-stat-icon">💰</div>
           <div class="report-stat-info">
-            <span class="report-stat-label">إجمالي الإيرادات</span>
-            <span class="report-stat-value" id="acc-total-revenue">0 د.ع</span>
+            <span class="report-stat-label" data-translate>إجمالي الإيرادات</span>
+            <span class="report-stat-value" id="acc-total-revenue" data-translate>0 د.ع</span>
           </div>
         </div>
         <div class="report-stat-card">
           <div class="report-stat-icon">💸</div>
           <div class="report-stat-info">
             <span class="report-stat-label" data-translate="إجمالي المصروفات">إجمالي المصروفات</span>
-            <span class="report-stat-value" id="acc-total-expenses" style="color:var(--danger);">0 د.ع</span>
+            <span class="report-stat-value" id="acc-total-expenses" style="color:var(--danger);" data-translate>0 د.ع</span>
           </div>
         </div>
         <div class="report-stat-card" style="border-right:3px solid var(--primary);">
           <div class="report-stat-icon" style="background:var(--primary-light);color:white;">📈</div>
           <div class="report-stat-info">
             <span class="report-stat-label" data-translate="صافي الربح">صافي الربح</span>
-            <span class="report-stat-value" id="acc-net-profit" style="color:var(--primary);">0 د.ع</span>
+            <span class="report-stat-value" id="acc-net-profit" style="color:var(--primary);" data-translate>0 د.ع</span>
           </div>
         </div>
         <div class="report-stat-card">
           <div class="report-stat-icon">🏧</div>
           <div class="report-stat-info">
             <span class="report-stat-label" data-translate="رصيد الصندوق">رصيد الصندوق</span>
-            <span class="report-stat-value" id="acc-cashbox">0 د.ع</span>
+            <span class="report-stat-value" id="acc-cashbox" data-translate>0 د.ع</span>
           </div>
         </div>
       </div>
@@ -1975,7 +1957,7 @@
     <div id="accounts-tab-cashbox" style="display:none;">
       <div style="text-align:center; padding:40px;">
         <div style="font-size:60px; margin-bottom:16px;">🏧</div>
-        <h2 id="cashbox-balance-display" style="color:var(--primary); font-size:32px;">0 د.ع</h2>
+        <h2 id="cashbox-balance-display" style="color:var(--primary); font-size:32px;" data-translate>0 د.ع</h2>
         <p style="color:var(--text-secondary);" data-translate="رصيد الصندوق الحالي">رصيد الصندوق الحالي</p>
         <div style="display:flex; gap:12px; justify-content:center; margin-top:20px;">
           <button class="btn-primary" onclick="openCashInModal()" data-translate="إيداع نقدي">➕ إيداع نقدي</button>
@@ -2017,7 +1999,7 @@
           </thead>
           <tbody id="acc-journal-tbody">
             <tr>
-              <td colspan="5" style="text-align:center;color:var(--text-secondary);padding:40px;">لا توجد قيود</td>
+              <td colspan="5" style="text-align:center;color:var(--text-secondary);padding:40px;" data-translate>لا توجد قيود</td>
             </tr>
           </tbody>
         </table>
@@ -2129,7 +2111,7 @@
   <!-- ============================================================ -->
   <div id="page-barcode" class="page">
     <div class="page-header-bar">
-      <h3>📷 إدارة الباركود</h3>
+      <h3 data-translate>📷 إدارة الباركود</h3>
     </div>
 
     <!-- شريط التبويبات الفرعي للمنتجات والمخزون -->
@@ -2271,7 +2253,7 @@
                 style="font-weight:700; color:var(--text-primary); font-size:14px; margin-bottom:4px; display:flex; align-items:center; gap:6px;"
                 data-translate="ℹ️ مواصفات القالب المختار:">
                 ℹ️ مواصفات القالب المختار:</div>
-              <div id="guide-size-desc" data-translate="قالب 80mm_desc">📄 <strong>قالب 80mm:</strong> قالب طباعة حراري
+              <div id="guide-size-desc" data-translate="قالب 80mm_desc">📄 <strong data-translate>قالب 80mm:</strong> قالب طباعة حراري
                 ثنائي الأعمدة، مناسب لطابعات
                 الباركود المخصصة للمحلات التجارية الكبيرة.</div>
               <div
@@ -2289,7 +2271,7 @@
     <div id="barcode-tab-scanner" style="display:none;">
       <div style="text-align:center; padding:40px;">
         <div style="font-size:60px; margin-bottom:16px;">📷</div>
-        <h3>قارئ الباركود الذكي</h3>
+        <h3 data-translate>قارئ الباركود الذكي</h3>
         <p style="color:var(--text-secondary); margin-bottom: 20px;"
           data-translate="امسح الباركود باستخدام قارئ خارجي أو كاميرا الجهاز مباشرة">امسح الباركود باستخدام قارئ خارجي
           أو كاميرا الجهاز مباشرة</p>
@@ -2762,7 +2744,7 @@
   <div class="modal-overlay" id="return-modal" style="display:none;">
     <div class="modal">
       <div class="modal-header">
-        <h3>استرجاع / تبديل مواد</h3>
+        <h3 data-translate>استرجاع / تبديل مواد</h3>
         <button class="modal-close" onclick="closeModal('return-modal')">✕</button>
       </div>
       <div class="modal-body">
@@ -2770,8 +2752,8 @@
         <div id="return-items-list" style="max-height: 300px; overflow-y: auto;"></div>
         <div
           style="display:flex; justify-content:space-between; margin-top: 15px; font-weight: bold; border-top: 1px solid var(--border); padding-top: 10px;">
-          <span>إجمالي مبلغ الاسترجاع:</span>
-          <span id="return-total-amount" style="color: var(--danger)">0 د.ع</span>
+          <span data-translate>إجمالي مبلغ الاسترجاع:</span>
+          <span id="return-total-amount" style="color: var(--danger)" data-translate>0 د.ع</span>
         </div>
       </div>
       <div class="modal-footer">
@@ -2785,7 +2767,7 @@
   <div class="modal-overlay" id="weight-modal" style="display:none;">
     <div class="modal" style="max-width: 450px;">
       <div class="modal-header">
-        <h3 id="weight-modal-title">تحديد الوزن</h3>
+        <h3 id="weight-modal-title" data-translate>تحديد الوزن</h3>
         <button class="modal-close" onclick="closeModal('weight-modal')">✕</button>
       </div>
       <div class="modal-body">
@@ -2811,7 +2793,7 @@
           <button class="weight-btn kg-btn" onclick="selectWeight(3)">3 كيلو</button>
         </div>
         <div style="margin-top: 20px;">
-          <label style="display:block; margin-bottom:8px; font-weight:600;">أو أدخل الوزن يدوياً (بالكيلو):</label>
+          <label style="display:block; margin-bottom:8px; font-weight:600;" data-translate>أو أدخل الوزن يدوياً (بالكيلو):</label>
           <div style="display:flex; gap:10px;">
             <input type="number" id="wm-custom-weight" placeholder="مثال: 1.125" step="0.001" min="0" style="flex:1;">
             <button class="btn-primary" onclick="confirmCustomWeight()">إضافة</button>
@@ -2821,11 +2803,39 @@
     </div>
   </div>
 
+  
+  <!-- Manual Product Modal -->
+  <div class="modal-overlay" id="manual-product-modal" style="display:none;">
+    <div class="modal" style="max-width:400px;">
+      <div class="modal-header">
+        <h3>➕ <span data-translate="إضافة عنصر يدوي">إضافة عنصر يدوي</span></h3>
+        <button class="modal-close" onclick="closeModal('manual-product-modal')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group" style="margin-bottom:15px;">
+          <label><span data-translate="اسم العنصر">اسم العنصر</span> <span class="required">*</span></label>
+          <input type="text" id="mpm-name" placeholder="مثال: عنصر متنوع" data-translate="اسم العنصر">
+        </div>
+        <div class="form-group" style="margin-bottom:15px;">
+          <label><span data-translate="السعر (د.ع)">السعر (د.ع)</span> <span class="required">*</span></label>
+          <input type="number" id="mpm-price" placeholder="0" min="0" data-translate="السعر (د.ع)">
+        </div>
+        <div class="form-group" style="margin-bottom:15px;">
+          <label><span data-translate="الكمية">الكمية</span></label>
+          <input type="number" id="mpm-qty" placeholder="1" min="1" value="1" data-translate="الكمية">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeModal('manual-product-modal')" data-translate="إلغاء">إلغاء</button>
+        <button class="btn-primary" onclick="addManualProductToCart()" data-translate="إضافة للسلة">➕ إضافة للسلة</button>
+      </div>
+    </div>
+  </div>
   <!-- Product Modal -->
   <div class="modal-overlay" id="product-modal" style="display:none;">
     <div class="modal">
       <div class="modal-header">
-        <h3 id="product-modal-title">إضافة منتج جديد</h3>
+        <h3 id="product-modal-title" data-translate>إضافة منتج جديد</h3>
         <button class="modal-close" onclick="closeModal('product-modal')">✕</button>
       </div>
       <div class="modal-body">
@@ -2850,9 +2860,8 @@
         <div class="form-row">
           <div class="form-group">
             <label><span data-translate="الفئة">الفئة</span> <span class="required">*</span></label>
-            <select id="pm-category">
-              <option value="" data-translate="اختر الفئة">-- اختر الفئة --</option>
-            </select>
+            <input type="text" id="pm-category" list="pm-category-list" placeholder="اختر أو اكتب فئة جديدة..." autocomplete="off" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); font-family: inherit; background: var(--bg-secondary); color: var(--text-primary); box-sizing: border-box;">
+            <datalist id="pm-category-list"></datalist>
           </div>
           <div class="form-group">
             <label data-translate="الوحدة">الوحدة</label>
@@ -2964,19 +2973,19 @@
   <div class="modal-overlay" id="category-modal" style="display:none;">
     <div class="modal modal-sm">
       <div class="modal-header">
-        <h3>إدارة الفئات</h3>
+        <h3 data-translate>إدارة الفئات</h3>
         <button class="modal-close" onclick="closeModal('category-modal')">✕</button>
       </div>
       <div class="modal-body">
         <div class="form-group">
-          <label>اسم الفئة</label>
+          <label data-translate>اسم الفئة</label>
           <input type="text" id="new-category-name" placeholder="اسم الفئة الجديدة">
         </div>
         <div class="form-group">
-          <label>أيقونة</label>
+          <label data-translate>أيقونة</label>
           <input type="text" id="new-category-icon" placeholder="مثل: 🥩 🥛 🍎">
         </div>
-        <button class="btn-primary" onclick="addCategory()">+ إضافة</button>
+        <button class="btn-primary" onclick="addCategory()" data-translate>+ إضافة</button>
         <div class="categories-list" id="categories-list"></div>
       </div>
     </div>
@@ -3058,7 +3067,7 @@
   <div class="modal-overlay" id="receipt-modal" style="display:none;">
     <div class="modal modal-sm">
       <div class="modal-header">
-        <h3>فاتورة المبيعة</h3>
+        <h3 data-translate>فاتورة المبيعة</h3>
         <button class="modal-close" onclick="closeModal('receipt-modal')">✕</button>
       </div>
       <div class="modal-body" id="receipt-content"></div>
@@ -3073,22 +3082,22 @@
   <div class="modal-overlay" id="debt-pay-modal" style="display:none;">
     <div class="modal modal-sm">
       <div class="modal-header">
-        <h3>💰 تسجيل دفعة دين</h3>
+        <h3 data-translate>💰 تسجيل دفعة دين</h3>
         <button class="modal-close" onclick="closeModal('debt-pay-modal')">✕</button>
       </div>
       <div class="modal-body">
         <input type="hidden" id="dpm-debt-id">
         <div class="debt-pay-customer-info" id="dpm-customer-info"></div>
         <div class="form-group">
-          <label>المبلغ المتبقي:</label>
-          <div class="debt-remaining-display" id="dpm-remaining">0 د.ع</div>
+          <label data-translate>المبلغ المتبقي:</label>
+          <div class="debt-remaining-display" id="dpm-remaining" data-translate>0 د.ع</div>
         </div>
         <div class="form-group">
-          <label>مبلغ الدفعة (د.ع) <span class="required">*</span></label>
+          <label data-translate>مبلغ الدفعة (د.ع) <span class="required">*</span></label>
           <input type="number" id="dpm-amount" placeholder="0" min="1" oninput="calcDebtRemaining()">
         </div>
         <div class="form-group">
-          <label>العملة</label>
+          <label data-translate>العملة</label>
           <div style="display:flex;gap:8px">
             <button class="currency-btn active" id="dpm-iqd-btn" onclick="selectDebtCurrency('IQD', this)">دينار
               عراقي</button>
@@ -3097,11 +3106,11 @@
           </div>
         </div>
         <div class="form-group" id="dpm-usd-equiv" style="display:none;">
-          <label>المبلغ بالدينار:</label>
-          <div class="debt-remaining-display" id="dpm-iqd-equiv" style="color:var(--info)">0 د.ع</div>
+          <label data-translate>المبلغ بالدينار:</label>
+          <div class="debt-remaining-display" id="dpm-iqd-equiv" style="color:var(--info)" data-translate>0 د.ع</div>
         </div>
         <div class="form-group">
-          <label>ملاحظة</label>
+          <label data-translate>ملاحظة</label>
           <input type="text" id="dpm-note" placeholder="مثال: دفعة أولى...">
         </div>
         <div class="debt-pay-result" id="dpm-result" style="display:none;"></div>
@@ -3131,7 +3140,7 @@
         </div>
         <div class="form-group">
           <label data-translate="إجمالي المتبقي للعميل:">إجمالي المتبقي للعميل:</label>
-          <div class="debt-remaining-display" id="bdpm-remaining">0 د.ع</div>
+          <div class="debt-remaining-display" id="bdpm-remaining" data-translate>0 د.ع</div>
         </div>
         <div class="form-group">
           <label><span data-translate="المبلغ المدفوع (د.ع)">المبلغ المدفوع (د.ع)</span> <span
@@ -3157,7 +3166,7 @@
   <div class="modal-overlay" id="debt-detail-modal" style="display:none;">
     <div class="modal">
       <div class="modal-header">
-        <h3 id="ddm-title">تفاصيل الدين</h3>
+        <h3 id="ddm-title" data-translate>تفاصيل الدين</h3>
         <button class="modal-close" onclick="closeModal('debt-detail-modal')">✕</button>
       </div>
       <div class="modal-body" id="ddm-content"></div>
@@ -3333,24 +3342,24 @@
   <div class="modal-overlay" id="supplier-return-modal" style="display:none;">
     <div class="modal modal-sm">
       <div class="modal-header">
-        <h3>↩️ مرتجع إلى مورد</h3>
+        <h3 data-translate>↩️ مرتجع إلى مورد</h3>
         <button class="modal-close" onclick="closeModal('supplier-return-modal')">✕</button>
       </div>
       <div class="modal-body">
         <div class="form-group">
-          <label>المورد <span class="required">*</span></label>
+          <label data-translate>المورد <span class="required">*</span></label>
           <select id="srm-supplier" style="width:100%; padding:10px;" onchange="updateSRMProducts()"></select>
         </div>
         <div class="form-group">
-          <label>المنتج المرتجع <span class="required">*</span></label>
+          <label data-translate>المنتج المرتجع <span class="required">*</span></label>
           <select id="srm-product" style="width:100%; padding:10px;"></select>
         </div>
         <div class="form-group">
-          <label>الكمية المرتجعة <span class="required">*</span></label>
+          <label data-translate>الكمية المرتجعة <span class="required">*</span></label>
           <input type="number" id="srm-qty" placeholder="0" min="1">
         </div>
         <div class="form-group">
-          <label>المبلغ المرتجع نقداً أو مقاصة دين (د.ع)</label>
+          <label data-translate>المبلغ المرتجع نقداً أو مقاصة دين (د.ع)</label>
           <input type="number" id="srm-amount" placeholder="0" min="0">
         </div>
       </div>
@@ -3365,32 +3374,32 @@
   <div class="modal-overlay" id="supplier-payment-modal" style="display:none;">
     <div class="modal modal-sm">
       <div class="modal-header">
-        <h3>💸 دفعة لمورد</h3>
+        <h3 data-translate>💸 دفعة لمورد</h3>
         <button class="modal-close" onclick="closeModal('supplier-payment-modal')">✕</button>
       </div>
       <div class="modal-body">
         <div class="form-group">
-          <label>المورد <span class="required">*</span></label>
+          <label data-translate>المورد <span class="required">*</span></label>
           <select id="spm-supplier" style="width:100%; padding:10px;" onchange="updateSPMRemaining()"></select>
         </div>
         <div class="form-group">
-          <label>الدين المتبقي للمورد:</label>
-          <div class="debt-remaining-display" id="spm-remaining-debt" style="color:var(--danger);">0 د.ع</div>
+          <label data-translate>الدين المتبقي للمورد:</label>
+          <div class="debt-remaining-display" id="spm-remaining-debt" style="color:var(--danger);" data-translate>0 د.ع</div>
         </div>
         <div class="form-group">
-          <label>المبلغ المدفوع (د.ع) <span class="required">*</span></label>
+          <label data-translate>المبلغ المدفوع (د.ع) <span class="required">*</span></label>
           <input type="number" id="spm-amount" placeholder="0" min="1">
         </div>
         <div class="form-group">
-          <label>الدفع من <span class="required">*</span></label>
+          <label data-translate>الدفع من <span class="required">*</span></label>
           <select id="spm-account"
             style="width:100%; padding:10px; border-radius:var(--radius-sm); border:1px solid var(--border-color); background:var(--bg-secondary); color:var(--text-primary);">
-            <option value="cashbox">الصندوق (نقداً)</option>
-            <option value="bank">البنك (تحويل/بطاقة)</option>
+            <option value="cashbox" data-translate>الصندوق (نقداً)</option>
+            <option value="bank" data-translate>البنك (تحويل/بطاقة)</option>
           </select>
         </div>
         <div class="form-group">
-          <label>ملاحظة</label>
+          <label data-translate>ملاحظة</label>
           <input type="text" id="spm-note" placeholder="مثال: تسديد دفعة من الحساب">
         </div>
       </div>
@@ -3440,16 +3449,16 @@
   <div class="modal-overlay" id="quote-modal" style="display:none;">
     <div class="modal">
       <div class="modal-header">
-        <h3>📄 عرض سعر جديد</h3>
+        <h3 data-translate>📄 عرض سعر جديد</h3>
         <button class="modal-close" onclick="closeModal('quote-modal')">✕</button>
       </div>
       <div class="modal-body">
         <div class="form-group">
-          <label>العميل المستهدف (اختياري)</label>
+          <label data-translate>العميل المستهدف (اختياري)</label>
           <select id="qm-customer" style="width:100%; padding:10px;"></select>
         </div>
         <div class="form-group">
-          <label>اختر المنتجات المراد إضافتها لعرض السعر</label>
+          <label data-translate>اختر المنتجات المراد إضافتها لعرض السعر</label>
           <select id="qm-product-select" style="width:100%; padding:10px; margin-bottom:10px;"
             onchange="addQuoteItem()"></select>
         </div>
@@ -3457,9 +3466,9 @@
           <table class="data-table">
             <thead>
               <tr>
-                <th>المنتج</th>
-                <th>سعر العرض (د.ع)</th>
-                <th>الكمية</th>
+                <th data-translate>المنتج</th>
+                <th data-translate>سعر العرض (د.ع)</th>
+                <th data-translate>الكمية</th>
                 <th data-translate="الإجمالي">الإجمالي</th>
                 <th data-translate="إجراء">إجراء</th>
               </tr>
@@ -3467,7 +3476,7 @@
             <tbody id="qm-items-tbody"></tbody>
           </table>
         </div>
-        <div style="text-align:left; font-weight:700; font-size:16px; margin-top:15px;" id="qm-total-display">
+        <div style="text-align:left; font-weight:700; font-size:16px; margin-top:15px;" id="qm-total-display" data-translate>
           إجمالي العرض: 0 د.ع
         </div>
       </div>
@@ -3482,17 +3491,17 @@
   <div class="modal-overlay" id="reservation-modal" style="display:none;">
     <div class="modal">
       <div class="modal-header">
-        <h3>📌 حجز طلبية جديد</h3>
+        <h3 data-translate>📌 حجز طلبية جديد</h3>
         <button class="modal-close" onclick="closeModal('reservation-modal')">✕</button>
       </div>
       <div class="modal-body">
         <div class="form-row">
           <div class="form-group">
-            <label>العميل <span class="required">*</span></label>
+            <label data-translate>العميل <span class="required">*</span></label>
             <select id="res-customer" style="width:100%; padding:10px;"></select>
           </div>
           <div class="form-group">
-            <label>المنتج المراد حجزه</label>
+            <label data-translate>المنتج المراد حجزه</label>
             <select id="res-product-select" style="width:100%; padding:10px;" onchange="addReservationItem()"></select>
           </div>
         </div>
@@ -3500,9 +3509,9 @@
           <table class="data-table">
             <thead>
               <tr>
-                <th>المنتج</th>
-                <th>سعر البيع (د.ع)</th>
-                <th>الكمية</th>
+                <th data-translate>المنتج</th>
+                <th data-translate>سعر البيع (د.ع)</th>
+                <th data-translate>الكمية</th>
                 <th data-translate="الإجمالي">الإجمالي</th>
                 <th data-translate="إجراء">إجراء</th>
               </tr>
@@ -3512,11 +3521,11 @@
         </div>
         <div class="form-row" style="margin-top:15px;">
           <div class="form-group">
-            <label>مبلغ العربون المدفوع (د.ع)</label>
+            <label data-translate>مبلغ العربون المدفوع (د.ع)</label>
             <input type="number" id="res-deposit" placeholder="0" min="0">
           </div>
           <div class="form-group">
-            <label>تاريخ التسليم المتوقع</label>
+            <label data-translate>تاريخ التسليم المتوقع</label>
             <input type="date" id="res-date">
           </div>
         </div>
@@ -3606,21 +3615,21 @@
   <div class="modal-overlay" id="supplier-form-modal" style="display:none;">
     <div class="modal modal-sm">
       <div class="modal-header">
-        <h3 id="supplier-modal-title">🚚 إضافة مورد جديد</h3>
+        <h3 id="supplier-modal-title" data-translate>🚚 إضافة مورد جديد</h3>
         <button class="modal-close" onclick="closeModal('supplier-form-modal')">✕</button>
       </div>
       <div class="modal-body">
         <input type="hidden" id="sf-id">
         <div class="form-group">
-          <label>اسم المورد <span class="required">*</span></label>
+          <label data-translate>اسم المورد <span class="required">*</span></label>
           <input type="text" id="sf-name" placeholder="أدخل اسم المورد">
         </div>
         <div class="form-group">
-          <label>رقم الهاتف</label>
+          <label data-translate>رقم الهاتف</label>
           <input type="text" id="sf-phone" placeholder="أدخل رقم الهاتف">
         </div>
         <div class="form-group">
-          <label>اسم الشركة</label>
+          <label data-translate>اسم الشركة</label>
           <input type="text" id="sf-company" placeholder="أدخل اسم الشركة">
         </div>
       </div>
@@ -3637,17 +3646,17 @@
   <div class="modal-overlay" id="cash-deposit-modal" style="display:none;">
     <div class="modal modal-sm">
       <div class="modal-header">
-        <h3 id="cash-deposit-title">💸 إيداع نقدي</h3>
+        <h3 id="cash-deposit-title" data-translate>💸 إيداع نقدي</h3>
         <button class="modal-close" onclick="closeModal('cash-deposit-modal')">✕</button>
       </div>
       <div class="modal-body">
         <input type="hidden" id="cdm-type" value="in"> <!-- in or out -->
         <div class="form-group">
-          <label>المبلغ (د.ع) <span class="required">*</span></label>
+          <label data-translate>المبلغ (د.ع) <span class="required">*</span></label>
           <input type="number" id="cdm-amount" placeholder="0" min="1">
         </div>
         <div class="form-group">
-          <label>ملاحظة</label>
+          <label data-translate>ملاحظة</label>
           <input type="text" id="cdm-note" placeholder="أدخل تفاصيل الإيداع/السحب">
         </div>
       </div>
@@ -3741,12 +3750,12 @@
   <div class="modal-overlay" id="barcode-simulation-modal" style="display:none;">
     <div class="modal modal-sm">
       <div class="modal-header">
-        <h3>📷 محاكاة قارئ الباركود</h3>
+        <h3 data-translate>📷 محاكاة قارئ الباركود</h3>
         <button class="modal-close" onclick="closeModal('barcode-simulation-modal')">✕</button>
       </div>
       <div class="modal-body">
         <div class="form-group">
-          <label>أدخل الباركود يدوياً</label>
+          <label data-translate>أدخل الباركود يدوياً</label>
           <input type="text" id="bsm-barcode" placeholder="أدخل الرقم المراد قراءته">
         </div>
       </div>
@@ -3761,7 +3770,7 @@
   <div class="modal-overlay" id="global-scanner-modal" style="display:none; z-index:3000;">
     <div class="modal modal-sm" style="max-width: 450px;">
       <div class="modal-header">
-        <h3>📹 قارئ الباركود بالكاميرا</h3>
+        <h3 data-translate>📹 قارئ الباركود بالكاميرا</h3>
         <button class="modal-close" onclick="closeGlobalScanner()">✕</button>
       </div>
       <div class="modal-body" style="text-align: center;">
@@ -3790,7 +3799,7 @@
   <div class="modal-overlay" id="emoji-modal" style="display:none;">
     <div class="modal" style="max-width: 400px;">
       <div class="modal-header">
-        <h3>اختر رمزاً تعبيرياً</h3>
+        <h3 data-translate>اختر رمزاً تعبيرياً</h3>
         <button class="modal-close" onclick="closeModal('emoji-modal')">✕</button>
       </div>
       <div class="modal-body">
@@ -3806,28 +3815,40 @@
     <div class="modal modal-sm"
       style="max-width: 400px; padding: 24px; border-radius: var(--radius-lg); text-align: center;">
       <div style="font-size: 50px; margin-bottom: 16px;" id="confirm-modal-icon">❓</div>
-      <h3 style="margin-bottom: 12px; font-weight: 800; font-size: 18px;" id="confirm-modal-title">تأكيد الإجراء</h3>
+      <h3 style="margin-bottom: 12px; font-weight: 800; font-size: 18px;" id="confirm-modal-title" data-translate>تأكيد الإجراء</h3>
       <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 24px; line-height: 1.5;"
-        id="confirm-modal-message">هل أنت متأكد من هذا الإجراء؟</p>
+        id="confirm-modal-message" data-translate>هل أنت متأكد من هذا الإجراء؟</p>
       <div style="display: flex; gap: 12px; justify-content: center;">
         <button class="btn-primary" id="confirm-modal-yes"
           style="flex: 1; padding: 12px; border-radius: var(--radius-sm); font-weight: 700; font-size: 14px;">نعم،
           متأكد</button>
         <button class="btn-secondary" id="confirm-modal-no"
-          style="flex: 1; padding: 12px; border-radius: var(--radius-sm); font-weight: 700; font-size: 14px; background: rgba(255,255,255,0.05); color: var(--text-primary); border: 1px solid var(--border);">إلغاء</button>
+          style="flex: 1; padding: 12px; border-radius: var(--radius-sm); font-weight: 700; font-size: 14px; background: rgba(255,255,255,0.05); color: var(--text-primary); border: 1px solid var(--border);" data-translate>إلغاء</button>
       </div>
     </div>
   </div>
 
 
 
-  <script src="firebase-config.js?v=2.1"></script>
-  <script src="firebase-sync.js?v=2.1" type="module"></script>
+  <script src="firebase-config.js?v=3.18"></script>
+  <script src="firebase-sync.js?v=3.18" type="module"></script>
   <!-- Translation Files -->
-  <script src="translations.js?v=2.2"></script>
+  <script src="ar.js?v=3.18"></script>
+  <script src="en.js?v=3.18"></script>
+  <script src="ku.js?v=3.18"></script>
+  <script src="kbd.js?v=3.18"></script>
   <!-- Core Logic -->
-  <script src="db.js"></script>
-  <script src="app.js?v=2.1"></script>
+  <script src="db.js?v=3.18"></script>
+  <script src="app.js?v=3.18"></script>
 </body>
 
 </html>
+
+
+
+
+
+
+
+
+

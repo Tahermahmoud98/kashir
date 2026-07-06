@@ -1,5 +1,11 @@
 const DB = {
-  getProducts: () => { try { return JSON.parse(localStorage.getItem('pos_products') || '[]'); } catch(e){return []} },
+  getProducts: () => { 
+    try { 
+      let data = JSON.parse(localStorage.getItem('pos_products'));
+      if (data && !Array.isArray(data)) data = Object.values(data);
+      return data || []; 
+    } catch(e){return []} 
+  },
   getSettings: () => { 
     try { 
       const s = JSON.parse(localStorage.getItem('pos_settings')); 
@@ -8,18 +14,52 @@ const DB = {
       return { language: 'kbd' }; 
     } 
   },
-  getInvoices: () => { try { return JSON.parse(localStorage.getItem('pos_invoices') || '[]'); } catch(e){return []} },
-  getCustomers: () => { try { return JSON.parse(localStorage.getItem('pos_customers') || '[]'); } catch(e){return []} },
+  getInvoices: () => { 
+    try { 
+      let data = JSON.parse(localStorage.getItem('pos_invoices'));
+      if (data && !Array.isArray(data)) data = Object.values(data);
+      return data || []; 
+    } catch(e){return []} 
+  },
+  getCustomers: () => { 
+    try { 
+      let data = JSON.parse(localStorage.getItem('pos_customers'));
+      if (data && !Array.isArray(data)) data = Object.values(data);
+      return data || []; 
+    } catch(e){return []} 
+  },
   getCategories: () => { 
     try { 
       let cats = JSON.parse(localStorage.getItem('pos_categories'));
+      if (cats && !Array.isArray(cats)) {
+        cats = Object.values(cats);
+      }
       if (!cats || cats.length === 0) {
-        cats = [{ id: 'default_cat', name: 'عامة', icon: '📦' }];
+        cats = [
+          { id: 'default_cat', name: 'عامة', icon: '📦' },
+          { id: 'cat_weight', name: 'مواد بالوزن', icon: '⚖️' },
+          { id: 'cat_dairy', name: 'ألبان وأجبان', icon: '🧀' },
+          { id: 'cat_canned', name: 'معلبات', icon: '🥫' },
+          { id: 'cat_beverage', name: 'مشروبات وعصائر', icon: '🧃' },
+          { id: 'cat_meat', name: 'لحوم ودواجن', icon: '🥩' },
+          { id: 'cat_veg', name: 'خضار وفواكه', icon: '🥦' },
+          { id: 'cat_bakery', name: 'مخبوزات وحلويات', icon: '🥐' },
+          { id: 'cat_spices', name: 'بهارات وعطارة', icon: '🧂' },
+          { id: 'cat_cleaning', name: 'منظفات', icon: '🧼' },
+          { id: 'cat_personal', name: 'عناية شخصية', icon: '🧴' },
+          { id: 'cat_baby', name: 'مستلزمات أطفال', icon: '🍼' },
+          { id: 'cat_snacks', name: 'وجبات خفيفة وشيبس', icon: '🍿' },
+          { id: 'cat_home', name: 'أدوات منزلية', icon: '🍽️' },
+          { id: 'cat_stationery', name: 'قرطاسية', icon: '✏️' }
+        ];
         localStorage.setItem('pos_categories', JSON.stringify(cats));
       }
       return cats;
     } catch(e) { 
-      return [{ id: 'default_cat', name: 'عامة', icon: '📦' }]; 
+      return [
+        { id: 'default_cat', name: 'عامة', icon: '📦' },
+        { id: 'cat_weight', name: 'مواد بالوزن', icon: '⚖️' }
+      ]; 
     } 
   },
   getDebts: () => { try { return JSON.parse(localStorage.getItem('pos_debts') || '[]'); } catch(e){return []} },
@@ -86,8 +126,11 @@ const DB = {
 
   addInvoice: (data) => {
     const list = DB.getInvoices();
+    if (!data.id) data.id = 'INV_' + Date.now() + Math.floor(Math.random()*1000);
+    if (!data.date) data.date = new Date().toISOString();
     list.push(data);
     DB.saveInvoices(list);
+    return data;
   },
 
   addDebt: (data) => {
