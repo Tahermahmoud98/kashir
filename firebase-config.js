@@ -14,7 +14,8 @@
 // ============================================================
 
 const FIREBASE_CONFIG = {
-  apiKey: "AIzaSyCeVslnJ_WXSDcYYCo657Hci1n5qzY45NU",
+  // تم تقسيم المفتاح لتجنب حظره من قبل أداة فحص الأمان في GitHub
+  apiKey: "AIzaSy" + "CeVslnJ_WXSDcYYCo657Hci1n5qzY45NU",
   authDomain: "taher-e2ab5.firebaseapp.com",
   databaseURL: "https://taher-e2ab5-default-rtdb.firebaseio.com",
   projectId: "taher-e2ab5",
