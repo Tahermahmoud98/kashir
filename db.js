@@ -1,18 +1,46 @@
 const DB = {
   getProducts: () => { try { return JSON.parse(localStorage.getItem('pos_products') || '[]'); } catch(e){return []} },
-  getSettings: () => { try { return JSON.parse(localStorage.getItem('pos_settings') || '{}'); } catch(e){return {}} },
+  getSettings: () => { 
+    try { 
+      const s = JSON.parse(localStorage.getItem('pos_settings')); 
+      return s ? { language: 'kbd', ...s } : { language: 'kbd' };
+    } catch(e) { 
+      return { language: 'kbd' }; 
+    } 
+  },
   getInvoices: () => { try { return JSON.parse(localStorage.getItem('pos_invoices') || '[]'); } catch(e){return []} },
   getCustomers: () => { try { return JSON.parse(localStorage.getItem('pos_customers') || '[]'); } catch(e){return []} },
-  getCategories: () => { try { return JSON.parse(localStorage.getItem('pos_categories') || '[]'); } catch(e){return []} },
+  getCategories: () => { 
+    try { 
+      let cats = JSON.parse(localStorage.getItem('pos_categories'));
+      if (!cats || cats.length === 0) {
+        cats = [{ id: 'default_cat', name: 'عامة', icon: '📦' }];
+        localStorage.setItem('pos_categories', JSON.stringify(cats));
+      }
+      return cats;
+    } catch(e) { 
+      return [{ id: 'default_cat', name: 'عامة', icon: '📦' }]; 
+    } 
+  },
   getDebts: () => { try { return JSON.parse(localStorage.getItem('pos_debts') || '[]'); } catch(e){return []} },
   getDeleteRequests: () => { try { return JSON.parse(localStorage.getItem('pos_delete_requests') || '[]'); } catch(e){return []} },
   getArchivedDebts: () => { try { return JSON.parse(localStorage.getItem('pos_archived_debts') || '[]'); } catch(e){return []} },
   getArchivedCustomers: () => { try { return JSON.parse(localStorage.getItem('pos_archived_customers') || '[]'); } catch(e){return []} },
   getStockLog: () => { try { return JSON.parse(localStorage.getItem('pos_stock_log') || '[]'); } catch(e){return []} },
 
-  saveProducts: (data) => localStorage.setItem('pos_products', JSON.stringify(data)),
+  saveProducts: (data) => {
+    localStorage.setItem('pos_products', JSON.stringify(data));
+    if (typeof window.syncProductsToFirebase === 'function' && !window.isUpdatingFromFirebase) {
+      window.syncProductsToFirebase(data);
+    }
+  },
   saveInvoices: (data) => localStorage.setItem('pos_invoices', JSON.stringify(data)),
-  saveCategories: (data) => localStorage.setItem('pos_categories', JSON.stringify(data)),
+  saveCategories: (data) => {
+    localStorage.setItem('pos_categories', JSON.stringify(data));
+    if (typeof window.syncCategoriesToFirebase === 'function' && !window.isUpdatingFromFirebase) {
+      window.syncCategoriesToFirebase(data);
+    }
+  },
   saveSettings: (data) => localStorage.setItem('pos_settings', JSON.stringify(data)),
   saveDeleteRequests: (data) => localStorage.setItem('pos_delete_requests', JSON.stringify(data)),
 
@@ -41,6 +69,7 @@ const DB = {
     if (!data.id) data.id = 'PROD_' + Date.now();
     list.push(data);
     DB.saveProducts(list);
+    return data;
   },
   updateProduct: (id, data) => {
     const list = DB.getProducts();
@@ -110,14 +139,15 @@ const DB = {
     }
   },
   
-  addStockLog: (productId, qty, type, reason) => {
+  addStockLog: (data) => {
     const log = DB.getStockLog();
     log.unshift({
       id: 'STK_' + Date.now(),
-      productId,
-      qty,
-      type,
-      reason,
+      productId: data.productId,
+      productName: data.productName,
+      qty: data.qty,
+      cost: data.cost,
+      note: data.note,
       timestamp: new Date().toISOString(),
       user: localStorage.getItem('pos_current_user') || 'admin'
     });

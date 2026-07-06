@@ -126,6 +126,23 @@ function listenToFirebaseCustomers(callback) {
   });
 }
 
+async function syncCategoriesToFirebase(categories) {
+  if (!window.FIREBASE_ENABLED || !window._fbDB) return;
+  try {
+    const { set } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js');
+    const ref = window._fbRef(window._fbDB, 'categories');
+    await set(ref, categories);
+  } catch(e) { console.warn('Firebase categories sync failed:', e); }
+}
+
+function listenToFirebaseCategories(callback) {
+  if (!window.FIREBASE_ENABLED || !window._fbDB) { callback([]); return; }
+  const ref = window._fbRef(window._fbDB, 'categories');
+  window._fbOn(ref, (snapshot) => {
+    callback(snapshot.val() || []);
+  });
+}
+
 async function syncDebtsToFirebase(debts) {
   if (!window.FIREBASE_ENABLED || !window._fbDB) return;
   try {
@@ -199,6 +216,8 @@ window.syncInvoicesToFirebase = syncInvoicesToFirebase;
 window.listenToFirebaseInvoices = listenToFirebaseInvoices;
 window.syncCustomersToFirebase = syncCustomersToFirebase;
 window.listenToFirebaseCustomers = listenToFirebaseCustomers;
+window.syncCategoriesToFirebase = syncCategoriesToFirebase;
+window.listenToFirebaseCategories = listenToFirebaseCategories;
 window.syncDebtsToFirebase = syncDebtsToFirebase;
 window.listenToFirebaseDebts = listenToFirebaseDebts;
 window.listenToFirebaseSettings = listenToFirebaseSettings;
@@ -206,4 +225,3 @@ window.setFirebaseLastReportTime = setFirebaseLastReportTime;
 window.listenToFirebaseLastReportTime = listenToFirebaseLastReportTime;
 window.syncDeleteRequestsToFirebase = syncDeleteRequestsToFirebase;
 window.listenToFirebaseDeleteRequests = listenToFirebaseDeleteRequests;
-

@@ -192,7 +192,7 @@ function login() {
   }
 
   // 1. Check Admin
-  if (username === 'admin' && password === settings.password) {
+  if (username === 'admin' && password === (settings.password || 'admin')) {
     state.currentUser = 'admin';
     state.userPermissions = { pos: true, products: true, inventory: true, reports: true, settings: true, delete: true };
     localStorage.setItem('pos_current_user', 'admin');
@@ -357,7 +357,7 @@ async function logout() {
 // ========= تهيئة النظام =========
 function initApp() {
   const settings = DB.getSettings();
-  applyLanguage(settings.language || 'ar');
+  applyLanguage(settings.language || 'kbd');
   document.getElementById('store-name-display').textContent = settings.storeName;
   document.getElementById('rate-display').textContent = settings.exchangeRate.toLocaleString();
   document.getElementById('tax-rate-display').textContent = settings.taxRate;
@@ -2245,7 +2245,7 @@ function saveProduct() {
     category,
     unit: unit,
     priceIQD,
-    priceUSD: parseFloat(document.getElementById('pm-price-usd').value || (priceIQD / settings.exchangeRate).toFixed(2)),
+    priceUSD: parseFloat(document.getElementById('pm-price-usd').value || (priceIQD / (settings.exchangeRate || 1500)).toFixed(2)),
     cost: parseFloat(document.getElementById('pm-cost').value || 0),
     stock: parseFloat(document.getElementById('pm-stock').value || 0),
     minStock: parseFloat(document.getElementById('pm-min-stock').value || 5),
@@ -2284,13 +2284,15 @@ function generateBarcode() {
 function syncPriceFromIQD() {
   const settings = DB.getSettings();
   const iqd = parseFloat(document.getElementById('pm-price-iqd').value || 0);
-  document.getElementById('pm-price-usd').value = (iqd / settings.exchangeRate).toFixed(2);
+  const rate = settings.exchangeRate || 1500;
+  document.getElementById('pm-price-usd').value = (iqd / rate).toFixed(2);
 }
 
 function syncPriceFromUSD() {
   const settings = DB.getSettings();
   const usd = parseFloat(document.getElementById('pm-price-usd').value || 0);
-  document.getElementById('pm-price-iqd').value = Math.round(usd * settings.exchangeRate);
+  const rate = settings.exchangeRate || 1500;
+  document.getElementById('pm-price-iqd').value = Math.round(usd * rate);
 }
 
 // ========= إدارة الفئات =========
@@ -3219,7 +3221,16 @@ function changeLanguage(lang) {
 }
 
 function applyLanguage(lang) {
-  const t = TRANSLATIONS[lang] || TRANSLATIONS['ar'];
+  let t = {};
+  if (window.LANGUAGES && window.LANGUAGES[lang]) {
+    t = window.LANGUAGES[lang].translations;
+  } else if (TRANSLATIONS[lang]) {
+    t = TRANSLATIONS[lang];
+  } else if (window.LANGUAGES && window.LANGUAGES['ar']) {
+    t = window.LANGUAGES['ar'].translations;
+  } else {
+    t = TRANSLATIONS['ar'];
+  }
 
   if (lang === 'en') {
     document.documentElement.dir = 'ltr';
@@ -3229,11 +3240,31 @@ function applyLanguage(lang) {
     document.documentElement.lang = lang;
   }
 
+  // Auto-translate all elements with data-translate attribute
+  document.querySelectorAll('[data-translate]').forEach(el => {
+    const key = el.getAttribute('data-translate');
+    if (t[key]) {
+      if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+        el.placeholder = t[key];
+      } else {
+        el.textContent = t[key];
+      }
+    }
+  });
+
+  const langText = document.getElementById('active-lang-text');
+  if (langText) {
+    if (lang === 'ar') langText.textContent = 'العربية';
+    else if (lang === 'kbd') langText.textContent = 'بادینی';
+    else if (lang === 'ku') langText.textContent = 'سورانی';
+    else if (lang === 'en') langText.textContent = 'English';
+  }
+
   const selectAndUpdate = (id, key) => {
     const el = document.getElementById(id);
     if (el) {
       const span = el.querySelector('span:not(.nav-icon):not(.debt-nav-badge)');
-      if (span) span.textContent = t[key];
+      if (span && t[key]) span.textContent = t[key];
     }
   };
 
@@ -3277,7 +3308,7 @@ function loadSettings() {
   if (el('s-min-stock')) el('s-min-stock').value = s.minStock;
   if (el('s-invoice-note')) el('s-invoice-note').value = s.invoiceNote;
   if (el('s-telegram-user')) el('s-telegram-user').value = s.telegramUser || '@taher1014';
-  if (el('s-language')) el('s-language').value = s.language || 'ar';
+  if (el('s-language')) el('s-language').value = s.language || 'kbd';
 }
 
 function saveSettings() {
@@ -3335,6 +3366,38 @@ async function resetData() {
   localStorage.removeItem('pos_settings');
   location.reload();
 }
+
+// ---------------------------------------------------------------------------------------------------------------------
+// Language Dropdown Logic
+// ---------------------------------------------------------------------------------------------------------------------
+
+window.toggleLangDropdown = function(event) {
+  event.stopPropagation();
+  const menu = document.getElementById('lang-dropdown-menu');
+  if (menu) {
+    menu.classList.toggle('show');
+  }
+};
+
+window.selectLanguage = function(lang) {
+  if (typeof changeLanguage === 'function') {
+    changeLanguage(lang);
+  }
+  const menu = document.getElementById('lang-dropdown-menu');
+  if (menu) {
+    menu.classList.remove('show');
+  }
+};
+
+document.addEventListener('click', function(event) {
+  const menu = document.getElementById('lang-dropdown-menu');
+  const btn = document.querySelector('.lang-toggle-btn');
+  if (menu && menu.classList.contains('show')) {
+    if (!menu.contains(event.target) && btn && !btn.contains(event.target)) {
+      menu.classList.remove('show');
+    }
+  }
+});
 
 // ========= التنبيهات =========
 function checkLowStock() {
@@ -4338,20 +4401,42 @@ function printDebtDetail() {
 // ==========================================
 
 const EMOJI_LIST = [
-  '📦', '🍞', '🥛', '🥤', '🍎', '🍊', '🍌', '🍉', '🍇', '🍓', '🫐', '🍒',
-  '🥑', '🥦', '🥬', '🥒', '🥩', '🍗', '🍔', '🍟', '🍕', '🌭', '🥪', '🌮',
-  '🥚', '🍳', '🍿', '🍩', '🍪', '🍫', '🍬', '🍭', '🍮', '🍯', '🍼', '☕',
-  '🍵', '🧃', '🥫', '🧂', '🧴', '🧼', '🧻', '🧹', '🛒', '🛍️', '🎁', '🧊',
-  '🧅', '🧄', '🥔', '🥕', '🌽', '🌶️', '🫑', '🍄', '🥜', '🌰', '🍋', '🍈',
-  '🍍', '🥭', '🍑', '🍐', '🍏', '🥥', '🥝', '🍅', '🧀', '🥓', '🍖', '🍤',
-  '🍣', '🥟', '🍚', '🍝', '🍜', '🍲', '🍛', '🍱', '🥗', '🥘', '🥙', '🧆',
-  '🌯', '🫔', '🍦', '🍧', '🍨', '🥧', '🧁', '🍰', '🎂', '🧉', '🍾', '🍷',
-  '🍺', '🍻', '🥂', '🥃', '🍸', '🍹', '🧽', '🪣', '🧺', '💊', '🩹', '🩺',
-  '🥖', '🥨', '🥐', '🥯', '🥞', '🧇', '🫓', '🫙', '🫘', '🫒', '🧋', '🥡',
-  '🥮', '🍡', '🍢', '🍘', '🍙', '🥠', '🍥', '🐟', '🐠', '🐡', '🐙', '🦀',
-  '🦞', '🦑', '🦪', '🍽️', '🍴', '🥄', '🔪', '🏺', '🫖', '🫗', '🥢', '🪴',
-  '🧸', '🔋', '💡', '🔌', '🚬', '📰', '🪒', '🪥', '🚿', '🛁', '🚽', '🧷',
-  '🧵', '🧶'
+  // Grocery / Essentials
+  '📦', '🛒', '🛍️', '🧾', '🏷️', '💰', '💳', '🎁', '🧊', '🧊', '🧂', '🥫', '🫙', '🍯',
+  // Fruits
+  '🍎', '🍏', '🍐', '🍊', '🍋', '🍌', '🍉', '🍇', '🍓', '🫐', '🍈', '🍒', '🍑', '🥭', '🍍', '🥥', '🥝', '🍅', '🥑',
+  // Vegetables
+  '🍆', '🥔', '🥕', '🌽', '🌶️', '🫑', '🥒', '🥬', '🥦', '🧄', '🧅', '🍄', '🥜', '🌰', '🫘', '🫒',
+  // Meat & Seafood
+  '🥩', '🍗', '🍖', '🥓', '🍔', '🌭', '🐟', '🐠', '🐡', '🍤', '🦑', '🐙', '🦞', '🦀', '🦪',
+  // Dairy & Eggs
+  '🥚', '🍳', '🧀', '🧈', '🥛', '🍼',
+  // Bakery & Carbs
+  '🍞', '🥐', '🥖', '🫓', '🥨', '🥯', '🥞', '🧇', '🥪', '🌮', '🌯', '🫔', '🍕', '🍝', '🍜', '🍲', '🍛', '🍣', '🍱', '🥟', '🍚', '🍘', '🍙',
+  // Sweets & Snacks
+  '🍿', '🍩', '🍪', '🍫', '🍬', '🍭', '🍮', '🍧', '🍨', '🍦', '🥧', '🧁', '🍰', '🎂', '🥮', '🍡', '🍢', '🥠', '🍥',
+  // Beverages
+  '☕', '🫖', '🍵', '🧃', '🥤', '🧋', '🧉', '🍶', '🍾', '🍷', '🍸', '🍹', '🍺', '🍻', '🥂', '🥃', '🫗',
+  // Cleaning & Household
+  '🧼', '🧽', '🧻', '🧺', '🪣', '🧹', '🧴', '🗑️', '🚿', '🛁', '🚽',
+  // Beauty & Personal Care
+  '🪥', '🪒', '💄', '💋', '💅', '💈', '🧴', '🧷', '🪞', '🪮',
+  // Tools & Hardware
+  '🔨', '🔧', '🪛', '⛏️', '🔩', '⚙️', '🛠️', '🧲', '🪜', '🧯', '🔦', '💡', '🔌', '🔋',
+  // Stationary & Office
+  '✏️', '🖊️', '🖋️', '✂️', '📎', '🖇️', '📓', '📒', '📁', '📏', '📐', '📌', '📍', '📆', '📦', '🗂️',
+  // Baby & Toys
+  '🍼', '🧸', '🪀', '🪁', '🧩', '🎮', '🎲', '🎈',
+  // Kitchen & Dining
+  '🍽️', '🍴', '🥄', '🔪', '🏺', '🥢', '🧊', '🍶', '🥣', '🧊',
+  // Health & Pharmacy
+  '💊', '🩹', '🩺', '🩸', '🧪', '🌡️', '⚖️',
+  // Pet Supplies
+  '🐕', '🐈', '🐇', '🐹', '🦜', '🐟', '🐾', '🦴',
+  // Clothing & Accessories
+  '👕', '👖', '👗', '🧦', '🧥', '🧣', '🧤', '🧢', '👒', '👟', '👞', '🩴', '🎒', '🧳', '☂️', '🌂',
+  // Miscellaneous
+  '🪴', '🌱', '💐', '🌹', '🌻', '🌲', '🚬', '📰', '🗞️', '🧵', '🧶', '🎫', '🎟️', '🏆'
 ];
 
 function openEmojiModal() {
@@ -7740,6 +7825,17 @@ function initRealtimeSync() {
       if (typeof renderCustomersTable === 'function') renderCustomersTable();
       if (typeof populatePosCustomers === 'function') populatePosCustomers();
       if (typeof loadHomePage === 'function') loadHomePage();
+    });
+  }
+
+  if (typeof window.listenToFirebaseCategories === 'function') {
+    window.listenToFirebaseCategories(categories => {
+      if (!categories || categories.length === 0) return;
+      window.isUpdatingFromFirebase = true;
+      localStorage.setItem('pos_categories', JSON.stringify(categories));
+      window.isUpdatingFromFirebase = false;
+      if (typeof renderCategoriesList === 'function') renderCategoriesList();
+      if (typeof loadCategoryFilterSelect === 'function') loadCategoryFilterSelect();
     });
   }
 
