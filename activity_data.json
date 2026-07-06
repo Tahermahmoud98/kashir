@@ -1,5 +1,121 @@
 [
   {
+    "id": "ACT-1783273474553",
+    "type": "debt_sale",
+    "details": {
+      "debtId": "DEBT-1783273474544",
+      "customer": "أحمد محمد",
+      "total": 9600,
+      "items": [
+        {
+          "id": "p1",
+          "name": "خبز عيش",
+          "emoji": "🍞",
+          "priceIQD": 2000,
+          "priceUSD": 1.33,
+          "cost": 1000,
+          "qty": 1,
+          "maxQty": 51,
+          "unit": "قطعة"
+        },
+        {
+          "id": "p2",
+          "name": "حليب كامل الدسم",
+          "emoji": "🥛",
+          "priceIQD": 2500,
+          "priceUSD": 1.67,
+          "cost": 1800,
+          "qty": 1,
+          "maxQty": 34,
+          "unit": "لتر"
+        },
+        {
+          "id": "p3",
+          "name": "عصير برتقال",
+          "emoji": "🍊",
+          "priceIQD": 3000,
+          "priceUSD": 2,
+          "cost": 2000,
+          "qty": 1,
+          "maxQty": 16,
+          "unit": "لتر"
+        },
+        {
+          "id": "p4",
+          "name": "تفاح أحمر",
+          "emoji": "🍎",
+          "priceIQD": 3000,
+          "priceUSD": 1.92,
+          "cost": 2500,
+          "qty": 0.7,
+          "maxQty": 36,
+          "unit": "كيلو"
+        }
+      ],
+      "cashier": "admin"
+    },
+    "timestamp": "2026-07-05T17:44:34.553Z",
+    "cashier": "admin"
+  },
+  {
+    "id": "ACT-1783273428371",
+    "type": "sale",
+    "details": {
+      "invoiceId": "INV-1783273428358",
+      "total": 12450,
+      "items": [
+        {
+          "id": "p1782902475145",
+          "name": "نوك",
+          "emoji": "🥟",
+          "priceIQD": 2250,
+          "priceUSD": 1.44,
+          "cost": 2000,
+          "qty": 1,
+          "maxQty": 45,
+          "unit": "قطعة"
+        },
+        {
+          "id": "p1782937498000",
+          "name": "توفك",
+          "emoji": "🥒",
+          "priceIQD": 5000,
+          "priceUSD": 3.21,
+          "cost": 4500,
+          "qty": 0.8,
+          "maxQty": 25,
+          "unit": "كيلو"
+        },
+        {
+          "id": "p1782938332342",
+          "name": "فاصوليا",
+          "emoji": "🫘",
+          "priceIQD": 6500,
+          "priceUSD": 4.17,
+          "cost": 5000,
+          "qty": 0.8,
+          "maxQty": 25,
+          "unit": "كيس"
+        },
+        {
+          "id": "p1782498958196",
+          "name": "داركێن ددانا",
+          "emoji": "🥢",
+          "priceIQD": 1000,
+          "priceUSD": 0.64,
+          "cost": 750,
+          "qty": 1,
+          "maxQty": 107,
+          "unit": "قطعة"
+        }
+      ],
+      "cashier": "admin",
+      "paymentMethod": "cash"
+    },
+    "timestamp": "2026-07-05T17:43:48.371Z",
+    "cashier": "admin"
+  },
+  {
     "id": "ACT-1782951290939",
     "type": "customer_add",
     "details": {

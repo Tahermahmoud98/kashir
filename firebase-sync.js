@@ -168,6 +168,24 @@ function listenToFirebaseLastReportTime(callback) {
   });
 }
 
+// ---- طلبات الحذف (Delete Requests) ----
+async function syncDeleteRequestsToFirebase(requests) {
+  if (!window.FIREBASE_ENABLED || !window._fbDB) return;
+  try {
+    const { set } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js');
+    const ref = window._fbRef(window._fbDB, 'delete_requests');
+    await set(ref, requests);
+  } catch(e) { console.warn('Firebase delete_requests sync failed:', e); }
+}
+
+function listenToFirebaseDeleteRequests(callback) {
+  if (!window.FIREBASE_ENABLED || !window._fbDB) { callback([]); return; }
+  const ref = window._fbRef(window._fbDB, 'delete_requests');
+  window._fbOn(ref, (snapshot) => {
+    callback(snapshot.val() || []);
+  });
+}
+
 // تهيئة Firebase عند تحميل الصفحة
 initFirebase();
 
@@ -186,3 +204,6 @@ window.listenToFirebaseDebts = listenToFirebaseDebts;
 window.listenToFirebaseSettings = listenToFirebaseSettings;
 window.setFirebaseLastReportTime = setFirebaseLastReportTime;
 window.listenToFirebaseLastReportTime = listenToFirebaseLastReportTime;
+window.syncDeleteRequestsToFirebase = syncDeleteRequestsToFirebase;
+window.listenToFirebaseDeleteRequests = listenToFirebaseDeleteRequests;
+

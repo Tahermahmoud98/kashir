@@ -1,17 +1,17 @@
-const CACHE_NAME = 'supermarket-v7';
+const CACHE_NAME = 'supermarket-v10';
 const ASSETS = [
   './index.html',
   './admin.html',
   './styles.css',
-  './responsive.css',
   './app.js',
-  './responsive.js',
-  './data.js',
   './firebase-config.js',
   './firebase-sync.js',
+  './translations.js',
   './manifest.json',
   './icon-192.png',
-  './icon-512.png'
+  './icon-512.png',
+  './icon.ico',
+  './icon.svg'
 ];
 
 self.addEventListener('install', event => {
