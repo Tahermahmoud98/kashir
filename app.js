@@ -27,11 +27,11 @@
   }
 })();
 
-window.t = function(key) {
+window.t = function (key) {
   if (!key) return '';
   const lang = DB.getSettings().language || 'kbd';
-  const dict = (window.LANGUAGES && window.LANGUAGES[lang]) ? 
-    { ...window.LANGUAGES[lang].translations, ...window.LANGUAGES[lang].domPhrases, ...(window.LANGUAGES[lang].statusMap || {}) } : 
+  const dict = (window.LANGUAGES && window.LANGUAGES[lang]) ?
+    { ...window.LANGUAGES[lang].translations, ...window.LANGUAGES[lang].domPhrases, ...(window.LANGUAGES[lang].statusMap || {}) } :
     (TRANSLATIONS[lang] || TRANSLATIONS['ar']);
   return dict[key] || key;
 };
@@ -1106,7 +1106,7 @@ function loadCategoryTabs() {
     btn.onclick = function () { filterByCategory(cat.id, this); };
     container.appendChild(btn);
   });
-  if(typeof applyLanguage === 'function') applyLanguage();
+  if (typeof applyLanguage === 'function') applyLanguage();
 }
 
 function filterByCategory(catId, btn) {
@@ -1143,7 +1143,7 @@ function renderProducts() {
 
   if (!products.length) {
     grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-muted);"><span data-translate>🔍 لا توجد منتجات</span></div>';
-    if(typeof applyLanguage === 'function') applyLanguage();
+    if (typeof applyLanguage === 'function') applyLanguage();
     return;
   }
 
@@ -1165,7 +1165,7 @@ function renderProducts() {
       </div>
     `;
   }).join('');
-  if(typeof applyLanguage === 'function') applyLanguage();
+  if (typeof applyLanguage === 'function') applyLanguage();
 }
 
 function addToCart(productId, forcedQty = null) {
@@ -1349,7 +1349,7 @@ function renderCart() {
         <p data-translate>السلة فارغة</p>
         <small data-translate>أضف منتجات من القائمة</small>
       </div>`;
-    if(typeof applyLanguage === 'function') applyLanguage();
+    if (typeof applyLanguage === 'function') applyLanguage();
     return;
   }
 
@@ -1371,7 +1371,7 @@ function renderCart() {
   `).join('');
 
   updateCartTotals();
-  if(typeof applyLanguage === 'function') applyLanguage();
+  if (typeof applyLanguage === 'function') applyLanguage();
 }
 
 function updateCartTotals() {
@@ -2134,7 +2134,7 @@ function loadProductsPage() {
 
 function loadCategoryFilterSelect() {
   const cats = DB.getCategories();
-  
+
   // Populate filter selects
   const filterSels = document.querySelectorAll('#page-products .filter-select');
   filterSels.forEach(sel => {
@@ -2557,7 +2557,7 @@ function renderCustomersGrid(customers) {
     grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-muted)">👥 ${t('لا يوجد عملاء')}</div>`;
     return;
   }
-  
+
   const reqs = DB.getDeleteRequests ? DB.getDeleteRequests() : [];
 
   grid.innerHTML = customers.map(c => {
@@ -3019,12 +3019,22 @@ function saveCustomer() {
     notes: document.getElementById('cm-notes').value.trim()
   };
 
+  const permissions = JSON.parse(localStorage.getItem('pos_user_permissions') || '{}');
+  const canEditDirectly = permissions.edit === true;
+
   if (id) {
-    DB.updateCustomer(id, data);
-    showToast('تم تحديث العميل', 'success');
-    const msg = `✏️ *تعديل بيانات عميل*\nالاسم: ${data.name}\nالهاتف: ${data.phone || 'غير محدد'}`;
-    if (typeof sendTelegramMessage === 'function') sendTelegramMessage(msg);
-    DB.addActivity('customer_update', { name: data.name, phone: data.phone });
+    if (!canEditDirectly) {
+      DB.addDeleteRequest('edit_customer', id, `تعديل العميل ${data.name}`, data);
+      const msg = `🔔 *طلب تعديل جديد*\nيطلب الكاشير الموافقة على تعديل بيانات العميل: ${data.name}`;
+      if (typeof sendTelegramMessage === 'function') sendTelegramMessage(msg);
+      showToast('تم إرسال طلب التعديل للإدارة. بانتظار الموافقة ⏳', 'info');
+    } else {
+      DB.updateCustomer(id, data);
+      showToast('تم تحديث العميل', 'success');
+      const msg = `✏️ *تعديل بيانات عميل*\nالاسم: ${data.name}\nالهاتف: ${data.phone || 'غير محدد'}`;
+      if (typeof sendTelegramMessage === 'function') sendTelegramMessage(msg);
+      DB.addActivity('customer_update', { name: data.name, phone: data.phone });
+    }
   } else {
     data.oldDebt = oldDebtInput ? parseFloat(oldDebtInput) : 0;
     data.oldDebtPaid = 0;
@@ -3045,13 +3055,13 @@ function saveCustomer() {
 async function deleteCustomer(id) {
   let c = DB.getCustomers().find(c => c.id === id);
   const debts = DB.getDebts().filter(d => d.customerId === id);
-  
+
   if (!c && debts.length === 0) return;
-  
+
   if (!c) {
     c = { id: id, name: debts[0].customerName || 'عميل' };
   }
-  
+
   const reqs = DB.getDeleteRequests() || [];
   const existingReq = reqs.find(r => r.targetId === id && r.type === 'customer');
 
@@ -3060,26 +3070,26 @@ async function deleteCustomer(id) {
 
   if (canDeleteDirectly) {
     if (!(await showConfirm(`أنت تمتلك صلاحية الحذف. هل تريد تأكيد حذف العميل "${c.name}" وكافة ديونه بشكل نهائي؟`))) return;
-    
+
     // Delete customer
     DB.deleteCustomer(id);
     const msg = `🗑️ *حذف عميل نهائياً*\nاسم العميل: ${c.name}`;
     if (typeof sendTelegramMessage === 'function') sendTelegramMessage(msg);
-    
+
     // Delete associated debts
     const allDebts = DB.getDebts().filter(d => d.customerId !== id);
     localStorage.setItem('pos_debts', JSON.stringify(allDebts));
-    
+
     // Remove any existing requests for this customer
     if (existingReq) {
       DB.saveDeleteRequests(reqs.filter(r => r.id !== existingReq.id));
     }
     DB.addActivity('item_delete', { target: 'عميل وديون', name: c.name });
-    
+
     loadCustomersPage();
     if (typeof loadDebtsPage === 'function') loadDebtsPage();
     showToast('تم حذف العميل وديونه بنجاح', 'success');
-    
+
     if (typeof selectedDebtorId !== 'undefined' && selectedDebtorId === id) {
       selectedDebtorId = null;
       showDebtorDetail(null); // clear panel
@@ -3089,21 +3099,21 @@ async function deleteCustomer(id) {
 
   if (existingReq && existingReq.status === 'approved') {
     if (!(await showConfirm(`تمت الموافقة من الإدارة. هل تريد تأكيد حذف العميل "${c.name}" وكافة ديونه المسجلة؟`))) return;
-    
+
     // Delete customer
     DB.deleteCustomer(id);
-    
+
     // Delete associated debts
     const allDebts = DB.getDebts().filter(d => d.customerId !== id);
     localStorage.setItem('pos_debts', JSON.stringify(allDebts));
-    
+
     DB.saveDeleteRequests(reqs.filter(r => r.id !== existingReq.id));
     DB.addActivity('item_delete', { target: 'عميل وديون', name: c.name });
-    
+
     loadCustomersPage();
     if (typeof loadDebtsPage === 'function') loadDebtsPage();
     showToast('تم حذف العميل وديونه بنجاح', 'success');
-    
+
     if (typeof selectedDebtorId !== 'undefined' && selectedDebtorId === id) {
       selectedDebtorId = null;
       showDebtorDetail(null); // clear panel
@@ -3125,7 +3135,7 @@ async function deleteCustomer(id) {
   DB.addDeleteRequest('customer', id, `حذف العميل ${c.name}`);
   const msg = `🔔 *طلب إذن جديد*\nيطلب الكاشير الموافقة على حذف العميل: ${c.name}`;
   if (typeof sendTelegramMessage === 'function') sendTelegramMessage(msg);
-  
+
   showToast('تم إرسال طلب الحذف للإدارة. بانتظار الموافقة ⏳', 'info');
   loadCustomersPage();
   if (typeof loadDebtsPage === 'function') loadDebtsPage();
@@ -3348,7 +3358,7 @@ function applyLanguage(lang) {
   } else {
     t = TRANSLATIONS['ar'];
   }
-  
+
   window.activeTranslations = t;
 
   if (lang === 'en') {
@@ -3512,7 +3522,7 @@ async function resetData() {
 // Language Dropdown Logic
 // ---------------------------------------------------------------------------------------------------------------------
 
-window.toggleLangDropdown = function(event) {
+window.toggleLangDropdown = function (event) {
   event.stopPropagation();
   const menu = document.getElementById('lang-dropdown-menu');
   if (menu) {
@@ -3520,7 +3530,7 @@ window.toggleLangDropdown = function(event) {
   }
 };
 
-window.selectLanguage = function(lang) {
+window.selectLanguage = function (lang) {
   if (typeof changeLanguage === 'function') {
     changeLanguage(lang);
   }
@@ -3530,7 +3540,7 @@ window.selectLanguage = function(lang) {
   }
 };
 
-document.addEventListener('click', function(event) {
+document.addEventListener('click', function (event) {
   const menu = document.getElementById('lang-dropdown-menu');
   const btn = document.querySelector('.lang-toggle-btn');
   if (menu && menu.classList.contains('show')) {
@@ -3551,7 +3561,7 @@ function checkLowStock() {
   if (list && typeof buildNotifications === 'function') {
     const allNotifs = buildNotifications();
     const unreadNotifs = allNotifs.filter(n => !n.isRead);
-    
+
     list.innerHTML = unreadNotifs.length ? unreadNotifs.slice(0, 10).map((n, i) => `
       <div class="notif-item" style="cursor:pointer; border-bottom:1px solid var(--border-color); padding-bottom:8px; margin-bottom:8px;" onclick="document.getElementById('notifications-panel').style.display='none'; showPage('${n.cat === 'delete_req' ? (n.msg.includes('العميل') ? 'customers' : 'debts') : (n.cat === 'stock' || n.cat === 'expiry' ? 'inventory' : (n.cat === 'pay' ? 'activitylog' : 'home'))}')">
         <span style="display:inline-block;width:24px;height:24px;vertical-align:middle;font-size:20px;">${n.icon || '🔔'}</span>
@@ -3993,7 +4003,7 @@ function showDebtorDetail(customerId) {
   const reqs = DB.getDeleteRequests ? DB.getDeleteRequests() : [];
   const existingReq = reqs.find(r => r.targetId === customerId && r.type === 'customer');
   let deleteBtnHtml = `<button class="btn-icon delete" onclick="deleteCustomer('${customerId}')" title="حذف العميل" style="padding: 8px 15px; border-radius: 8px; display: flex; align-items: center; gap: 6px; font-weight: bold; background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3);">🗑️ حذف العميل</button>`;
-  
+
   if (existingReq) {
     if (existingReq.status === 'pending') {
       deleteBtnHtml = `<button class="btn-icon" style="padding: 8px 15px; border-radius: 8px; display: flex; align-items: center; gap: 6px; font-weight: bold; background: rgba(245, 158, 11, 0.1); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3);" onclick="deleteCustomer('${customerId}')" title="قيد المراجعة">⏳ قيد المراجعة</button>`;
@@ -4806,7 +4816,7 @@ function sendDailyReportToTelegram(isPeriodic = true) {
     else if (h >= 12 && h < 18) { startH = 12; periodName = "المسائي (12 م - 6 م)"; }
     else if (h >= 18) { startH = 18; periodName = "الليلي (6 م - 12 ص)"; }
     else { startH = 0; periodName = "الفجر (12 ص - 6 ص)"; }
-    
+
     startTime.setHours(startH, 0, 0, 0);
   } else {
     startTime.setHours(0, 0, 0, 0);
@@ -4816,7 +4826,7 @@ function sendDailyReportToTelegram(isPeriodic = true) {
     const d = new Date(i.date);
     return d >= startTime && d <= endTime;
   });
-  
+
   const allDebts = DB.getDebts();
   const debtsInPeriod = allDebts.filter(d => {
     const dt = new Date(d.date);
@@ -4828,10 +4838,10 @@ function sendDailyReportToTelegram(isPeriodic = true) {
     if (debt.payments && Array.isArray(debt.payments)) {
       debt.payments.forEach(p => {
         if (p.date) {
-           const dt = new Date(p.date);
-           if (dt >= startTime && dt <= endTime) {
-             totalDebtPaid += p.amountIQD;
-           }
+          const dt = new Date(p.date);
+          if (dt >= startTime && dt <= endTime) {
+            totalDebtPaid += p.amountIQD;
+          }
         }
       });
     }
@@ -4851,7 +4861,7 @@ function sendDailyReportToTelegram(isPeriodic = true) {
       if (inv.paymentMethod === 'cash') salesCash += inv.received;
       if (inv.paymentMethod === 'card') salesCard += inv.total;
       if (inv.paymentMethod === 'transfer') salesTransfer += inv.total;
-      
+
       inv.items.forEach(item => {
         itemsSold += item.qty;
         totalProfit += (item.price - (item.cost || 0)) * item.qty;
@@ -8027,9 +8037,18 @@ function initRealtimeSync() {
       reqs.forEach(req => {
         const prevStatus = previousReqsStatus[req.id];
         if (prevStatus === 'pending' && req.status === 'approved') {
-          showToast(`تمت الموافقة على طلب الحذف! يمكنك إتمامه الآن.`, 'success');
+          if (req.type === 'edit_customer') {
+            DB.updateCustomer(req.targetId, req.extraData);
+            showToast(`تم الموافقة على التعديل وتم تطبيقه على العميل!`, 'success');
+            setTimeout(() => {
+              const currentReqs = DB.getDeleteRequests();
+              DB.saveDeleteRequests(currentReqs.filter(r => r.id !== req.id));
+            }, 1000);
+          } else {
+            showToast(`تمت الموافقة على طلب الحذف! يمكنك إتمامه الآن.`, 'success');
+          }
         } else if (prevStatus === 'pending' && req.status === 'rejected') {
-          showToast(`تم رفض طلب الحذف من الإدارة.`, 'error');
+          showToast(`تم رفض الطلب من الإدارة.`, 'error');
         }
         previousReqsStatus[req.id] = req.status;
       });
@@ -8227,7 +8246,7 @@ function showArchivedDebtorDetailPage(customerId) {
   `;
 }
 
-window.openManualProductModal = function() {
+window.openManualProductModal = function () {
   if (document.getElementById('mpm-name')) {
     document.getElementById('mpm-name').value = '';
     document.getElementById('mpm-price').value = '';
@@ -8236,12 +8255,12 @@ window.openManualProductModal = function() {
   }
 };
 
-window.addManualProductToCart = function() {
+window.addManualProductToCart = function () {
   const name = document.getElementById('mpm-name').value.trim();
   const price = parseFloat(document.getElementById('mpm-price').value);
   const qty = parseFloat(document.getElementById('mpm-qty').value) || 1;
 
-  if(!name || isNaN(price) || price < 0 || qty <= 0) {
+  if (!name || isNaN(price) || price < 0 || qty <= 0) {
     showToast('???? ??? ????? ?????? ??????? ???? ????', 'warning');
     return;
   }
@@ -8258,18 +8277,18 @@ window.addManualProductToCart = function() {
     emoji: '??',
     isManual: true
   };
-  
+
   // Check if cart is defined in scope, it usually is global in app.js
   if (typeof cart !== 'undefined') {
     cart.push({ ...pseudoProduct, cartItemId: Date.now() + Math.random(), qty: qty });
-    if(typeof renderCart === 'function') renderCart();
+    if (typeof renderCart === 'function') renderCart();
     closeModal('manual-product-modal');
     showToast('??? ????? ?????? ??????', 'success');
   }
 };
 
 
-window.openManualProductModal = function() {
+window.openManualProductModal = function () {
   if (document.getElementById('mpm-name')) {
     document.getElementById('mpm-name').value = '';
     document.getElementById('mpm-price').value = '';
@@ -8278,12 +8297,12 @@ window.openManualProductModal = function() {
   }
 };
 
-window.addManualProductToCart = function() {
+window.addManualProductToCart = function () {
   const name = document.getElementById('mpm-name').value.trim();
   const price = parseFloat(document.getElementById('mpm-price').value);
   const qty = parseFloat(document.getElementById('mpm-qty').value) || 1;
 
-  if(!name || isNaN(price) || price < 0 || qty <= 0) {
+  if (!name || isNaN(price) || price < 0 || qty <= 0) {
     showToast('???? ??? ????? ?????? ??????? ???? ????', 'warning');
     return;
   }
@@ -8303,11 +8322,11 @@ window.addManualProductToCart = function() {
     qty: qty,
     unit: '????'
   };
-  
+
   if (typeof state !== 'undefined' && state.cart) {
     state.cart.push(pseudoProduct);
-    if(typeof renderCart === 'function') renderCart();
-    if(typeof updateCartTotals === 'function') updateCartTotals();
+    if (typeof renderCart === 'function') renderCart();
+    if (typeof updateCartTotals === 'function') updateCartTotals();
     closeModal('manual-product-modal');
     showToast('??? ????? ?????? ??????', 'success');
   }
@@ -8321,7 +8340,7 @@ function checkAndSendPeriodicReport() {
 
   const now = new Date();
   const lastReportStr = localStorage.getItem('pos_last_6h_report');
-  
+
   if (lastReportStr) {
     const lastReportTime = new Date(lastReportStr);
     const hoursPassed = (now - lastReportTime) / (1000 * 60 * 60);
@@ -8344,7 +8363,7 @@ function checkAndSendPeriodicReport() {
   const allDebts = typeof DB !== 'undefined' && DB.getDebts ? DB.getDebts() : [];
   const todayDebts = allDebts.filter(d => {
     let dDate;
-    try { dDate = new Date(d.date).toISOString().split('T')[0]; } catch(e){ dDate=''; }
+    try { dDate = new Date(d.date).toISOString().split('T')[0]; } catch (e) { dDate = ''; }
     return dDate === today;
   });
   const todayDebtAmt = todayDebts.reduce((s, d) => s + (d.totalIQD || 0), 0);
@@ -8352,7 +8371,7 @@ function checkAndSendPeriodicReport() {
   const expenses = typeof DB !== 'undefined' && DB.getExpenses ? DB.getExpenses() : [];
   const todayExp = expenses.filter(e => {
     let eDate;
-    try { eDate = new Date(e.date).toISOString().split('T')[0]; } catch(e){ eDate=''; }
+    try { eDate = new Date(e.date).toISOString().split('T')[0]; } catch (e) { eDate = ''; }
     return eDate === today;
   });
   const todayExpAmt = todayExp.reduce((s, e) => s + (e.amount || 0), 0);

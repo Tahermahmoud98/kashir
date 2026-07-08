@@ -198,7 +198,7 @@ const DB = {
     localStorage.setItem('pos_stock_log', JSON.stringify(log));
   },
   
-  addDeleteRequest: (type, targetId, details) => {
+  addDeleteRequest: (type, targetId, details, extraData = null) => {
     const list = DB.getDeleteRequests();
     list.push({
       id: 'REQ_' + Date.now() + Math.floor(Math.random()*1000),
@@ -207,7 +207,8 @@ const DB = {
       details,
       status: 'pending',
       requestedBy: localStorage.getItem('pos_current_user') || 'الكاشير',
-      date: new Date().toISOString()
+      date: new Date().toISOString(),
+      extraData
     });
     DB.saveDeleteRequests(list);
   }

@@ -13,7 +13,9 @@
       return false;
     };
   </script>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@100..900&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&family=Noto+Kufi+Arabic:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
   <style>
     * {
       margin: 0;
@@ -22,33 +24,33 @@
     }
 
     :root {
-      --p: #8b5cf6;
-      --danger: #ef4444;
-      --warn: #f59e0b;
-      --dark: #e8e0ff;
-      --dark2: rgba(255, 255, 255, 0.45);
-      --dark3: rgba(255, 255, 255, 0.6);
+      --p: #a78bfa;
+      --danger: #fca5a5;
+      --warn: #fde047;
+      --dark: #f5f3ff;
+      --dark2: rgba(255, 255, 255, 0.35);
+      --dark3: rgba(255, 255, 255, 0.55);
       --card: rgba(255, 255, 255, 0.65);
-      --card2: rgba(255, 255, 255, 0.8);
-      --brd: rgba(139, 92, 246, 0.15);
-      --txt: #1e0a3c;
-      --muted: #5b4b7a;
+      --card2: rgba(255, 255, 255, 0.85);
+      --brd: rgba(167, 139, 250, 0.15);
+      --txt: #1e1b4b;
+      --muted: #58508d;
       --r: 16px
     }
 
     body.dark-mode {
-      --dark: #050010;
-      --dark2: rgba(255, 255, 255, 0.04);
-      --dark3: rgba(255, 255, 255, 0.07);
-      --card: rgba(255, 255, 255, 0.06);
-      --card2: rgba(255, 255, 255, 0.1);
+      --dark: #0c081e;
+      --dark2: rgba(255, 255, 255, 0.03);
+      --dark3: rgba(255, 255, 255, 0.06);
+      --card: rgba(255, 255, 255, 0.04);
+      --card2: rgba(255, 255, 255, 0.08);
       --brd: rgba(255, 255, 255, 0.08);
-      --txt: rgba(255, 255, 255, 0.95);
-      --muted: rgba(255, 255, 255, 0.5)
+      --txt: #f8fafc;
+      --muted: #64748b
     }
 
     body {
-      font-family: 'Noto Kufi Arabic', sans-serif;
+      font-family: 'Outfit', 'Inter', 'Noto Kufi Arabic', sans-serif;
       background: var(--dark);
       color: var(--txt);
       min-height: 100vh;
@@ -823,7 +825,7 @@
       border: 2px solid var(--p);
       padding: 14px 28px;
       border-radius: 12px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
       z-index: 2500;
       font-weight: 700;
       font-size: 14px;
@@ -834,14 +836,17 @@
       opacity: 0;
       pointer-events: none;
     }
+
     #admin-toast-container.show {
       transform: translateX(-50%) translateY(0);
       opacity: 1;
       pointer-events: auto;
     }
+
     #admin-toast-container.success {
       border-color: var(--p);
     }
+
     #admin-toast-container.error {
       border-color: var(--danger);
     }
@@ -849,7 +854,19 @@
     /* =============================================
        GLOBAL GLASSMORPHISM OVERRIDES
        ============================================= */
-    .lb, .sc, .ah, .br, .bx, .card, .stat-card, .table-container, .modal-content, .toast-container, .panel, .setting-card, .modal {
+    .lb,
+    .sc,
+    .ah,
+    .br,
+    .bx,
+    .card,
+    .stat-card,
+    .table-container,
+    .modal-content,
+    .toast-container,
+    .panel,
+    .setting-card,
+    .modal {
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
     }
@@ -864,7 +881,7 @@
       position: fixed;
       inset: 0;
       background:
-        radial-gradient(ellipse 80% 80% at 20% 0%, rgba(139, 92, 246, 0.25) 0%, transparent 60%),
+        radial-gradient(ellipse 80% 80% at 20% 0%, rgba(99, 102, 241, 0.25) 0%, transparent 60%),
         radial-gradient(ellipse 60% 60% at 80% 100%, rgba(6, 182, 212, 0.15) 0%, transparent 60%),
         radial-gradient(ellipse 50% 50% at 50% 50%, rgba(236, 72, 153, 0.08) 0%, transparent 70%);
       z-index: -1;
@@ -886,7 +903,7 @@
     .ah {
       background: var(--card) !important;
       border-bottom: 1px solid var(--brd) !important;
-      box-shadow: 0 4px 30px rgba(0,0,0,0.15) !important;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.15) !important;
     }
 
     .sb {
@@ -896,18 +913,23 @@
     .sc {
       background: var(--card) !important;
       border: 1px solid var(--brd) !important;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.15) !important;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15) !important;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
     }
 
     .sc:hover {
       transform: translateY(-5px) !important;
-      box-shadow: 0 15px 40px rgba(139, 92, 246, 0.15) !important;
-      border-color: rgba(139, 92, 246, 0.4) !important;
+      box-shadow: 0 15px 40px rgba(99, 102, 241, 0.15) !important;
+      border-color: rgba(99, 102, 241, 0.4) !important;
     }
 
     /* Inputs */
-    input[type="text"], input[type="password"], input[type="number"], select, textarea, .li {
+    input[type="text"],
+    input[type="password"],
+    input[type="number"],
+    select,
+    textarea,
+    .li {
       background: rgba(255, 255, 255, 0.07) !important;
       border: 1px solid var(--brd) !important;
       color: var(--txt) !important;
@@ -915,28 +937,38 @@
       transition: all 0.3s !important;
     }
 
-    body.dark-mode input[type="text"], body.dark-mode input[type="password"], body.dark-mode input[type="number"], body.dark-mode select, body.dark-mode textarea, body.dark-mode .li {
+    body.dark-mode input[type="text"],
+    body.dark-mode input[type="password"],
+    body.dark-mode input[type="number"],
+    body.dark-mode select,
+    body.dark-mode textarea,
+    body.dark-mode .li {
       background: rgba(255, 255, 255, 0.07) !important;
     }
 
-    input:focus, select:focus, textarea:focus, .li:focus {
+    input:focus,
+    select:focus,
+    textarea:focus,
+    .li:focus {
       outline: none !important;
       border-color: var(--p) !important;
-      box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.25) !important;
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25) !important;
       background: rgba(255, 255, 255, 0.10) !important;
     }
 
     /* Buttons */
-    .bl, .btn-primary {
-      background: linear-gradient(135deg, var(--p), #a78bfa) !important;
+    .bl,
+    .btn-primary {
+      background: linear-gradient(135deg, var(--p), #818cf8) !important;
       color: white !important;
-      box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3) !important;
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3) !important;
       font-weight: 700 !important;
     }
 
-    .bl:hover, .btn-primary:hover {
+    .bl:hover,
+    .btn-primary:hover {
       transform: translateY(-2px) !important;
-      box-shadow: 0 8px 25px rgba(139, 92, 246, 0.5) !important;
+      box-shadow: 0 8px 25px rgba(99, 102, 241, 0.5) !important;
     }
 
     .br {
@@ -948,7 +980,7 @@
     .br:hover {
       background: var(--p) !important;
       color: white !important;
-      box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3) !important;
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3) !important;
     }
 
     /* Scrollbars */
@@ -962,12 +994,12 @@
     }
 
     ::-webkit-scrollbar-thumb {
-      background: rgba(139, 92, 246, 0.3);
+      background: rgba(99, 102, 241, 0.3);
       border-radius: 10px;
     }
 
     ::-webkit-scrollbar-thumb:hover {
-      background: rgba(139, 92, 246, 0.5);
+      background: rgba(99, 102, 241, 0.5);
     }
   </style>
 </head>
@@ -996,20 +1028,26 @@
         <div class="lv">
           <div class="ld"></div>مباشر
         </div>
-        
+
         <!-- حاوية الإشعارات النسبية -->
         <div style="position:relative; display:inline-block;">
           <!-- زر الإشعارات 🔔 -->
-          <button class="br" id="noti-bell-btn" onclick="toggleNotificationsDropdown()" style="position:relative; display:inline-flex; align-items:center; gap:6px;">
+          <button class="br" id="noti-bell-btn" onclick="toggleNotificationsDropdown()"
+            style="position:relative; display:inline-flex; align-items:center; gap:6px;">
             🔔 الإشعارات
-            <span id="noti-badge" style="display:none; position:absolute; top:-6px; right:-6px; background:var(--danger); color:white; font-size:10px; font-weight:700; border-radius:50%; min-width:18px; height:18px; padding:2px; box-shadow:0 2px 6px rgba(255, 60, 99, 0.4); align-items:center; justify-content:center;">0</span>
+            <span id="noti-badge"
+              style="display:none; position:absolute; top:-6px; right:-6px; background:var(--danger); color:white; font-size:10px; font-weight:700; border-radius:50%; min-width:18px; height:18px; padding:2px; box-shadow:0 2px 6px rgba(255, 60, 99, 0.4); align-items:center; justify-content:center;">0</span>
           </button>
 
           <!-- قائمة الإشعارات المنسدلة -->
-          <div id="noti-dropdown" style="display:none; position:absolute; top:45px; left:0; width:340px; max-width:calc(100vw - 32px); background:var(--card); border:1px solid var(--brd); border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,0.3); z-index:9999; text-align:right; animation: slideDown 0.2s ease;">
-            <div style="padding:12px 16px; border-bottom:1px solid var(--brd); display:flex; justify-content:space-between; align-items:center;">
+          <div id="noti-dropdown"
+            style="display:none; position:absolute; top:45px; left:0; width:340px; max-width:calc(100vw - 32px); background:var(--card); border:1px solid var(--brd); border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,0.3); z-index:9999; text-align:right; animation: slideDown 0.2s ease;">
+            <div
+              style="padding:12px 16px; border-bottom:1px solid var(--brd); display:flex; justify-content:space-between; align-items:center;">
               <span style="font-weight:800; font-size:14px; color:var(--txt)">🔔 التنبيهات الأخيرة</span>
-              <button onclick="clearAllNotifications()" style="background:transparent; border:none; color:var(--muted); font-size:11px; cursor:pointer; font-family:inherit;">مسح الكل</button>
+              <button onclick="clearAllNotifications()"
+                style="background:transparent; border:none; color:var(--muted); font-size:11px; cursor:pointer; font-family:inherit;">مسح
+                الكل</button>
             </div>
             <div id="noti-list" style="max-height:300px; overflow-y:auto; font-size:12px; color:var(--muted);">
               <!-- سيتم حقن التنبيهات هنا -->
@@ -1018,7 +1056,8 @@
         </div>
         <button class="br" onclick="openDeleteRequestsModal()" style="position:relative;">
           🗑️ طلبات الحذف
-          <span id="delreq-badge" style="display:none; position:absolute; top:-6px; right:-6px; background:var(--danger); color:white; font-size:10px; font-weight:700; border-radius:50%; min-width:18px; height:18px; padding:2px; box-shadow:0 2px 6px rgba(255, 60, 99, 0.4); align-items:center; justify-content:center;">0</span>
+          <span id="delreq-badge"
+            style="display:none; position:absolute; top:-6px; right:-6px; background:var(--danger); color:white; font-size:10px; font-weight:700; border-radius:50%; min-width:18px; height:18px; padding:2px; box-shadow:0 2px 6px rgba(255, 60, 99, 0.4); align-items:center; justify-content:center;">0</span>
         </button>
         <button class="br" onclick="openAdminEmployeesModal()">👥 الموظفون</button>
         <button class="br" id="theme-toggle-btn" onclick="toggleAdminTheme()" title="تبديل الوضع">🌙 داكن</button>
@@ -1172,7 +1211,8 @@
       color: var(--txt);
       position: relative;
     ">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--brd); padding-bottom: 12px;">
+      <div
+        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--brd); padding-bottom: 12px;">
         <h2 style="font-size: 18px; font-weight: 800;">👥 إدارة الموظفين والصلاحيات</h2>
         <button onclick="closeAdminEmployeesModal()" style="
           background: transparent;
@@ -1184,9 +1224,12 @@
       </div>
 
       <!-- Action and Grid -->
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
-        <span style="font-size: 13px; color: var(--muted);">تعديل حسابات الموظفين وتخصيص صلاحيات دخولهم لنقطة البيع.</span>
-        <button class="br" onclick="showAddEmployeeForm()" style="background: var(--p); color: #000; font-weight: 700;">+ إضافة موظف جديد</button>
+      <div
+        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
+        <span style="font-size: 13px; color: var(--muted);">تعديل حسابات الموظفين وتخصيص صلاحيات دخولهم لنقطة
+          البيع.</span>
+        <button class="br" onclick="showAddEmployeeForm()"
+          style="background: var(--p); color: #000; font-weight: 700;">+ إضافة موظف جديد</button>
       </div>
 
       <!-- Add/Edit Inline Form -->
@@ -1200,28 +1243,36 @@
       ">
         <h3 id="emp-form-title" style="font-size: 14px; margin-bottom: 12px; font-weight: 800;">👤 إضافة موظف</h3>
         <input type="hidden" id="emp-edit-id">
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 15px;">
+        <div
+          style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 15px;">
           <div>
-            <label style="font-size: 12px; color: var(--muted); display: block; margin-bottom: 4px;">الاسم الثنائي *</label>
-            <input type="text" id="emp-name" style="width: 100%; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--brd); background: var(--card); color: var(--txt); font-family: inherit;">
+            <label style="font-size: 12px; color: var(--muted); display: block; margin-bottom: 4px;">الاسم الثنائي
+              *</label>
+            <input type="text" id="emp-name"
+              style="width: 100%; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--brd); background: var(--card); color: var(--txt); font-family: inherit;">
           </div>
           <div>
-            <label style="font-size: 12px; color: var(--muted); display: block; margin-bottom: 4px;">الدور الوظيفي</label>
-            <select id="emp-role" style="width: 100%; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--brd); background: var(--card); color: var(--txt); font-family: inherit;">
+            <label style="font-size: 12px; color: var(--muted); display: block; margin-bottom: 4px;">الدور
+              الوظيفي</label>
+            <select id="emp-role"
+              style="width: 100%; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--brd); background: var(--card); color: var(--txt); font-family: inherit;">
               <option value="كاشير">كاشير (POS)</option>
               <option value="مدير">مدير (Manager)</option>
               <option value="محاسب">محاسب (Accountant)</option>
             </select>
           </div>
           <div>
-            <label style="font-size: 12px; color: var(--muted); display: block; margin-bottom: 4px;">كلمة المرور (دخول)</label>
-            <input type="password" id="emp-password" style="width: 100%; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--brd); background: var(--card); color: var(--txt); font-family: inherit;">
+            <label style="font-size: 12px; color: var(--muted); display: block; margin-bottom: 4px;">كلمة المرور
+              (دخول)</label>
+            <input type="password" id="emp-password"
+              style="width: 100%; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--brd); background: var(--card); color: var(--txt); font-family: inherit;">
           </div>
         </div>
 
         <!-- Permissions Checkboxes -->
         <div style="margin-bottom: 15px;">
-          <label style="font-size: 12px; color: var(--muted); display: block; margin-bottom: 6px;">صلاحيات الوصول النشطة:</label>
+          <label style="font-size: 12px; color: var(--muted); display: block; margin-bottom: 6px;">صلاحيات الوصول
+            النشطة:</label>
           <div style="display: flex; flex-wrap: wrap; gap: 16px;">
             <label style="display: flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer;">
               <input type="checkbox" id="perm-pos" checked> نقطة البيع (الكاشير)
@@ -1243,7 +1294,8 @@
 
         <div style="display: flex; gap: 8px; justify-content: flex-end;">
           <button class="br" onclick="hideEmployeeForm()" style="background: transparent;">إلغاء</button>
-          <button class="br" onclick="saveEmployeeData()" style="background: var(--p); color: #000; font-weight: 700;">حفظ البيانات</button>
+          <button class="br" onclick="saveEmployeeData()"
+            style="background: var(--p); color: #000; font-weight: 700;">حفظ البيانات</button>
         </div>
       </div>
 
@@ -1287,7 +1339,9 @@
       <p style="font-size: 13px; color: var(--muted); margin-bottom: 24px;" id="admin-confirm-msg">هل أنت متأكد؟</p>
       <div style="display: flex; gap: 8px; justify-content: center;">
         <button class="br" id="admin-confirm-cancel-btn" style="background: transparent;">إلغاء</button>
-        <button class="br" id="admin-confirm-ok-btn" style="background: var(--danger); color: white; font-weight: 700; border-color: var(--danger);">تأكيد الحذف</button>
+        <button class="br" id="admin-confirm-ok-btn"
+          style="background: var(--danger); color: white; font-weight: 700; border-color: var(--danger);">تأكيد
+          الحذف</button>
       </div>
     </div>
   </div>
@@ -1507,7 +1561,7 @@
         `;
         document.body.appendChild(modal);
       }
-      
+
       const d = report.details || {};
       const content = document.getElementById('admin-report-content');
       if (content) {
@@ -1542,9 +1596,9 @@
           </div>
         `;
       }
-      
+
       modal.style.display = 'flex';
-      
+
       try {
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         const osc = audioCtx.createOscillator();
@@ -1556,7 +1610,7 @@
         gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
         osc.start();
         osc.stop(audioCtx.currentTime + 0.2);
-      } catch(e) {}
+      } catch (e) { }
     }
 
     let fbListenersInitialized = false;
@@ -1616,7 +1670,7 @@
           rst();
           ral();
           rls();
-          
+
           if (Array.isArray(data)) {
             const latestReport = data.find(a => a.type === 'report_submit');
             if (latestReport && latestReport.id !== lastNotifiedReportId) {
@@ -1818,7 +1872,7 @@
       }
 
       const employees = JSON.parse(localStorage.getItem('pos_employees') || '[]');
-      
+
       const permissions = {
         pos: document.getElementById('perm-pos').checked,
         products: document.getElementById('perm-products').checked,
@@ -1850,7 +1904,7 @@
       hideEmployeeForm();
       loadAdminEmployees();
       showAdminToast('تم حفظ بيانات الموظف بنجاح', 'success');
-      
+
       if (window.FIREBASE_ENABLED && typeof window.syncFirebaseData === 'function') {
         window.syncFirebaseData('employees', employees);
       }
@@ -1866,7 +1920,7 @@
       }
       toast.className = 'show ' + type;
       toast.innerHTML = (type === 'success' ? '✅ ' : '❌ ') + msg;
-      
+
       setTimeout(() => {
         toast.classList.remove('show');
       }, 3000);
@@ -1877,19 +1931,19 @@
         const modal = document.getElementById('admin-confirm-modal');
         const okBtn = document.getElementById('admin-confirm-ok-btn');
         const cancelBtn = document.getElementById('admin-confirm-cancel-btn');
-        
+
         document.getElementById('admin-confirm-title').textContent = title;
         document.getElementById('admin-confirm-msg').textContent = msg;
-        
+
         modal.style.display = 'flex';
-        
+
         const cleanup = (result) => {
           modal.style.display = 'none';
           okBtn.onclick = null;
           cancelBtn.onclick = null;
           resolve(result);
         };
-        
+
         okBtn.onclick = () => cleanup(true);
         cancelBtn.onclick = () => cleanup(false);
       });
@@ -1899,7 +1953,7 @@
     // نظام الإشعارات والتنبيهات للآدمن الرئيسي
     // ==========================================
     let notifications = [];
-    try { notifications = JSON.parse(localStorage.getItem('admin_notifications') || '[]'); } catch(e) { notifications = []; }
+    try { notifications = JSON.parse(localStorage.getItem('admin_notifications') || '[]'); } catch (e) { notifications = []; }
 
     function addNotification(type, title, text, timestamp) {
       const noti = { id: Date.now() + Math.random().toString(36).substr(2, 5), type, title, text, timestamp: timestamp || new Date().toISOString(), read: false };
@@ -1913,14 +1967,14 @@
       const list = document.getElementById('noti-list');
       const badge = document.getElementById('noti-badge');
       if (!list || !badge) return;
-      
+
       let allNotis = [...notifications];
 
       // Add dynamic stock alerts
       if (typeof cachedProducts !== 'undefined' && Array.isArray(cachedProducts)) {
         const outOfStock = cachedProducts.filter(p => p.stock === 0);
         const lowStock = cachedProducts.filter(p => p.stock > 0 && p.stock <= p.minStock);
-        
+
         outOfStock.forEach(p => {
           allNotis.unshift({
             id: 'sys-oos-' + p.id,
@@ -1932,7 +1986,7 @@
             isSystem: true
           });
         });
-        
+
         lowStock.forEach(p => {
           allNotis.unshift({
             id: 'sys-low-' + p.id,
@@ -1953,7 +2007,7 @@
           n.read = true;
         }
       });
-      
+
       const unreadCount = allNotis.filter(n => !n.read).length;
       if (unreadCount > 0) {
         badge.textContent = unreadCount;
@@ -1961,12 +2015,12 @@
       } else {
         badge.style.display = 'none';
       }
-      
+
       if (allNotis.length === 0) {
         list.innerHTML = '<div style="padding:20px; text-align:center; color:var(--muted)">لا توجد إشعارات حالياً</div>';
         return;
       }
-      
+
       // Sort by read status (unread first) then by timestamp
       allNotis.sort((a, b) => {
         if (a.read === b.read) {
@@ -1974,7 +2028,7 @@
         }
         return a.read ? 1 : -1;
       });
-      
+
       list.innerHTML = allNotis.map(n => `
         <div onclick="markAsRead('${n.id}', ${n.isSystem ? 'true' : 'false'})" style="padding:12px 16px; border-bottom:1px solid var(--brd); cursor:pointer; background:${n.read ? 'transparent' : 'rgba(0, 200, 150, 0.05)'}; display:flex; gap:10px; align-items:flex-start; transition:background 0.2s;">
           <div style="font-size:16px;">${getNotificationIcon(n.type)}</div>
@@ -2011,12 +2065,12 @@
     function clearAllNotifications() {
       notifications = [];
       localStorage.setItem('admin_notifications', JSON.stringify(notifications));
-      
+
       if (typeof cachedProducts !== 'undefined' && Array.isArray(cachedProducts)) {
         const sysReads = JSON.parse(localStorage.getItem('sys_noti_reads') || '{}');
         cachedProducts.filter(p => p.stock <= p.minStock).forEach(p => {
-           if(p.stock === 0) sysReads['sys-oos-'+p.id] = true;
-           else sysReads['sys-low-'+p.id] = true;
+          if (p.stock === 0) sysReads['sys-oos-' + p.id] = true;
+          else sysReads['sys-low-' + p.id] = true;
         });
         localStorage.setItem('sys_noti_reads', JSON.stringify(sysReads));
       }
@@ -2031,16 +2085,16 @@
         if (isHidden) {
           notifications.forEach(n => n.read = true);
           localStorage.setItem('admin_notifications', JSON.stringify(notifications));
-          
+
           if (typeof cachedProducts !== 'undefined' && Array.isArray(cachedProducts)) {
             const sysReads = JSON.parse(localStorage.getItem('sys_noti_reads') || '{}');
             cachedProducts.filter(p => p.stock <= p.minStock).forEach(p => {
-               if(p.stock === 0) sysReads['sys-oos-'+p.id] = true;
-               else sysReads['sys-low-'+p.id] = true;
+              if (p.stock === 0) sysReads['sys-oos-' + p.id] = true;
+              else sysReads['sys-low-' + p.id] = true;
             });
             localStorage.setItem('sys_noti_reads', JSON.stringify(sysReads));
           }
-          
+
           renderNotifications();
         }
       }
@@ -2051,7 +2105,7 @@
       const d = a.details || {};
       let title = c.lb;
       let text = '';
-      
+
       switch (a.type) {
         case 'sale':
           text = `تم تسجيل مبيعات كاش جديدة بقيمة ${fm(d.total)} بواسطة الموظف ${d.cashier || a.user}`;
@@ -2090,10 +2144,10 @@
         default:
           text = d.name || d.details || 'عملية جديدة تم تسجيلها';
       }
-      
+
       addNotification(a.type, title, text, a.timestamp);
       showAdminToast(`${c.ic} ${title}: ${text}`, 'success');
-      
+
       try {
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         const osc = audioCtx.createOscillator();
@@ -2105,7 +2159,7 @@
         gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
         osc.start();
         osc.stop(audioCtx.currentTime + 0.15);
-      } catch(e) {}
+      } catch (e) { }
     }
 
     // إغلاق القائمة عند الضغط خارجها
@@ -2131,7 +2185,7 @@
     window.showAdminToast = showAdminToast;
     window.showAdminConfirm = showAdminConfirm;
 
-    window.editAdminEmployee = function(id) {
+    window.editAdminEmployee = function (id) {
       const employees = JSON.parse(localStorage.getItem('pos_employees') || '[]');
       const emp = employees.find(e => e.id === id);
       if (!emp) return;
@@ -2141,7 +2195,7 @@
       document.getElementById('emp-name').value = emp.name;
       document.getElementById('emp-role').value = emp.role || 'كاشير';
       document.getElementById('emp-password').value = emp.password || '';
-      
+
       const p = emp.permissions || {};
       document.getElementById('perm-pos').checked = !!p.pos;
       document.getElementById('perm-products').checked = !!p.products;
@@ -2152,13 +2206,13 @@
       document.getElementById('emp-form-container').style.display = 'block';
     }
 
-    window.deleteAdminEmployee = function(id) {
+    window.deleteAdminEmployee = function (id) {
       showAdminConfirm('هل أنت متأكد من رغبتك في حذف هذا الموظف؟', 'تأكيد الحذف').then(confirmed => {
         if (!confirmed) return;
-        
+
         let employees = JSON.parse(localStorage.getItem('pos_employees') || '[]');
         employees = employees.filter(e => e.id !== id);
-        
+
         localStorage.setItem('pos_employees', JSON.stringify(employees));
         loadAdminEmployees();
         showAdminToast('تم حذف الموظف بنجاح', 'success');
@@ -2170,18 +2224,18 @@
     }
 
     // --- Delete Requests Logic ---
-    window.openDeleteRequestsModal = function() {
+    window.openDeleteRequestsModal = function () {
       document.getElementById('admin-delreq-modal').style.display = 'flex';
       if (typeof renderDeleteRequests === 'function') {
         renderDeleteRequests();
       }
     }
 
-    window.closeDeleteRequestsModal = function() {
+    window.closeDeleteRequestsModal = function () {
       document.getElementById('admin-delreq-modal').style.display = 'none';
     }
 
-    window.renderDeleteRequests = function() {
+    window.renderDeleteRequests = function () {
       const listEl = document.getElementById('admin-delreq-list');
       const emptyEl = document.getElementById('admin-delreq-empty');
       const reqs = JSON.parse(localStorage.getItem('pos_delete_requests') || '[]');
@@ -2209,7 +2263,7 @@
       listEl.innerHTML = pendingReqs.map(r => `
         <div style="background: rgba(0,0,0,0.02); border: 1px solid var(--brd); border-radius: 12px; padding: 16px; display: flex; justify-content: space-between; align-items: center;">
           <div>
-            <div style="font-size: 14px; font-weight: 700; margin-bottom: 4px;">${r.details || 'طلب حذف'}</div>
+            <div style="font-size: 14px; font-weight: 700; margin-bottom: 4px;">${r.details || 'طلب إداري'}</div>
             <div style="font-size: 12px; color: var(--muted);">بواسطة: <span style="font-weight:700; color:var(--primary);">${r.requestedBy}</span> | التوقيت: ${new Date(r.date).toLocaleString('ar-IQ')}</div>
           </div>
           <div style="display: flex; gap: 8px;">
@@ -2220,8 +2274,8 @@
       `).join('');
     }
 
-    window.approveDeleteRequest = function(reqId) {
-      showAdminConfirm('هل أنت متأكد من الموافقة على هذا الحذف؟', 'تأكيد الموافقة').then(confirmed => {
+    window.approveDeleteRequest = function (reqId) {
+      showAdminConfirm('هل أنت متأكد من الموافقة على هذا الطلب؟', 'تأكيد الموافقة').then(confirmed => {
         if (!confirmed) return;
         const reqs = JSON.parse(localStorage.getItem('pos_delete_requests') || '[]');
         const req = reqs.find(r => r.id === reqId);
@@ -2231,13 +2285,13 @@
           if (window.FIREBASE_ENABLED && typeof window.syncDeleteRequestsToFirebase === 'function') {
             window.syncDeleteRequestsToFirebase(reqs);
           }
-          showAdminToast('تمت الموافقة على طلب الحذف بنجاح', 'success');
+          showAdminToast('تمت الموافقة على الطلب بنجاح', 'success');
           renderDeleteRequests();
         }
       });
     }
 
-    window.rejectDeleteRequest = function(reqId) {
+    window.rejectDeleteRequest = function (reqId) {
       showAdminConfirm('هل أنت متأكد من رفض هذا الطلب؟', 'تأكيد الرفض').then(confirmed => {
         if (!confirmed) return;
         const reqs = JSON.parse(localStorage.getItem('pos_delete_requests') || '[]');
@@ -2248,7 +2302,7 @@
           if (window.FIREBASE_ENABLED && typeof window.syncDeleteRequestsToFirebase === 'function') {
             window.syncDeleteRequestsToFirebase(reqs);
           }
-          showAdminToast('تم رفض طلب الحذف', 'error');
+          showAdminToast('تم رفض الطلب', 'error');
           renderDeleteRequests();
         }
       });
@@ -2263,4 +2317,5 @@
 
   </script>
 </body>
+
 </html>
