@@ -17,10 +17,10 @@
     href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&family=Noto+Kufi+Arabic:wght@300;400;500;600;700;800&display=swap"
     rel="stylesheet">
   <style>
-    * {
+    *, *::before, *::after {
       margin: 0;
       padding: 0;
-      box-sizing: border-box
+      box-sizing: border-box;
     }
 
     :root {
@@ -28,11 +28,11 @@
       --danger: #fca5a5;
       --warn: #fde047;
       --dark: #f5f3ff;
-      --dark2: rgba(255, 255, 255, 0.35);
-      --dark3: rgba(255, 255, 255, 0.55);
-      --card: rgba(255, 255, 255, 0.65);
-      --card2: rgba(255, 255, 255, 0.85);
-      --brd: rgba(167, 139, 250, 0.15);
+      --dark2: #e2dcff;
+      --dark3: #dcd6ff;
+      --card: #ffffff;
+      --card2: #f3f0ff;
+      --brd: #ddd6fe;
       --txt: #1e1b4b;
       --muted: #58508d;
       --r: 16px
@@ -40,11 +40,11 @@
 
     body.dark-mode {
       --dark: #0c081e;
-      --dark2: rgba(255, 255, 255, 0.03);
-      --dark3: rgba(255, 255, 255, 0.06);
-      --card: rgba(255, 255, 255, 0.04);
-      --card2: rgba(255, 255, 255, 0.08);
-      --brd: rgba(255, 255, 255, 0.08);
+      --dark2: #120e26;
+      --dark3: #181335;
+      --card: #161233;
+      --card2: #1e1944;
+      --brd: #251e50;
       --txt: #f8fafc;
       --muted: #64748b
     }
@@ -852,24 +852,8 @@
     }
 
     /* =============================================
-       GLOBAL GLASSMORPHISM OVERRIDES
+       GLOBAL SOLID OVERRIDES
        ============================================= */
-    .lb,
-    .sc,
-    .ah,
-    .br,
-    .bx,
-    .card,
-    .stat-card,
-    .table-container,
-    .modal-content,
-    .toast-container,
-    .panel,
-    .setting-card,
-    .modal {
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-    }
 
     body {
       background: var(--dark) !important;
@@ -877,27 +861,17 @@
     }
 
     body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background:
-        radial-gradient(ellipse 80% 80% at 20% 0%, rgba(99, 102, 241, 0.25) 0%, transparent 60%),
-        radial-gradient(ellipse 60% 60% at 80% 100%, rgba(6, 182, 212, 0.15) 0%, transparent 60%),
-        radial-gradient(ellipse 50% 50% at 50% 50%, rgba(236, 72, 153, 0.08) 0%, transparent 70%);
-      z-index: -1;
-      pointer-events: none;
+      display: none;
     }
 
     #ls {
-      background: transparent !important;
+      background: var(--dark) !important;
     }
 
     .lb {
       background: var(--card) !important;
       border: 1px solid var(--brd) !important;
       box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35) !important;
-      backdrop-filter: blur(25px) !important;
-      -webkit-backdrop-filter: blur(25px) !important;
     }
 
     .ah {
@@ -1146,7 +1120,6 @@
     background: rgba(0,0,0,0.6);
     z-index: 10000;
     align-items: center; justify-content: center;
-    backdrop-filter: blur(4px);
   ">
     <div style="
       background: var(--card);
@@ -1193,7 +1166,6 @@
     position: fixed;
     inset: 0;
     background: rgba(0,0,0,0.8);
-    backdrop-filter: blur(8px);
     z-index: 1000;
     align-items: center;
     justify-content: center;
@@ -1318,7 +1290,6 @@
     position: fixed;
     inset: 0;
     background: rgba(0,0,0,0.8);
-    backdrop-filter: blur(8px);
     z-index: 11000;
     align-items: center;
     justify-content: center;
@@ -1544,7 +1515,6 @@
           position: fixed;
           inset: 0;
           background: rgba(0,0,0,0.8);
-          backdrop-filter: blur(8px);
           z-index: 99999;
           align-items: center;
           justify-content: center;

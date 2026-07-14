@@ -6,32 +6,32 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@100..900&display=swap');
 
 :root {
-  /* ألوان أساسية */
-  --primary: #a78bfa;
-  --primary-dark: #8b5cf6;
-  --primary-light: #c084fc;
-  --secondary: #fda4af;
-  --success: #86efac;
-  --warning: #fde047;
-  --danger: #fca5a5;
-  --info: #7dd3fc;
+  /* ألوان أساسية — لوحة هادئة */
+  --primary: #5b7fa6;
+  --primary-dark: #4a6e94;
+  --primary-light: #7596b8;
+  --secondary: #d4c5a9;
+  --success: #7db59a;
+  --warning: #c9a84c;
+  --danger: #c4897a;
+  --info: #7aabca;
 
-  /* خلفيات Glassmorphism */
+  /* خلفيات صلبة (Solid Backgrounds) */
   --bg-body: #0c081e;
   --bg-dark: #120e26;
-  --bg-card: rgba(255, 255, 255, 0.04);
-  --bg-card-hover: rgba(255, 255, 255, 0.08);
-  --bg-sidebar: rgba(15, 11, 33, 0.85);
-  --bg-glass: rgba(255, 255, 255, 0.05);
-  --bg-glass-strong: rgba(255, 255, 255, 0.09);
-  --bg-input: rgba(255, 255, 255, 0.05);
+  --bg-card: #181333;
+  --bg-card-hover: #221c46;
+  --bg-sidebar: #120e26;
+  --bg-glass: #181333;
+  --bg-glass-strong: #221c46;
+  --bg-input: #15102c;
 
-  /* حدود */
-  --border: rgba(255, 255, 255, 0.08);
-  --border-light: rgba(255, 255, 255, 0.04);
-  --border-glow: rgba(167, 139, 250, 0.3);
-  --border-color: rgba(255, 255, 255, 0.08);
-  --bg-secondary: rgba(255, 255, 255, 0.03);
+  /* حدود صلبة */
+  --border: #282154;
+  --border-light: #1f1945;
+  --border-glow: #8b5cf6;
+  --border-color: #282154;
+  --bg-secondary: #140f2a;
 
   /* نصوص */
   --text-primary: #f8fafc;
@@ -42,11 +42,11 @@
   --sidebar-width: 260px;
   --header-height: 64px;
 
-  /* ظلال */
-  --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.5);
-  --shadow-glow: 0 0 25px rgba(167, 139, 250, 0.2);
-  --shadow-cyan: 0 0 25px rgba(125, 211, 252, 0.2);
+  /* ظلال حديثة */
+  --shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  --shadow-lg: 0 12px 36px rgba(0, 0, 0, 0.4);
+  --shadow-glow: none;
+  --shadow-cyan: none;
 
   /* حواف */
   --radius: 16px;
@@ -56,38 +56,38 @@
   --radius-xs: 8px;
 
   /* تأثيرات */
-  --blur: blur(20px);
-  --blur-sm: blur(10px);
+  --blur: none;
+  --blur-sm: none;
   --transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 [data-theme="dark"] {
   --bg-body: #0c081e;
   --bg-dark: #120e26;
-  --bg-card: rgba(255, 255, 255, 0.04);
-  --bg-card-hover: rgba(255, 255, 255, 0.08);
-  --border-color: rgba(255, 255, 255, 0.08);
-  --bg-secondary: rgba(255, 255, 255, 0.03);
+  --bg-card: #181333;
+  --bg-card-hover: #221c46;
+  --border-color: #282154;
+  --bg-secondary: #140f2a;
 }
 
 [data-theme="light"] {
-  --bg-body: #f5f3ff;
-  --bg-dark: #ede9fe;
-  --bg-card: rgba(255, 255, 255, 0.65);
-  --bg-card-hover: rgba(255, 255, 255, 0.85);
-  --bg-glass: rgba(255, 255, 255, 0.45);
-  --bg-glass-strong: rgba(255, 255, 255, 0.65);
-  --bg-input: rgba(255, 255, 255, 0.6);
-  --bg-sidebar: rgba(245, 243, 255, 0.95);
-  --border: rgba(167, 139, 250, 0.15);
-  --border-light: rgba(167, 139, 250, 0.08);
-  --border-color: rgba(167, 139, 250, 0.15);
-  --bg-secondary: rgba(255, 255, 255, 0.35);
-  --text-primary: #1e1b4b;
-  --text-secondary: #4338ca;
-  --text-muted: #818cf8;
-  --shadow: 0 8px 30px rgba(167, 139, 250, 0.06);
-  --shadow-lg: 0 20px 50px rgba(167, 139, 250, 0.1);
+  --bg-body: #f4f6f9;
+  --bg-dark: #e8edf3;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f0f4f8;
+  --bg-glass: #ffffff;
+  --bg-glass-strong: #e8edf3;
+  --bg-input: #ffffff;
+  --bg-sidebar: #e8edf3;
+  --border: #c8d6e5;
+  --border-light: #dde6ef;
+  --border-color: #c8d6e5;
+  --bg-secondary: #f7f9fb;
+  --text-primary: #1a2a3a;
+  --text-secondary: #3a5a7a;
+  --text-muted: #7a9ab5;
+  --shadow: 0 4px 12px rgba(91, 127, 166, 0.08);
+  --shadow-lg: 0 12px 30px rgba(91, 127, 166, 0.12);
 }
 
 .theme-toggle-btn {
@@ -102,13 +102,12 @@
   justify-content: center;
   background: var(--bg-glass);
   border: 1px solid var(--border);
-  backdrop-filter: var(--blur-sm);
 }
 
 .theme-toggle-btn:hover {
   background: var(--bg-glass-strong);
   border-color: var(--border-glow);
-  box-shadow: var(--shadow-glow);
+  box-shadow: var(--shadow);
 }
 
 * {
@@ -174,7 +173,6 @@ body::after {
     transform: translate(-40px, 60px) scale(0.95);
   }
 }
-
 
 /* ========= SPLASH SCREEN ========= */
 #splash-screen {
@@ -329,8 +327,7 @@ body::after {
   position: relative;
   z-index: 1;
   animation: fadeInUp 0.6s ease;
-  backdrop-filter: blur(30px);
-  -webkit-backdrop-filter: blur(30px);
+
 }
 
 .login-header {
@@ -392,7 +389,6 @@ body::after {
   font-size: 15px;
   transition: var(--transition);
   text-align: right;
-  backdrop-filter: blur(10px);
 }
 
 .login-form input:focus {
@@ -520,7 +516,6 @@ body::after {
   border-color: rgba(255, 255, 255, 0.1);
   color: var(--text-primary);
   transform: translateX(-4px);
-  backdrop-filter: blur(10px);
 }
 
 .nav-item.active {
@@ -554,7 +549,6 @@ body::after {
   font-size: 13px;
   font-weight: 600;
   margin-bottom: 10px;
-  backdrop-filter: blur(10px);
 }
 
 .btn-logout {
@@ -569,7 +563,6 @@ body::after {
   font-weight: 600;
   cursor: pointer;
   transition: var(--transition);
-  backdrop-filter: blur(10px);
 }
 
 .btn-logout:hover {
@@ -586,19 +579,40 @@ body::after {
   min-height: 100vh;
 }
 
-/* ========= HEADER ========= */
+/* ========= TOP HEADER — Luxury Glassmorphism Redesign ========= */
 .top-header {
-  height: var(--header-height);
-  background: rgba(5, 0, 16, 0.7);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  height: 66px;
+  background: rgba(11, 7, 28, 0.75);
+  -webkit-backdrop-filter: blur(20px) saturate(190%);
+  backdrop-filter: blur(20px) saturate(190%);
+  border-bottom: 1.5px solid rgba(91, 127, 166, 0.16);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 24px;
+  padding: 0 32px;
   position: relative;
   z-index: 50;
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  transition: all 0.3s ease;
+}
+
+/* Elegant neon glow accent line at the bottom */
+.top-header::after {
+  content: '';
+  position: absolute;
+  bottom: -1.5px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(91, 127, 166, 0.6) 20%, 
+    rgba(77, 139, 111, 0.5) 50%, 
+    rgba(160, 120, 64, 0.4) 80%, 
+    transparent 100%
+  );
+  pointer-events: none;
+  filter: blur(0.5px);
 }
 
 .header-right {
@@ -607,81 +621,224 @@ body::after {
   gap: 16px;
 }
 
-.menu-toggle {
-  background: none;
-  border: none;
-  color: var(--text-secondary);
-  font-size: 20px;
-  cursor: pointer;
-  padding: 6px;
-  border-radius: var(--radius-sm);
-  transition: var(--transition);
-  display: none;
-}
-
 .page-title {
-  font-size: 20px;
-  font-weight: 800;
+  font-size: 19px;
+  font-weight: 900;
   color: var(--text-primary);
+  letter-spacing: -0.4px;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
 .header-left {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 10px;
 }
 
+/* Time Pill — Premium */
 .header-time {
   color: var(--text-secondary);
-  font-size: 13px;
-  font-weight: 600;
-  padding: 6px 14px;
-  border-radius: var(--radius-sm);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
+  font-size: 11.5px;
+  font-weight: 800;
+  padding: 8px 16px;
+  border-radius: 30px;
+  border: 1.5px solid rgba(91, 127, 166, 0.22);
+  background: rgba(91, 127, 166, 0.08);
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.02);
+  letter-spacing: 0.2px;
+  white-space: nowrap;
 }
 
+/* User Pill — Premium */
 .header-user {
   display: flex;
   align-items: center;
-  gap: 8px;
-  color: var(--text-secondary);
-  font-size: 14px;
-  font-weight: 600;
+  gap: 10px;
+  padding: 6px 16px 6px 7px;
+  border-radius: 30px;
+  border: 1.5px solid rgba(91, 127, 166, 0.28);
+  background: rgba(91, 127, 166, 0.12);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.06), inset 0 1px 2px rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: 850;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: default;
+}
+
+.header-user:hover {
+  background: rgba(91, 127, 166, 0.18);
+  border-color: rgba(91, 127, 166, 0.4);
+  box-shadow: 0 6px 20px rgba(91, 127, 166, 0.15);
+  transform: translateY(-1px);
 }
 
 .user-avatar {
-  font-size: 20px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #5b7fa6 0%, #3e5e80 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: white;
+  flex-shrink: 0;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 
+/* Icon Buttons — Premium theme/notifications */
+.header-icon-btn,
 .notifications-btn {
-  position: relative;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  font-size: 20px;
-  padding: 6px;
-  border-radius: var(--radius-sm);
-  transition: var(--transition);
+  font-size: 16px;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  color: var(--text-secondary);
+  position: relative;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.03);
 }
 
+.header-icon-btn:hover,
 .notifications-btn:hover {
-  background: var(--bg-dark);
+  background: rgba(255, 255, 255, 0.09);
+  border-color: rgba(255, 255, 255, 0.18);
+  color: var(--text-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.notifications-btn svg {
+  stroke: var(--text-secondary);
+  transition: stroke 0.2s ease;
+}
+
+.notifications-btn:hover svg {
+  stroke: var(--text-primary);
 }
 
 .notif-badge {
   position: absolute;
-  top: 0;
-  left: 0;
-  background: var(--danger);
+  top: -2px;
+  right: -2px;
+  background: #c4897a;
   color: white;
-  font-size: 9px;
-  font-weight: 700;
-  width: 16px;
+  font-size: 8.5px;
+  font-weight: 900;
+  min-width: 16px;
   height: 16px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
+  border: 2px solid #0f0c25;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  letter-spacing: 0;
 }
+
+/* Lang Pill — Premium */
+.lang-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1.5px solid rgba(255, 255, 255, 0.08);
+  border-radius: 30px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 800;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.03);
+}
+
+.lang-toggle-btn:hover {
+  background: rgba(255, 255, 255, 0.09);
+  border-color: rgba(255, 255, 255, 0.18);
+  color: var(--text-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+}
+
+/* Light theme overrides — Exquisite Frosted Glass */
+[data-theme="light"] .top-header {
+  background: rgba(255, 255, 255, 0.72);
+  border-bottom: 1.5px solid rgba(91, 127, 166, 0.22);
+  box-shadow: 0 4px 25px rgba(91, 127, 166, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+[data-theme="light"] .top-header::after {
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(91, 127, 166, 0.45) 20%, 
+    rgba(77, 139, 111, 0.35) 50%, 
+    rgba(160, 120, 64, 0.3) 80%, 
+    transparent 100%
+  );
+}
+
+[data-theme="light"] .header-time {
+  background: rgba(91, 127, 166, 0.07);
+  border-color: rgba(91, 127, 166, 0.18);
+  color: #3b5b7c;
+}
+
+[data-theme="light"] .header-user {
+  background: rgba(91, 127, 166, 0.1);
+  border-color: rgba(91, 127, 166, 0.24);
+  color: #1a2d42;
+  box-shadow: 0 3px 10px rgba(91,127,166,0.04), inset 0 1px 1px rgba(255, 255, 255, 0.8);
+}
+
+[data-theme="light"] .header-user:hover {
+  background: rgba(91, 127, 166, 0.15);
+  border-color: rgba(91, 127, 166, 0.36);
+  box-shadow: 0 5px 15px rgba(91,127,166,0.12);
+}
+
+[data-theme="light"] .lang-toggle-btn {
+  background: rgba(91, 127, 166, 0.07);
+  border-color: rgba(91, 127, 166, 0.18);
+  color: #3b5b7c;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.8);
+}
+
+[data-theme="light"] .lang-toggle-btn:hover {
+  background: rgba(91, 127, 166, 0.14);
+  color: #1a2d42;
+  box-shadow: 0 5px 15px rgba(91, 127, 166, 0.1);
+}
+
+[data-theme="light"] .notifications-btn,
+[data-theme="light"] .header-icon-btn {
+  background: rgba(91, 127, 166, 0.07);
+  border-color: rgba(91, 127, 166, 0.18);
+  color: #3b5b7c;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.8);
+}
+
+[data-theme="light"] .notifications-btn:hover,
+[data-theme="light"] .header-icon-btn:hover {
+  background: rgba(91, 127, 166, 0.14);
+  color: #1a2d42;
+  box-shadow: 0 5px 15px rgba(91,127,166,0.1);
+}
+
+[data-theme="light"] .notif-badge {
+  border-color: #ffffff;
+  box-shadow: 0 2px 5px rgba(91,127,166,0.2);
+}
+
 
 /* ========= PAGES ========= */
 .page {
@@ -722,10 +879,10 @@ body::after {
 /* ========= POS PAGE ========= */
 .pos-container {
   display: grid;
-  grid-template-columns: 1fr 380px;
+  grid-template-columns: 75fr 30fr;
   gap: 16px;
-  height: auto;
-  align-items: start;
+  height: calc(100vh - var(--header-height) - 40px);
+  align-items: stretch;
 }
 
 /* Products Section */
@@ -734,9 +891,7 @@ body::after {
   flex-direction: column;
   gap: 12px;
   overflow: hidden;
-  height: calc(100vh - var(--header-height) - 40px);
-  position: sticky;
-  top: 20px;
+  height: 100%;
 }
 
 .pos-search-bar {
@@ -755,7 +910,6 @@ body::after {
   font-size: 15px;
   transition: var(--transition);
   text-align: right;
-  backdrop-filter: blur(15px);
 }
 
 .pos-search-bar input:focus {
@@ -808,7 +962,6 @@ body::after {
 .cat-tab {
   padding: 8px 18px;
 
-
   background: var(--bg-glass);
   border: 1px solid var(--border);
   border-radius: 30px;
@@ -819,7 +972,6 @@ body::after {
   cursor: pointer;
   transition: var(--transition);
   white-space: nowrap;
-  backdrop-filter: var(--blur-sm);
 }
 
 .cat-tab:hover,
@@ -865,8 +1017,7 @@ body::after {
   text-align: center;
   position: relative;
   overflow: hidden;
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
+
 }
 
 .product-card::before {
@@ -951,8 +1102,7 @@ body::after {
   display: flex;
   flex-direction: column;
   overflow: visible;
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+
   box-shadow: var(--shadow-lg);
 }
 
@@ -999,7 +1149,6 @@ body::after {
   font-family: 'Noto Kufi Arabic', sans-serif;
   font-size: 12px;
   max-width: 130px;
-  backdrop-filter: blur(10px);
 }
 
 .btn-clear-cart {
@@ -1013,7 +1162,6 @@ body::after {
   font-weight: 600;
   cursor: pointer;
   transition: var(--transition);
-  backdrop-filter: blur(10px);
 }
 
 .btn-clear-cart:hover {
@@ -1073,7 +1221,6 @@ body::after {
   margin-bottom: 6px;
   transition: var(--transition);
   animation: slideIn 0.3s ease;
-  backdrop-filter: blur(10px);
 }
 
 @keyframes slideIn {
@@ -1137,7 +1284,6 @@ body::after {
   justify-content: center;
   transition: var(--transition);
   font-weight: 700;
-  backdrop-filter: blur(10px);
 }
 
 .qty-btn:hover {
@@ -1185,7 +1331,6 @@ body::after {
   border-top: 1px solid rgba(255, 255, 255, 0.08);
   background: rgba(0, 0, 0, 0.2);
   flex-shrink: 0;
-  backdrop-filter: blur(10px);
 }
 
 .summary-row {
@@ -1217,7 +1362,6 @@ body::after {
   font-family: 'Noto Kufi Arabic', sans-serif;
   font-size: 13px;
   text-align: center;
-  backdrop-filter: blur(10px);
 }
 
 .discount-controls select {
@@ -1228,7 +1372,6 @@ body::after {
   color: var(--text-secondary);
   font-family: 'Noto Kufi Arabic', sans-serif;
   font-size: 12px;
-  backdrop-filter: blur(10px);
 }
 
 .tax-row {
@@ -1287,7 +1430,6 @@ body::after {
   font-weight: 700;
   cursor: pointer;
   transition: var(--transition);
-  backdrop-filter: blur(10px);
 }
 
 .pay-method:hover,
@@ -1316,7 +1458,6 @@ body::after {
   font-weight: 700;
   cursor: pointer;
   transition: var(--transition);
-  backdrop-filter: blur(10px);
 }
 
 .currency-btn.active {
@@ -1346,7 +1487,6 @@ body::after {
   font-weight: 700;
   text-align: center;
   transition: var(--transition);
-  backdrop-filter: blur(10px);
 }
 
 .cash-input-group input:focus {
@@ -1366,7 +1506,6 @@ body::after {
   margin-top: 8px;
   font-size: 14px;
   color: var(--text-secondary);
-  backdrop-filter: blur(10px);
 }
 
 .change-value {
@@ -1393,7 +1532,6 @@ body::after {
   font-weight: 600;
   cursor: pointer;
   transition: var(--transition);
-  backdrop-filter: blur(10px);
 }
 
 .quick-amount-btn:hover {
@@ -1489,6 +1627,9 @@ body::after {
   font-size: 13px;
   font-weight: 700;
   color: var(--text-secondary);
+  -webkit-user-select: none;
+  -webkit-user-select: none;
+
   user-select: none;
 }
 
@@ -2220,7 +2361,6 @@ body::after {
   font-size: 14px;
   transition: var(--transition);
   text-align: right;
-  backdrop-filter: blur(10px);
 }
 
 .form-group input:focus,
@@ -2279,8 +2419,7 @@ body::after {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+
   z-index: 500;
   display: flex;
   align-items: center;
@@ -2300,8 +2439,7 @@ body::after {
   flex-direction: column;
   box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1);
   animation: slideUp 0.3s ease;
-  backdrop-filter: blur(30px);
-  -webkit-backdrop-filter: blur(30px);
+
 }
 
 @keyframes slideUp {
@@ -2348,7 +2486,6 @@ body::after {
   align-items: center;
   justify-content: center;
   transition: var(--transition);
-  backdrop-filter: blur(10px);
 }
 
 .modal-close:hover {
@@ -2452,8 +2589,7 @@ body::after {
   padding: 16px;
   max-height: 400px;
   overflow-y: auto;
-  backdrop-filter: blur(25px);
-  -webkit-backdrop-filter: blur(25px);
+
 }
 
 .notifications-panel h3 {
@@ -3203,6 +3339,9 @@ body::after {
   justify-content: space-between;
   background: rgba(255, 255, 255, 0.02);
   cursor: pointer;
+  -webkit-user-select: none;
+  -webkit-user-select: none;
+
   user-select: none;
 }
 
@@ -3671,7 +3810,7 @@ body::after {
   }
 
   .pos-container {
-    grid-template-columns: 1fr 300px;
+    grid-template-columns: 75fr 30fr;
   }
 
   .pos-cart {
@@ -3708,7 +3847,6 @@ body::after {
   .customers-table-container,
   .debts-table-container {
     overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
   }
 
   table {
@@ -3926,8 +4064,7 @@ body::after {
   border-radius: 24px;
   padding: 28px 36px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.12);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+
   position: relative;
   overflow: hidden;
 }
@@ -4016,7 +4153,6 @@ body::after {
   font-weight: 700;
   position: relative;
   z-index: 1;
-  backdrop-filter: blur(10px);
 }
 
 .home-header-decoration {
@@ -4156,8 +4292,7 @@ body::after {
   overflow: hidden;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
   gap: 16px;
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+
 }
 
 /* Staggered animation for cards */
@@ -4470,7 +4605,6 @@ body::after {
   flex-wrap: wrap;
   gap: 14px;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.06);
-  backdrop-filter: blur(12px);
 }
 
 .home-action-left {
@@ -4496,7 +4630,6 @@ body::after {
   color: var(--text-primary);
   font-size: 14px;
   font-weight: 700;
-  backdrop-filter: blur(10px);
   transition: all 0.2s ease;
 }
 
@@ -4534,7 +4667,6 @@ body::after {
   background: rgba(239, 68, 68, 0.1);
   border: 1px solid rgba(239, 68, 68, 0.25);
   color: #f87171;
-  backdrop-filter: blur(10px);
 }
 
 .btn-home-action.logout:hover {
@@ -4558,7 +4690,6 @@ body::after {
   font-weight: 700;
   cursor: pointer;
   transition: var(--transition);
-  backdrop-filter: blur(10px);
 }
 
 .btn-home-header:hover {
@@ -5814,8 +5945,7 @@ body::after {
 .employee-card {
   background: rgba(255, 255, 255, 0.06) !important;
   border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  backdrop-filter: blur(20px) !important;
-  -webkit-backdrop-filter: blur(20px) !important;
+
 }
 
 .report-stat-card:hover,
@@ -5836,62 +5966,63 @@ body::after {
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: var(--radius);
-  backdrop-filter: blur(10px);
   overflow: hidden;
 }
 
-/* Primary & Secondary Buttons Global */
+/* Primary & Secondary Buttons Global — Calm Muted Palette */
 .btn-primary {
-  background: linear-gradient(135deg, var(--primary), var(--primary-dark)) !important;
+  background: #5b7fa6 !important;
   border: none !important;
-  box-shadow: 0 4px 20px rgba(167, 139, 250, 0.35) !important;
+  box-shadow: 0 2px 8px rgba(91, 127, 166, 0.2) !important;
   font-weight: 700 !important;
-  transition: all 0.3s ease !important;
+  transition: all 0.25s ease !important;
   color: white !important;
 }
 
 .btn-primary:hover {
+  background: #4a6e94 !important;
   transform: translateY(-2px) !important;
-  box-shadow: 0 8px 30px rgba(167, 139, 250, 0.5) !important;
+  box-shadow: 0 4px 14px rgba(91, 127, 166, 0.28) !important;
 }
 
 .btn-secondary {
-  background: rgba(255, 255, 255, 0.08) !important;
-  border: 1px solid rgba(255, 255, 255, 0.15) !important;
-  color: var(--text-primary) !important;
-  backdrop-filter: blur(10px) !important;
+  background: #f5e6e6 !important;
+  border: 1px solid #e8c8c8 !important;
+  color: #a35252 !important;
   font-weight: 600 !important;
-  transition: all 0.3s ease !important;
+  transition: all 0.25s ease !important;
 }
 
 .btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.15) !important;
-  border-color: rgba(255, 255, 255, 0.25) !important;
+  background: #eed5d5 !important;
+  border-color: #d4a8a8 !important;
+  color: #8a3d3d !important;
 }
 
 .btn-danger {
-  background: linear-gradient(135deg, var(--danger), #c0392b) !important;
-  border: none !important;
-  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3) !important;
-  color: white !important;
+  background: #f5e6e6 !important;
+  border: 1px solid #e8c8c8 !important;
+  color: #a35252 !important;
   font-weight: 700 !important;
 }
 
 .btn-danger:hover {
+  background: #eed5d5 !important;
+  border-color: #d4a8a8 !important;
+  color: #8a3d3d !important;
   transform: translateY(-2px) !important;
-  box-shadow: 0 8px 25px rgba(239, 68, 68, 0.5) !important;
 }
 
 .btn-outline {
-  background: transparent !important;
-  border: 1px solid rgba(167, 139, 250, 0.4) !important;
-  color: var(--primary-light) !important;
-  backdrop-filter: blur(10px) !important;
+  background: #edeaf5 !important;
+  border: 1px solid #d8d2ec !important;
+  color: #6b5fa0 !important;
 }
 
 .btn-outline:hover {
-  background: rgba(167, 139, 250, 0.1) !important;
-  box-shadow: 0 0 20px rgba(167, 139, 250, 0.2) !important;
+  background: #ddd7f0 !important;
+  border-color: #c3bce0 !important;
+  color: #544a7d !important;
 }
 
 /* Archive Tabs */
@@ -5900,7 +6031,6 @@ body::after {
   background: rgba(255, 255, 255, 0.05) !important;
   border: 1px solid rgba(255, 255, 255, 0.08) !important;
   color: var(--text-secondary) !important;
-  backdrop-filter: blur(10px) !important;
   border-radius: 8px !important;
 }
 
@@ -5916,14 +6046,11 @@ body::after {
 .archive-tabs-bar {
   background: rgba(255, 255, 255, 0.04) !important;
   border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  backdrop-filter: blur(15px) !important;
   border-radius: var(--radius) !important;
 }
 
 /* Home Screen Cards */
 .home-nav-card {
-  backdrop-filter: blur(20px) !important;
-  -webkit-backdrop-filter: blur(20px) !important;
   border: 1px solid rgba(255, 255, 255, 0.1) !important;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
@@ -6017,8 +6144,7 @@ textarea:focus {
 [data-theme="light"] .top-header {
   background: rgba(255, 255, 255, 0.65) !important;
   border-bottom: 1px solid rgba(167, 139, 250, 0.15) !important;
-  backdrop-filter: blur(20px) !important;
-  -webkit-backdrop-filter: blur(20px) !important;
+
 }
 
 /* شريط الوقت والمستخدم */
@@ -6036,7 +6162,6 @@ textarea:focus {
 [data-theme="light"] .sidebar {
   background: rgba(240, 235, 255, 0.85) !important;
   border-left: 1px solid rgba(167, 139, 250, 0.15) !important;
-  backdrop-filter: blur(20px) !important;
 }
 
 [data-theme="light"] .sidebar-header {
@@ -6047,7 +6172,6 @@ textarea:focus {
 [data-theme="light"] .nav-item:hover {
   background: rgba(167, 139, 250, 0.08) !important;
   border-color: rgba(167, 139, 250, 0.15) !important;
-  backdrop-filter: blur(10px) !important;
 }
 
 [data-theme="light"] .nav-item.active {
@@ -6099,7 +6223,6 @@ textarea:focus {
   background: rgba(255, 255, 255, 0.7) !important;
   border: 1px solid rgba(167, 139, 250, 0.15) !important;
   color: #4a3270 !important;
-  backdrop-filter: blur(10px) !important;
 }
 
 [data-theme="light"] .cat-tab:hover,
@@ -6113,7 +6236,6 @@ textarea:focus {
 [data-theme="light"] .product-card {
   background: rgba(255, 255, 255, 0.7) !important;
   border: 1px solid rgba(167, 139, 250, 0.12) !important;
-  backdrop-filter: blur(15px) !important;
   box-shadow: 0 4px 15px rgba(167, 139, 250, 0.08) !important;
 }
 
@@ -6640,7 +6762,6 @@ body {
   font-weight: 800 !important;
   padding: 3px 8px !important;
   border-radius: 20px !important;
-  backdrop-filter: blur(10px) !important;
   letter-spacing: 0.5px;
 }
 
@@ -7070,8 +7191,7 @@ body {
   background: rgba(255, 255, 255, 0.03) !important;
   border: 1px solid rgba(255, 255, 255, 0.08) !important;
   border-radius: 24px !important;
-  backdrop-filter: blur(25px) !important;
-  -webkit-backdrop-filter: blur(25px) !important;
+
   box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25),
     inset 0 1px 0 rgba(255, 255, 255, 0.05),
     0 0 40px rgba(167, 139, 250, 0.04) !important;
@@ -7209,8 +7329,7 @@ body {
   padding: 35px 24px !important;
   background: rgba(255, 255, 255, 0.03) !important;
   border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  backdrop-filter: blur(25px) !important;
-  -webkit-backdrop-filter: blur(25px) !important;
+
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2) !important;
   transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
 }
@@ -7509,7 +7628,6 @@ body {
   background: rgba(255, 255, 255, 0.03) !important;
   border: 1px solid rgba(255, 255, 255, 0.08) !important;
   border-radius: 24px !important;
-  backdrop-filter: blur(25px) !important;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3) !important;
   padding: 24px 30px !important;
 }
@@ -7526,7 +7644,6 @@ body {
   padding: 12px 20px !important;
   background: rgba(167, 139, 250, 0.1) !important;
   border: 1px solid rgba(167, 139, 250, 0.2) !important;
-  backdrop-filter: blur(10px) !important;
 }
 
 [data-theme="light"] .home-currency-card {
@@ -7557,7 +7674,7 @@ body {
    PREMIUM GLASSMORPHISM BUTTON OVERRIDES
    ============================================= */
 
-/* Base Transitions, Border Radius, and Blur for all buttons */
+/* Base Transitions, Border Radius for all buttons (No Glassmorphism) */
 .btn-primary,
 .btn-secondary,
 .btn-outline,
@@ -7582,9 +7699,8 @@ body {
   align-items: center !important;
   justify-content: center !important;
   gap: 8px !important;
-  backdrop-filter: blur(15px) !important;
-  -webkit-backdrop-filter: blur(15px) !important;
   outline: none !important;
+  border: none !important;
 }
 
 /* Active Click Feedback */
@@ -7604,176 +7720,181 @@ body {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15) !important;
 }
 
-/* ---- 1. Primary Buttons (Purple Glass) ---- */
+/* ---- 1. Primary Buttons (Purple Solid) ---- */
 .btn-primary,
 .btn-login,
 .btn-distribute {
-  background: rgba(167, 139, 250, 0.15) !important;
-  border: 1px solid rgba(167, 139, 250, 0.35) !important;
-  color: #c084fc !important;
-  box-shadow: 0 8px 25px rgba(167, 139, 250, 0.2) !important;
+  background: #8b5cf6 !important;
+  color: #ffffff !important;
+  border: 1px solid #a78bfa !important;
+  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3) !important;
 }
 
 .btn-primary:hover,
 .btn-login:hover,
 .btn-distribute:hover {
   transform: translateY(-3px) scale(1.02) !important;
-  background: rgba(167, 139, 250, 0.28) !important;
-  border-color: rgba(167, 139, 250, 0.6) !important;
-  color: #d8b4fe !important;
-  box-shadow: 0 12px 35px rgba(167, 139, 250, 0.45) !important;
+  background: #a78bfa !important;
+  border-color: #c084fc !important;
+  color: #ffffff !important;
+  box-shadow: 0 8px 25px rgba(139, 92, 246, 0.45) !important;
 }
 
 [data-theme="light"] .btn-primary,
 [data-theme="light"] .btn-login,
 [data-theme="light"] .btn-distribute {
-  background: rgba(167, 139, 250, 0.14) !important;
-  border-color: rgba(167, 139, 250, 0.35) !important;
-  color: #6d28d9 !important;
+  background: #6d28d9 !important;
+  border: 1px solid #7c3aed !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(109, 40, 217, 0.2) !important;
 }
 
 [data-theme="light"] .btn-primary:hover,
 [data-theme="light"] .btn-login:hover,
 [data-theme="light"] .btn-distribute:hover {
-  background: rgba(167, 139, 250, 0.25) !important;
-  border-color: rgba(167, 139, 250, 0.6) !important;
-  color: #4c1d95 !important;
-  box-shadow: 0 12px 30px rgba(167, 139, 250, 0.25) !important;
+  background: #5b21b6 !important;
+  border-color: #6d28d9 !important;
+  color: #ffffff !important;
+  box-shadow: 0 8px 20px rgba(109, 40, 217, 0.35) !important;
 }
 
-/* ---- 2. Success / Checkout Buttons (Green Glass) ---- */
+/* ---- 2. Success / Checkout Buttons (Green Solid) ---- */
 .btn-checkout,
 .btn-pay-debt {
-  background: rgba(16, 185, 129, 0.15) !important;
-  border: 1px solid rgba(16, 185, 129, 0.35) !important;
-  color: #34d399 !important;
-  box-shadow: 0 8px 25px rgba(16, 185, 129, 0.2) !important;
+  background: #10b981 !important;
+  border: 1px solid #34d399 !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3) !important;
 }
 
 .btn-checkout:hover,
 .btn-pay-debt:hover {
   transform: translateY(-3px) scale(1.02) !important;
-  background: rgba(16, 185, 129, 0.28) !important;
-  border-color: rgba(16, 185, 129, 0.6) !important;
-  color: #6ee7b7 !important;
-  box-shadow: 0 12px 35px rgba(16, 185, 129, 0.45) !important;
+  background: #34d399 !important;
+  border-color: #6ee7b7 !important;
+  color: #ffffff !important;
+  box-shadow: 0 8px 25px rgba(16, 185, 129, 0.45) !important;
 }
 
 [data-theme="light"] .btn-checkout,
 [data-theme="light"] .btn-pay-debt {
-  background: rgba(16, 185, 129, 0.14) !important;
-  border-color: rgba(16, 185, 129, 0.35) !important;
-  color: #047857 !important;
+  background: #059669 !important;
+  border-color: #059669 !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(5, 150, 105, 0.2) !important;
 }
 
 [data-theme="light"] .btn-checkout:hover,
 [data-theme="light"] .btn-pay-debt:hover {
-  background: rgba(16, 185, 129, 0.25) !important;
-  border-color: rgba(16, 185, 129, 0.6) !important;
-  color: #065f46 !important;
-  box-shadow: 0 12px 30px rgba(16, 185, 129, 0.2) !important;
+  background: #047857 !important;
+  border-color: #047857 !important;
+  color: #ffffff !important;
+  box-shadow: 0 8px 20px rgba(5, 150, 105, 0.35) !important;
 }
 
-/* ---- 3. Info / Barcode Buttons (Cyan Glass) ---- */
+/* ---- 3. Info / Barcode Buttons (Cyan Solid) ---- */
 .btn-barcode {
-  background: rgba(6, 182, 212, 0.15) !important;
-  border: 1px solid rgba(6, 182, 212, 0.35) !important;
-  color: #22d3ee !important;
-  box-shadow: 0 8px 25px rgba(6, 182, 212, 0.2) !important;
+  background: #06b6d4 !important;
+  border: 1px solid #22d3ee !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3) !important;
 }
 
 .btn-barcode:hover {
   transform: translateY(-3px) scale(1.02) !important;
-  background: rgba(6, 182, 212, 0.28) !important;
-  border-color: rgba(6, 182, 212, 0.6) !important;
-  color: #67e8f9 !important;
-  box-shadow: 0 12px 35px rgba(6, 182, 212, 0.45) !important;
+  background: #22d3ee !important;
+  border-color: #67e8f9 !important;
+  color: #ffffff !important;
+  box-shadow: 0 8px 25px rgba(6, 182, 212, 0.45) !important;
 }
 
 [data-theme="light"] .btn-barcode {
-  background: rgba(6, 182, 212, 0.14) !important;
-  border-color: rgba(6, 182, 212, 0.35) !important;
-  color: #0891b2 !important;
+  background: #0891b2 !important;
+  border-color: #0891b2 !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(8, 145, 178, 0.2) !important;
 }
 
 [data-theme="light"] .btn-barcode:hover {
-  background: rgba(6, 182, 212, 0.25) !important;
-  border-color: rgba(6, 182, 212, 0.6) !important;
-  color: #0369a1 !important;
-  box-shadow: 0 12px 30px rgba(6, 182, 212, 0.2) !important;
+  background: #0369a1 !important;
+  border-color: #0369a1 !important;
+  color: #ffffff !important;
+  box-shadow: 0 8px 20px rgba(8, 145, 178, 0.35) !important;
 }
 
-/* ---- 4. Danger & Clear Cart Buttons (Red Glass) ---- */
+/* ---- 4. Danger & Clear Cart Buttons (Red Solid) ---- */
 .btn-danger,
 .btn-clear-cart {
-  background: rgba(239, 68, 68, 0.12) !important;
-  border: 1px solid rgba(239, 68, 68, 0.3) !important;
-  color: #fca5a5 !important;
-  box-shadow: 0 8px 25px rgba(239, 68, 68, 0.15) !important;
+  background: #ef4444 !important;
+  border: 1px solid #fca5a5 !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.25) !important;
 }
 
 .btn-danger:hover,
 .btn-clear-cart:hover {
   transform: translateY(-3px) scale(1.02) !important;
-  background: rgba(239, 68, 68, 0.25) !important;
-  border-color: rgba(239, 68, 68, 0.55) !important;
-  color: #f87171 !important;
-  box-shadow: 0 12px 35px rgba(239, 68, 68, 0.4) !important;
+  background: #f87171 !important;
+  border-color: #f87171 !important;
+  color: #ffffff !important;
+  box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4) !important;
 }
 
 [data-theme="light"] .btn-danger,
 [data-theme="light"] .btn-clear-cart {
-  background: rgba(239, 68, 68, 0.1) !important;
-  border-color: rgba(239, 68, 68, 0.3) !important;
-  color: #b91c1c !important;
+  background: #dc2626 !important;
+  border-color: #dc2626 !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2) !important;
 }
 
 [data-theme="light"] .btn-danger:hover,
 [data-theme="light"] .btn-clear-cart:hover {
-  background: rgba(239, 68, 68, 0.18) !important;
-  border-color: rgba(239, 68, 68, 0.5) !important;
-  color: #991b1b !important;
-  box-shadow: 0 12px 30px rgba(239, 68, 68, 0.15) !important;
+  background: #b91c1c !important;
+  border-color: #b91c1c !important;
+  color: #ffffff !important;
+  box-shadow: 0 8px 20px rgba(220, 38, 38, 0.35) !important;
 }
 
-/* ---- 5. Secondary & Outline Buttons (Neutral Glass) ---- */
+/* ---- 5. Secondary & Outline Buttons (Neutral Solid) ---- */
 .btn-secondary,
 .btn-outline,
 .btn-home-header {
-  background: rgba(255, 255, 255, 0.06) !important;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
-  color: rgba(255, 255, 255, 0.85) !important;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+  background: #374151 !important;
+  border: 1px solid #4b5563 !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15) !important;
 }
 
 .btn-secondary:hover,
 .btn-outline:hover,
 .btn-home-header:hover {
   transform: translateY(-3px) scale(1.02) !important;
-  background: rgba(255, 255, 255, 0.15) !important;
-  border-color: rgba(255, 255, 255, 0.25) !important;
+  background: #4b5563 !important;
+  border-color: #6b7280 !important;
   color: white !important;
-  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25) !important;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25) !important;
 }
 
 [data-theme="light"] .btn-secondary,
 [data-theme="light"] .btn-outline,
 [data-theme="light"] .btn-home-header {
-  background: rgba(167, 139, 250, 0.08) !important;
-  border-color: rgba(167, 139, 250, 0.2) !important;
-  color: #4c1d95 !important;
+  background: #e5e7eb !important;
+  border-color: #d1d5db !important;
+  color: #1f2937 !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
 }
 
 [data-theme="light"] .btn-secondary:hover,
 [data-theme="light"] .btn-outline:hover,
 [data-theme="light"] .btn-home-header:hover {
-  background: rgba(167, 139, 250, 0.16) !important;
-  border-color: rgba(167, 139, 250, 0.35) !important;
-  color: #2e1065 !important;
-  box-shadow: 0 12px 30px rgba(167, 139, 250, 0.1) !important;
+  background: #d1d5db !important;
+  border-color: #9ca3af !important;
+  color: #111827 !important;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1) !important;
 }
 
-/* Shine Shift Animation Overlay inside glass buttons */
+/* Shine Shift Animation Overlay inside buttons */
 .btn-primary::after,
 .btn-login::after,
 .btn-checkout::after,
@@ -7803,126 +7924,122 @@ body {
 
 .top-header {
   height: 70px !important;
-  background: rgba(255, 255, 255, 0.02) !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
-  backdrop-filter: blur(25px) !important;
-  -webkit-backdrop-filter: blur(25px) !important;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2) !important;
+  background: #120e26 !important;
+  border-bottom: 1px solid var(--border) !important;
+  box-shadow: var(--shadow) !important;
   padding: 0 30px !important;
 }
 
 [data-theme="light"] .top-header {
-  background: rgba(255, 255, 255, 0.65) !important;
-  border-bottom: 1px solid rgba(167, 139, 250, 0.15) !important;
-  box-shadow: 0 4px 20px rgba(167, 139, 250, 0.05) !important;
+  background: #ffffff !important;
+  border-bottom: 1px solid var(--border) !important;
+  box-shadow: var(--shadow) !important;
 }
 
-/* Date-Time Glass Pill */
+/* Date-Time Solid Pill */
 .header-time {
-  background: rgba(255, 255, 255, 0.05) !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  background: #181333 !important;
+  border: 1px solid var(--border) !important;
   padding: 8px 18px !important;
   border-radius: 30px !important;
   font-size: 13px !important;
   font-weight: 700 !important;
   color: var(--text-secondary) !important;
-  backdrop-filter: blur(15px) !important;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
 }
 
 [data-theme="light"] .header-time {
-  background: rgba(255, 255, 255, 0.8) !important;
-  border: 1px solid rgba(167, 139, 250, 0.15) !important;
+  background: #f5f3ff !important;
+  border: 1px solid var(--border) !important;
   color: #4a3270 !important;
-  box-shadow: 0 4px 12px rgba(167, 139, 250, 0.05) !important;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05) !important;
 }
 
-/* User Info Glass Pill */
+/* User Info Solid Pill */
 .header-user {
-  background: rgba(255, 255, 255, 0.05) !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  background: #181333 !important;
+  border: 1px solid var(--border) !important;
   padding: 8px 18px !important;
   border-radius: 30px !important;
   font-size: 14px !important;
   font-weight: 700 !important;
   color: var(--text-primary) !important;
-  backdrop-filter: blur(15px) !important;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
   gap: 8px !important;
 }
 
 [data-theme="light"] .header-user {
-  background: rgba(255, 255, 255, 0.8) !important;
-  border: 1px solid rgba(167, 139, 250, 0.15) !important;
+  background: #f5f3ff !important;
+  border: 1px solid var(--border) !important;
   color: #1e0a3c !important;
-  box-shadow: 0 4px 12px rgba(167, 139, 250, 0.05) !important;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05) !important;
 }
 
-/* Theme Toggle Button (Circular Glass) */
+/* Theme Toggle Button (Circular Solid) */
 .theme-toggle-btn {
   width: 44px !important;
   height: 44px !important;
   border-radius: 50% !important;
-  background: rgba(255, 255, 255, 0.05) !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  background: #181333 !important;
+  border: 1px solid var(--border) !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   transition: all 0.3s ease !important;
-  backdrop-filter: blur(15px) !important;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
 }
 
 .theme-toggle-btn:hover {
   transform: rotate(30deg) scale(1.08) !important;
-  background: rgba(255, 255, 255, 0.12) !important;
-  border-color: rgba(167, 139, 250, 0.4) !important;
-  box-shadow: 0 0 15px rgba(167, 139, 250, 0.3) !important;
+  background: #221c46 !important;
+  border-color: var(--border-glow) !important;
+  box-shadow: var(--shadow) !important;
 }
 
 [data-theme="light"] .theme-toggle-btn {
-  background: rgba(255, 255, 255, 0.8) !important;
-  border: 1px solid rgba(167, 139, 250, 0.15) !important;
+  background: #ffffff !important;
+  border: 1px solid var(--border) !important;
   color: #1e0a3c !important;
 }
 
 [data-theme="light"] .theme-toggle-btn:hover {
-  border-color: rgba(167, 139, 250, 0.5) !important;
-  box-shadow: 0 0 15px rgba(167, 139, 250, 0.2) !important;
+  background: #f3f0ff !important;
+  border-color: var(--primary) !important;
+  box-shadow: var(--shadow) !important;
 }
 
-/* Notification Button (Circular Glass) */
+/* Notification Button (Circular Solid) */
 .notifications-btn {
   width: 44px !important;
   height: 44px !important;
   border-radius: 50% !important;
-  background: rgba(255, 255, 255, 0.05) !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  background: #181333 !important;
+  border: 1px solid var(--border) !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   transition: all 0.3s ease !important;
-  backdrop-filter: blur(15px) !important;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
   position: relative !important;
 }
 
 .notifications-btn:hover {
   transform: scale(1.08) !important;
-  background: rgba(255, 255, 255, 0.12) !important;
-  border-color: rgba(167, 139, 250, 0.4) !important;
-  box-shadow: 0 0 15px rgba(167, 139, 250, 0.3) !important;
+  background: #221c46 !important;
+  border-color: var(--border-glow) !important;
+  box-shadow: var(--shadow) !important;
 }
 
 [data-theme="light"] .notifications-btn {
-  background: rgba(255, 255, 255, 0.8) !important;
-  border: 1px solid rgba(167, 139, 250, 0.15) !important;
+  background: #ffffff !important;
+  border: 1px solid var(--border) !important;
   color: #1e0a3c !important;
 }
 
 [data-theme="light"] .notifications-btn:hover {
-  border-color: rgba(167, 139, 250, 0.5) !important;
-  box-shadow: 0 0 15px rgba(167, 139, 250, 0.2) !important;
+  background: #f3f0ff !important;
+  border-color: var(--primary) !important;
+  box-shadow: var(--shadow) !important;
 }
 
 /* Red Notification Badge placement */
@@ -7963,14 +8080,13 @@ body {
   display: flex;
   align-items: center;
   gap: 6px;
-  backdrop-filter: var(--blur-sm);
   transition: var(--transition);
 }
 
 .lang-toggle-btn:hover {
   background: var(--bg-glass-strong);
   border-color: var(--border-glow);
-  box-shadow: var(--shadow-glow);
+  box-shadow: var(--shadow);
 }
 
 .lang-dropdown-menu {
@@ -7978,11 +8094,10 @@ body {
   top: 100%;
   left: 0;
   margin-top: 8px;
-  background: rgba(10, 0, 30, 0.95);
+  background: #120e26;
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-lg);
-  backdrop-filter: var(--blur);
   z-index: 1000;
   display: none;
   min-width: 140px;
@@ -8015,18 +8130,18 @@ body {
 }
 
 .lang-option:hover {
-  background: rgba(167, 139, 250, 0.15);
+  background: #221c46;
   color: #ffffff;
 }
 
 .lang-option.active {
-  background: rgba(167, 139, 250, 0.3);
-  color: var(--primary-light);
+  background: #8b5cf6;
+  color: #ffffff;
   font-weight: 700;
 }
 
 [data-theme="light"] .lang-dropdown-menu {
-  background: rgba(255, 255, 255, 0.95);
+  background: #ffffff;
 }
 
 [data-theme="light"] .lang-option {
@@ -8034,13 +8149,13 @@ body {
 }
 
 [data-theme="light"] .lang-option:hover {
-  background: rgba(167, 139, 250, 0.1);
+  background: #f3f0ff;
   color: var(--primary-dark);
 }
 
 [data-theme="light"] .lang-option.active {
-  background: rgba(167, 139, 250, 0.2);
-  color: var(--primary-dark);
+  background: #6d28d9;
+  color: #ffffff;
 }
 
 @keyframes slideDown {
@@ -8054,7 +8169,6 @@ body {
     transform: translateY(0);
   }
 }
-
 
 /* === MERGED FROM responsive.css === */
 /* =========================================
@@ -8079,7 +8193,7 @@ body {
   }
 
   .pos-container {
-    grid-template-columns: 1fr 300px;
+    grid-template-columns: 75fr 30fr;
   }
 
   .pos-cart {
@@ -8116,7 +8230,6 @@ body {
   .customers-table-container,
   .debts-table-container {
     overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
   }
 
   table {
@@ -8163,7 +8276,6 @@ body {
   .customers-table-container,
   .debts-table-container {
     overflow-x: auto !important;
-    -webkit-overflow-scrolling: touch !important;
   }
 }
 
@@ -8229,7 +8341,6 @@ body {
   }
 }
 
-
 /* ===========================
    POS View Switcher (Tabs)
    =========================== */
@@ -8239,13 +8350,11 @@ body {
   justify-content: center;
   gap: 0;
   margin: 0 0 20px 0;
-  background: rgba(255, 255, 255, 0.06);
+  background: var(--bg-glass);
   padding: 6px;
   border-radius: 18px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
 }
 
 .pos-view-btn {
@@ -8331,7 +8440,7 @@ body {
 
 @media (min-width: 992px) {
   .pos-view-switcher {
-    display: none;
+    display: flex;
   }
 
   .pos-products {
@@ -8343,12 +8452,10 @@ body {
   }
 }
 
-
 /* Old mobile tabs (removed) */
 .pos-mobile-tabs {
   display: none !important;
 }
-
 
 /* ===========================
    Premium Debt Payment Buttons
@@ -8628,7 +8735,6 @@ body {
   .table-responsive {
     width: 100% !important;
     overflow-x: auto !important;
-    -webkit-overflow-scrolling: touch !important;
     margin-bottom: 16px !important;
   }
 
@@ -8665,7 +8771,6 @@ body {
     display: flex !important;
     flex-wrap: nowrap !important;
     overflow-x: auto !important;
-    -webkit-overflow-scrolling: touch !important;
     gap: 8px !important;
     padding: 8px !important;
     background: var(--bg-card) !important;
@@ -8717,7 +8822,6 @@ body {
   }
 }
 
-
 /* === END MERGED responsive.css === */
 /* تصميم بطاقات الإشعارات للموبايل */
 .notif-card {
@@ -8759,7 +8863,6 @@ body {
   gap: 8px;
   flex-wrap: wrap;
   border: 1px solid var(--border);
-  backdrop-filter: var(--blur-sm);
 }
 
 .archive-tab {
@@ -8787,3 +8890,1144 @@ body {
   color: #ffffff;
   box-shadow: var(--shadow-glow);
 }
+
+/* =============================================
+   POS CHECKOUT LAYOUT & BUTTON IMPROVEMENTS
+   ============================================= */
+.row-actions {
+  display: flex !important;
+  gap: 12px !important;
+  margin-top: 12px !important;
+  width: 100% !important;
+}
+
+.row-actions .btn-checkout {
+  margin-top: 0 !important;
+  flex: 1 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  padding: 16px 8px !important;
+  font-size: 15px !important;
+}
+
+.checkout-icon {
+  width: 20px !important;
+  height: 20px !important;
+  flex-shrink: 0 !important;
+  stroke-width: 2.5 !important;
+}
+
+/* Distinct styling for Return/Refund Button */
+.btn-checkout.btn-return {
+  background: linear-gradient(135deg, #ef4444, #dc2626, #b91c1c) !important;
+  box-shadow: 0 8px 25px rgba(239, 68, 68, 0.3) !important;
+  border: 1px solid rgba(254, 202, 202, 0.4) !important;
+}
+
+.btn-checkout.btn-return:hover {
+  background: linear-gradient(135deg, #f87171, #ef4444, #dc2626) !important;
+  box-shadow: 0 12px 30px rgba(239, 68, 68, 0.45) !important;
+  border-color: rgba(254, 202, 202, 0.6) !important;
+}
+
+[data-theme="light"] .btn-checkout.btn-return {
+  background: linear-gradient(135deg, #dc2626, #b91c1c, #991b1b) !important;
+  box-shadow: 0 4px 15px rgba(220, 38, 38, 0.2) !important;
+  border-color: #dc2626 !important;
+}
+
+[data-theme="light"] .btn-checkout.btn-return:hover {
+  background: linear-gradient(135deg, #b91c1c, #991b1b, #7f1d1d) !important;
+  box-shadow: 0 8px 20px rgba(220, 38, 38, 0.3) !important;
+  border-color: #b91c1c !important;
+}
+
+/* Distinct styling for Debt Sale Button */
+.btn-checkout.btn-debt-sell {
+  background: linear-gradient(135deg, #f59e0b, #d97706, #b45309) !important;
+  box-shadow: 0 8px 25px rgba(245, 158, 11, 0.3) !important;
+  border: 1px solid rgba(253, 230, 138, 0.4) !important;
+}
+
+.btn-checkout.btn-debt-sell:hover {
+  background: linear-gradient(135deg, #fbbf24, #f59e0b, #d97706) !important;
+  box-shadow: 0 12px 30px rgba(245, 158, 11, 0.45) !important;
+  border-color: rgba(253, 230, 138, 0.6) !important;
+}
+
+[data-theme="light"] .btn-checkout.btn-debt-sell {
+  background: linear-gradient(135deg, #d97706, #b45309, #92400e) !important;
+  box-shadow: 0 4px 15px rgba(217, 119, 6, 0.2) !important;
+  border-color: #d97706 !important;
+}
+
+[data-theme="light"] .btn-checkout.btn-debt-sell:hover {
+  background: linear-gradient(135deg, #b45309, #92400e, #78350f) !important;
+  box-shadow: 0 8px 20px rgba(217, 119, 6, 0.3) !important;
+  border-color: #b45309 !important;
+}
+
+/* =============================================
+   PREMIUM GLASSMORPHIC CART SUMMARY & PAYMENT DESIGN
+   ============================================= */
+
+/* 1. Cart Summary Section */
+.cart-summary {
+  background: rgba(255, 255, 255, 0.02) !important;
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+  border-radius: 16px !important;
+  padding: 16px !important;
+  margin-top: 16px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  backdrop-filter: blur(12px) !important;
+}
+
+.summary-row {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  font-size: 13px !important;
+  color: var(--text-secondary) !important;
+}
+
+.summary-row.total-row {
+  border-top: 1px dashed rgba(255, 255, 255, 0.12) !important;
+  padding-top: 12px !important;
+  margin-top: 4px !important;
+  font-size: 15px !important;
+  font-weight: 800 !important;
+  color: var(--text-primary) !important;
+}
+
+.discount-controls {
+  display: flex !important;
+  gap: 8px !important;
+  align-items: center !important;
+}
+
+.discount-controls input {
+  padding: 6px 12px !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 8px !important;
+  font-size: 12px !important;
+  background: rgba(0, 0, 0, 0.2) !important;
+  color: var(--text-primary) !important;
+  width: 90px !important;
+  text-align: center !important;
+  transition: all 0.25s ease !important;
+}
+
+.discount-controls input:focus {
+  outline: none !important;
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 10px rgba(139, 92, 246, 0.2) !important;
+}
+
+.discount-controls select {
+  padding: 6px 8px !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 8px !important;
+  font-size: 12px !important;
+  background: rgba(0, 0, 0, 0.2) !important;
+  color: var(--text-primary) !important;
+  cursor: pointer !important;
+  transition: all 0.25s ease !important;
+}
+
+.discount-controls select:focus {
+  outline: none !important;
+  border-color: var(--primary) !important;
+}
+
+/* 2. Payment Section Container */
+.payment-section {
+  margin-top: 20px !important;
+  padding-top: 16px !important;
+  border-top: 1px dashed rgba(255, 255, 255, 0.12) !important;
+}
+
+/* 3. Payment Methods Tabs */
+.payment-methods {
+  display: flex !important;
+  gap: 8px !important;
+  margin-bottom: 16px !important;
+}
+
+.pay-method {
+  flex: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 6px !important;
+  padding: 12px 8px !important;
+  border-radius: 12px !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  background: rgba(255, 255, 255, 0.02) !important;
+  color: var(--text-secondary) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  cursor: pointer !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+}
+
+.pay-method .pay-icon {
+  width: 20px !important;
+  height: 20px !important;
+  stroke-width: 2 !important;
+  color: var(--text-muted) !important;
+  transition: all 0.3s ease !important;
+}
+
+.pay-method:hover {
+  transform: translateY(-2px) !important;
+  background: rgba(255, 255, 255, 0.06) !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  color: var(--text-primary) !important;
+}
+
+.pay-method:hover .pay-icon {
+  color: var(--text-primary) !important;
+}
+
+/* Active State & Colorful Glow Overrides */
+.pay-method.active {
+  transform: translateY(-2px) !important;
+}
+
+.pay-method.active.method-cash {
+  background: rgba(16, 185, 129, 0.12) !important;
+  border-color: #10b981 !important;
+  color: #34d399 !important;
+  box-shadow: 0 4px 20px rgba(16, 185, 129, 0.25) !important;
+}
+.pay-method.active.method-cash .pay-icon {
+  color: #34d399 !important;
+  transform: scale(1.1) !important;
+}
+
+.pay-method.active.method-card {
+  background: rgba(6, 182, 212, 0.12) !important;
+  border-color: #06b6d4 !important;
+  color: #22d3ee !important;
+  box-shadow: 0 4px 20px rgba(6, 182, 212, 0.25) !important;
+}
+.pay-method.active.method-card .pay-icon {
+  color: #22d3ee !important;
+  transform: scale(1.1) !important;
+}
+
+.pay-method.active.method-transfer {
+  background: rgba(59, 130, 246, 0.12) !important;
+  border-color: #3b82f6 !important;
+  color: #60a5fa !important;
+  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.25) !important;
+}
+.pay-method.active.method-transfer .pay-icon {
+  color: #60a5fa !important;
+  transform: scale(1.1) !important;
+}
+
+.pay-method.active.method-debt {
+  background: rgba(245, 158, 11, 0.12) !important;
+  border-color: #f59e0b !important;
+  color: #fbbf24 !important;
+  box-shadow: 0 4px 20px rgba(245, 158, 11, 0.25) !important;
+}
+.pay-method.active.method-debt .pay-icon {
+  color: #fbbf24 !important;
+  transform: scale(1.1) !important;
+}
+
+/* 4. Cash currency toggle */
+.cash-currency {
+  display: flex !important;
+  gap: 8px !important;
+  margin-bottom: 12px !important;
+}
+
+.currency-btn {
+  flex: 1 !important;
+  padding: 10px !important;
+  background: rgba(255, 255, 255, 0.02) !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  border-radius: 10px !important;
+  color: var(--text-secondary) !important;
+  cursor: pointer !important;
+  transition: all 0.25s ease !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  font-family: 'Noto Kufi Arabic', sans-serif !important;
+}
+
+.currency-btn:hover {
+  background: rgba(255, 255, 255, 0.05) !important;
+}
+
+.currency-btn.active {
+  background: rgba(16, 185, 129, 0.15) !important;
+  border-color: #10b981 !important;
+  color: #34d399 !important;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2) !important;
+}
+
+/* 5. Inputs & Change box */
+.cash-input-group {
+  margin-bottom: 12px !important;
+}
+
+.cash-input-group label {
+  font-family: 'Noto Kufi Arabic', sans-serif !important;
+}
+
+.cash-input-group input {
+  width: 100% !important;
+  padding: 14px !important;
+  background: rgba(0, 0, 0, 0.2) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 12px !important;
+  color: var(--text-primary) !important;
+  font-size: 20px !important;
+  font-weight: 800 !important;
+  text-align: center !important;
+  transition: all 0.3s ease !important;
+}
+
+.cash-input-group input:focus {
+  border-color: #10b981 !important;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2), 0 0 20px rgba(16, 185, 129, 0.1) !important;
+}
+
+.change-display {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  padding: 12px 16px !important;
+  background: rgba(16, 185, 129, 0.08) !important;
+  border: 1px solid rgba(16, 185, 129, 0.2) !important;
+  border-radius: 12px !important;
+  margin-top: 12px !important;
+  font-family: 'Noto Kufi Arabic', sans-serif !important;
+}
+
+.change-value {
+  font-size: 18px !important;
+  font-weight: 900 !important;
+  color: #34d399 !important;
+}
+
+/* 6. Quick Amounts */
+.quick-amounts {
+  display: flex !important;
+  gap: 8px !important;
+  margin-top: 12px !important;
+  flex-wrap: wrap !important;
+  justify-content: center !important;
+}
+
+.quick-amount-btn {
+  padding: 8px 14px !important;
+  background: rgba(255, 255, 255, 0.03) !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  border-radius: 10px !important;
+  color: var(--text-secondary) !important;
+  font-family: 'Noto Kufi Arabic', sans-serif !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+
+.quick-amount-btn:hover {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+  color: var(--text-primary) !important;
+  transform: translateY(-1px) !important;
+}
+
+/* 7. Info Boxes (Card, Transfer, Debt) */
+.card-transfer-info-box {
+  display: flex !important;
+  align-items: center !important;
+  gap: 14px !important;
+  padding: 14px 18px !important;
+  background: rgba(6, 182, 212, 0.08) !important;
+  border: 1px solid rgba(6, 182, 212, 0.2) !important;
+  border-radius: 12px !important;
+  margin-bottom: 12px !important;
+}
+
+.cti-icon {
+  font-size: 24px !important;
+  width: 44px !important;
+  height: 44px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: rgba(6, 182, 212, 0.15) !important;
+  border-radius: 10px !important;
+  flex-shrink: 0 !important;
+}
+
+.cti-text {
+  flex: 1 !important;
+  text-align: right !important;
+}
+
+.cti-text strong {
+  display: block !important;
+  font-size: 13px !important;
+  color: var(--text-primary) !important;
+  font-weight: 700 !important;
+}
+
+.cti-text p {
+  font-size: 11px !important;
+  color: var(--text-secondary) !important;
+  margin: 3px 0 0 0 !important;
+}
+
+.cti-amount {
+  font-size: 16px !important;
+  font-weight: 800 !important;
+  color: #22d3ee !important;
+}
+
+.card-confirm-hint {
+  padding: 10px 14px !important;
+  background: rgba(255, 255, 255, 0.02) !important;
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+  border-radius: 10px !important;
+  text-align: center !important;
+  font-size: 12px !important;
+  color: var(--text-muted) !important;
+}
+
+/* Specific styling for Transfer & Debt info box */
+#transfer-payment-section .card-transfer-info-box {
+  background: rgba(59, 130, 246, 0.08) !important;
+  border: 1px solid rgba(59, 130, 246, 0.2) !important;
+}
+#transfer-payment-section .cti-icon {
+  background: rgba(59, 130, 246, 0.15) !important;
+}
+#transfer-payment-section .cti-amount {
+  color: #60a5fa !important;
+}
+
+.debt-info-box {
+  display: flex !important;
+  align-items: center !important;
+  gap: 14px !important;
+  padding: 14px 18px !important;
+  background: rgba(245, 158, 11, 0.08) !important;
+  border: 1px solid rgba(245, 158, 11, 0.2) !important;
+  border-radius: 12px !important;
+  margin-bottom: 12px !important;
+}
+
+.debt-info-box > span {
+  font-size: 24px !important;
+  width: 44px !important;
+  height: 44px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: rgba(245, 158, 11, 0.15) !important;
+  border-radius: 10px !important;
+  flex-shrink: 0 !important;
+}
+
+.debt-info-box > div {
+  flex: 1 !important;
+  text-align: right !important;
+}
+
+.debt-info-box > div strong {
+  display: block !important;
+  font-size: 13px !important;
+  color: var(--text-primary) !important;
+  font-weight: 700 !important;
+}
+
+.debt-info-box > div p {
+  font-size: 11px !important;
+  color: var(--text-secondary) !important;
+  margin: 3px 0 0 0 !important;
+}
+
+#transfer-payment-section input[type="text"],
+#debt-payment-section input[type="text"] {
+  background: rgba(0, 0, 0, 0.2) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 10px !important;
+  padding: 10px 14px !important;
+  color: var(--text-primary) !important;
+  font-size: 13px !important;
+  transition: all 0.3s ease !important;
+  width: 100% !important;
+}
+
+#transfer-payment-section input[type="text"]:focus,
+#debt-payment-section input[type="text"]:focus {
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2), 0 0 15px rgba(139, 92, 246, 0.1) !important;
+  outline: none !important;
+}
+
+/* =============================================
+   LIGHT MODE DESIGN ADJUSTMENTS
+   ============================================= */
+[data-theme="light"] .cart-summary {
+  background: rgba(0, 0, 0, 0.01) !important;
+  border-color: rgba(0, 0, 0, 0.06) !important;
+}
+
+[data-theme="light"] .pay-method {
+  background: rgba(0, 0, 0, 0.02) !important;
+  border-color: rgba(0, 0, 0, 0.06) !important;
+}
+
+[data-theme="light"] .pay-method:hover {
+  background: rgba(0, 0, 0, 0.04) !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+[data-theme="light"] .currency-btn {
+  background: rgba(0, 0, 0, 0.02) !important;
+  border-color: rgba(0, 0, 0, 0.06) !important;
+}
+
+[data-theme="light"] .currency-btn:hover {
+  background: rgba(0, 0, 0, 0.04) !important;
+}
+
+[data-theme="light"] .cash-input-group input {
+  background: rgba(255, 255, 255, 0.9) !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+  color: #1e1b4b !important;
+}
+
+[data-theme="light"] .quick-amount-btn {
+  background: rgba(0, 0, 0, 0.02) !important;
+  border-color: rgba(0, 0, 0, 0.06) !important;
+}
+
+[data-theme="light"] .quick-amount-btn:hover {
+  background: rgba(0, 0, 0, 0.04) !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+[data-theme="light"] #transfer-payment-section input[type="text"],
+[data-theme="light"] #debt-payment-section input[type="text"] {
+  background: rgba(255, 255, 255, 0.9) !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+  color: #1e1b4b !important;
+}
+
+[data-theme="light"] .discount-controls input,
+[data-theme="light"] .discount-controls select {
+  background: rgba(255, 255, 255, 0.9) !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+  color: #1e1b4b !important;
+}
+
+/* ═══════════════════════════════════════
+   POS NUMPAD (Touch Devices)
+═══════════════════════════════════════ */
+.pos-numpad {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  box-shadow: var(--shadow-lg);
+  height: 100%;
+  overflow-y: auto;
+}
+
+.numpad-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  height: 100%;
+}
+
+.numpad-header h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+}
+
+.numpad-display {
+  display: flex;
+  gap: 10px;
+}
+
+#numpad-input {
+  flex: 1;
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--text-primary);
+  background: var(--bg-body);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 10px 20px;
+  text-align: left;
+  outline: none;
+}
+
+#numpad-input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+}
+
+.numpad-apply-btn {
+  background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 0 24px;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+}
+
+.numpad-apply-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+}
+
+.numpad-apply-btn:active {
+  transform: translateY(1px);
+}
+
+.numpad-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  gap: 12px;
+  flex: 1;
+}
+
+.numpad-btn {
+  background: var(--bg-body);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.1s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-user-select: none;
+  user-select: none;
+  min-height: 70px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.numpad-btn:active {
+  background: var(--border);
+  transform: scale(0.95);
+}
+
+.numpad-btn.action-btn {
+  font-size: 24px;
+}
+
+.numpad-btn.clear-btn {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.2);
+}
+
+.numpad-btn.bksp-btn {
+  color: #f59e0b;
+  background: rgba(245, 158, 11, 0.1);
+  border-color: rgba(245, 158, 11, 0.2);
+}
+
+.quick-actions-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.qa-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 20px;
+  border-radius: var(--radius-md);
+  border: none;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: white;
+}
+
+.qa-btn:hover {
+  filter: brightness(1.1);
+  transform: translateY(-2px);
+}
+
+.qa-btn:active {
+  transform: translateY(1px);
+}
+
+.qa-clear { background: linear-gradient(135deg, #ef4444, #dc2626); box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3); }
+.qa-discount { background: linear-gradient(135deg, #8b5cf6, #7c3aed); box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3); }
+.qa-hold { background: linear-gradient(135deg, #f59e0b, #d97706); box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3); }
+.qa-retrieve { background: linear-gradient(135deg, #3b82f6, #2563eb); box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3); }
+
+/* Ensure numpad fits on smaller screens */
+@media (max-width: 768px) {
+  .pos-numpad {
+    height: auto;
+    padding: 15px;
+  }
+  .numpad-btn {
+    min-height: 60px;
+    font-size: 24px;
+  }
+}
+
+
+
+/* ============================================================ */
+/* Mobile Scanner View */
+/* ============================================================ */
+
+.pos-mobile-scanner {
+  flex-direction: column;
+  height: calc(100vh - var(--header-height) - 40px);
+  background: #000;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  position: relative;
+}
+
+.scanner-camera-area {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#continuous-scanner-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.scanner-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 250px;
+  height: 250px;
+  border: 4px solid rgba(255, 255, 255, 0.4);
+  border-radius: 20px;
+  box-shadow: 0 0 0 4000px rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+}
+
+.scanner-overlay::after {
+  content: '';
+  position: absolute;
+  top: -4px; left: -4px; right: -4px; bottom: -4px;
+  border-radius: 20px;
+  border: 4px solid var(--primary);
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%, 0 0, 30px 30px, 30px calc(100% - 30px), calc(100% - 30px) calc(100% - 30px), calc(100% - 30px) 30px, 30px 30px);
+}
+
+.scanner-bottom-sheet {
+  background: var(--bg-body);
+  border-radius: 24px 24px 0 0;
+  height: 55%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  box-shadow: 0 -10px 40px rgba(0,0,0,0.1);
+  z-index: 10;
+}
+
+.scanner-bottom-sheet::before {
+  content: '';
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 5px;
+  background: var(--border-color);
+  border-radius: 10px;
+}
+
+.sbs-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sbs-header h3 {
+  font-size: 20px;
+  font-weight: 800;
+  margin: 0;
+}
+
+.sbs-total {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--primary);
+}
+
+.sbs-list {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sbs-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.sbs-empty-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+.sbs-empty h4 {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: var(--text-primary);
+}
+
+.sbs-footer {
+  margin-top: 20px;
+  padding-top: 15px;
+}
+
+.sbs-review-btn {
+  width: 100%;
+  padding: 16px;
+  background: var(--border-color);
+  color: var(--text-secondary);
+  border: none;
+  border-radius: var(--radius-lg);
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.sbs-review-btn.active {
+  background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+  color: white;
+  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+}
+
+/* Scanned Item style */
+.scanned-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+.scanned-item-info h4 {
+  margin: 0 0 4px 0;
+  font-size: 16px;
+}
+.scanned-item-price {
+  font-weight: 700;
+  color: var(--primary);
+}
+
+/* ==========================================================================
+   GLOBAL PREMIUM BUTTON SYSTEM — CALM & MUTED PALETTE
+   ========================================================================== */
+
+/* Base Pill Styles for All Action Buttons */
+.btn-primary,
+.btn-secondary,
+.btn-checkout,
+.btn-pay,
+.btn-success,
+.btn-distribute,
+.btn-pay-debt,
+.btn-pay-debt-main,
+.btn-danger,
+.btn-delete,
+.btn-delete-debt,
+.btn-outline,
+.btn-edit,
+.btn-info,
+.arch-nav-btn,
+#btn-pay-all,
+#bdpm-submit,
+#confirm-pos-btn,
+#cancel-pos-btn,
+#bdpm-cancel,
+.modal-actions button {
+  border-radius: 30px !important;
+  padding: 10px 24px !important;
+  font-weight: 700 !important;
+  font-size: 13px !important;
+  font-family: inherit !important;
+  cursor: pointer !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  text-decoration: none !important;
+  transition: all 0.25s ease !important;
+  box-sizing: border-box !important;
+  letter-spacing: 0.01em !important;
+}
+
+.btn-primary:hover,
+.btn-secondary:hover,
+.btn-checkout:hover,
+.btn-pay:hover,
+.btn-success:hover,
+.btn-distribute:hover,
+.btn-pay-debt:hover,
+.btn-pay-debt-main:hover,
+.btn-danger:hover,
+.btn-delete:hover,
+.btn-delete-debt:hover,
+.btn-outline:hover,
+.btn-edit:hover,
+.btn-info:hover,
+#btn-pay-all:hover,
+#bdpm-submit:hover,
+#confirm-pos-btn:hover,
+#cancel-pos-btn:hover,
+#bdpm-cancel:hover {
+  transform: translateY(-2px) !important;
+  filter: brightness(1.06) !important;
+}
+
+.btn-primary:active,
+.btn-checkout:active,
+.btn-pay-debt-main:active {
+  transform: translateY(0) !important;
+  filter: brightness(0.97) !important;
+}
+
+/* 1. Muted Slate-Blue (Primary / Add operations) */
+.btn-primary {
+  background: #5b7fa6 !important;
+  color: #ffffff !important;
+  border: none !important;
+  box-shadow: 0 2px 8px rgba(91, 127, 166, 0.2) !important;
+}
+.btn-primary:hover {
+  background: #4a6e94 !important;
+  box-shadow: 0 4px 14px rgba(91, 127, 166, 0.28) !important;
+}
+
+/* 2. Muted Sage-Green (Complete, Pay, Confirm actions) */
+.btn-checkout,
+.btn-pay,
+.btn-success,
+#confirm-pos-btn,
+#bdpm-submit,
+#btn-pay-all {
+  background: #4d8b6f !important;
+  color: #ffffff !important;
+  border: none !important;
+  box-shadow: 0 2px 8px rgba(77, 139, 111, 0.2) !important;
+}
+.btn-checkout:hover,
+.btn-pay:hover,
+.btn-success:hover,
+#confirm-pos-btn:hover,
+#bdpm-submit:hover,
+#btn-pay-all:hover {
+  background: #3d7560 !important;
+  box-shadow: 0 4px 14px rgba(77, 139, 111, 0.28) !important;
+}
+
+/* 3. Muted Teal (Debt Payment, PDF Export, Distribute) */
+.btn-pay-debt-main,
+.btn-pay-debt,
+.btn-distribute {
+  background: #3e7d7d !important;
+  color: #ffffff !important;
+  border: none !important;
+  box-shadow: 0 2px 8px rgba(62, 125, 125, 0.2) !important;
+}
+.btn-pay-debt-main:hover,
+.btn-pay-debt:hover,
+.btn-distribute:hover {
+  background: #316868 !important;
+  box-shadow: 0 4px 14px rgba(62, 125, 125, 0.28) !important;
+}
+
+/* 4. Soft Rose (Cancel, Danger, Delete actions) */
+.btn-secondary,
+.btn-danger,
+.btn-delete,
+.btn-delete-debt,
+#cancel-pos-btn,
+#bdpm-cancel {
+  background: #f5e6e6 !important;
+  color: #a35252 !important;
+  border: 1px solid #e8c8c8 !important;
+  box-shadow: none !important;
+}
+.btn-secondary:hover,
+.btn-danger:hover,
+.btn-delete:hover,
+.btn-delete-debt:hover,
+#cancel-pos-btn:hover,
+#bdpm-cancel:hover {
+  background: #eed5d5 !important;
+  color: #8a3d3d !important;
+  border-color: #d4a8a8 !important;
+}
+
+/* 5. Soft Lavender (Outline, Edit, Info, Archive Nav) */
+.btn-outline,
+.btn-edit,
+.btn-info,
+.arch-nav-btn {
+  background: #edeaf5 !important;
+  color: #6b5fa0 !important;
+  border: 1px solid #d8d2ec !important;
+  box-shadow: none !important;
+}
+.btn-outline:hover,
+.btn-edit:hover,
+.btn-info:hover,
+.arch-nav-btn:hover {
+  background: #ddd7f0 !important;
+  color: #544a7d !important;
+  border-color: #c3bce0 !important;
+}
+
+/* ==========================================================================
+   PILL SHAPE OVERRIDE FOR PURCHASES PAGE BUTTONS & ALL OTHER ACTION BUTTONS
+   ========================================================================== */
+
+/* Force pill shape + premium design on purchase page action buttons */
+.btn-action-purchase,
+.btn-action-supplier,
+.btn-action-expense {
+  border-radius: 30px !important;
+  height: 40px !important;
+  padding: 0 22px 0 16px !important;
+  font-weight: 800 !important;
+  font-size: 13px !important;
+  font-family: inherit !important;
+  position: relative !important;
+  overflow: hidden !important;
+  letter-spacing: 0.1px !important;
+}
+
+.btn-action-purchase {
+  background: linear-gradient(135deg, #5b7fa6 0%, #4a6e94 100%) !important;
+  box-shadow: 0 3px 12px rgba(91,127,166,0.28) !important;
+  border: 1.5px solid rgba(91,127,166,0.3) !important;
+  color: white !important;
+}
+.btn-action-purchase:hover {
+  background: linear-gradient(135deg, #6b8fb6 0%, #5a7ea4 100%) !important;
+  box-shadow: 0 6px 20px rgba(91,127,166,0.38) !important;
+  transform: translateY(-2px) !important;
+}
+
+.btn-action-supplier {
+  background: linear-gradient(135deg, #4d8b6f 0%, #3d7a5e 100%) !important;
+  box-shadow: 0 3px 12px rgba(77,139,111,0.28) !important;
+  border: 1.5px solid rgba(77,139,111,0.3) !important;
+  color: white !important;
+}
+.btn-action-supplier:hover {
+  background: linear-gradient(135deg, #5d9b7f 0%, #4d8a6e 100%) !important;
+  box-shadow: 0 6px 20px rgba(77,139,111,0.38) !important;
+  transform: translateY(-2px) !important;
+}
+
+.btn-action-expense {
+  background: linear-gradient(135deg, #a07840 0%, #8d6532 100%) !important;
+  box-shadow: 0 3px 12px rgba(160,120,64,0.28) !important;
+  border: 1.5px solid rgba(160,120,64,0.3) !important;
+  color: white !important;
+}
+.btn-action-expense:hover {
+  background: linear-gradient(135deg, #b08850 0%, #9d7542 100%) !important;
+  box-shadow: 0 6px 20px rgba(160,120,64,0.38) !important;
+  transform: translateY(-2px) !important;
+}
+
+
+/* Tab buttons pill shape for archive/purchase tabs */
+.archive-tab {
+  border-radius: 30px !important;
+  font-weight: 700 !important;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+/* POS / Checkout special action buttons */
+.pcs-btn-redeem,
+.pcs-btn-debt {
+  border-radius: 30px !important;
+  font-weight: 800 !important;
+  padding: 10px 22px !important;
+}
+
+/* Modal action buttons — ensure pill shape even with last-child/first-child variants */
+.modal-actions .btn-primary,
+.modal-actions .btn-secondary,
+.modal-actions .btn-danger {
+  border-radius: 30px !important;
+}
+
+/* Remove any conflicting inline border-radius from btn-pay-debt-main
+   The CSS now controls all sizing */
+.btn-pay-debt-main {
+  border-radius: 30px !important;
+  height: auto !important;
+  padding: 10px 22px !important;
+  font-size: 13.5px !important;
+}
+

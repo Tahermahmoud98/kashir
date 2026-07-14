@@ -1,4 +1,4 @@
-const DB = {
+﻿const DB = {
   getProducts: () => { 
     try { 
       let data = JSON.parse(localStorage.getItem('pos_products'));
