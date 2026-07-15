@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import sys, io, json, os
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
@@ -30,6 +30,20 @@ class Handler(SimpleHTTPRequestHandler):
             self.wfile.write(body)
         else:
             super().do_GET()
+
+    def end_headers(self):
+        clean_path = self.path.split('?')[0]
+        if clean_path and (clean_path.endswith('sw.js') or 
+                           clean_path.endswith('index.html') or 
+                           clean_path.endswith('admin.html') or 
+                           clean_path.endswith('app.js') or
+                           clean_path == '/' or 
+                           clean_path == ''):
+            self.send_header('Cache-Control', 'no-cache, no-store, must-revalidate')
+            self.send_header('Pragma', 'no-cache')
+            self.send_header('Expires', '0')
+        super().end_headers()
+
 
     def do_POST(self):
         if self.path == '/api/activities':

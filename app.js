@@ -69,17 +69,19 @@ function calculateInvoiceProfit(inv) {
 }
 
 // ========= إعداد المظهر (Dark/Light) =========
-const sunSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>`;
-const moonSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>`;
+const sunSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="28" height="28"><defs><radialGradient id="sunCore" cx="50%" cy="38%" r="55%"><stop offset="0%" stop-color="#FFF176"/><stop offset="40%" stop-color="#FFD600"/><stop offset="100%" stop-color="#FF8F00"/></radialGradient><radialGradient id="sunShine" cx="38%" cy="28%" r="45%"><stop offset="0%" stop-color="rgba(255,255,255,0.75)"/><stop offset="100%" stop-color="rgba(255,255,255,0)"/></radialGradient></defs><g opacity="0.85"><line x1="32" y1="4" x2="32" y2="11" stroke="#FFD600" stroke-width="3" stroke-linecap="round"/><line x1="32" y1="53" x2="32" y2="60" stroke="#FFD600" stroke-width="3" stroke-linecap="round"/><line x1="4" y1="32" x2="11" y2="32" stroke="#FFD600" stroke-width="3" stroke-linecap="round"/><line x1="53" y1="32" x2="60" y2="32" stroke="#FFD600" stroke-width="3" stroke-linecap="round"/><line x1="11.5" y1="11.5" x2="16.5" y2="16.5" stroke="#FFD600" stroke-width="3" stroke-linecap="round"/><line x1="47.5" y1="47.5" x2="52.5" y2="52.5" stroke="#FFD600" stroke-width="3" stroke-linecap="round"/><line x1="52.5" y1="11.5" x2="47.5" y2="16.5" stroke="#FFD600" stroke-width="3" stroke-linecap="round"/><line x1="16.5" y1="47.5" x2="11.5" y2="52.5" stroke="#FFD600" stroke-width="3" stroke-linecap="round"/></g><circle cx="32" cy="32" r="16" fill="url(#sunCore)"/><ellipse cx="26" cy="26" rx="7" ry="5" fill="url(#sunShine)" transform="rotate(-20 26 26)"/></svg>`;
+const moonSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="26" height="26"><defs><radialGradient id="moonGrad" cx="40%" cy="35%" r="60%"><stop offset="0%" stop-color="#C7D2FE"/><stop offset="50%" stop-color="#818CF8"/><stop offset="100%" stop-color="#4338CA"/></radialGradient><radialGradient id="moonShine" cx="35%" cy="28%" r="40%"><stop offset="0%" stop-color="rgba(255,255,255,0.6)"/><stop offset="100%" stop-color="rgba(255,255,255,0)"/></radialGradient></defs><path d="M38 8 C24 8 14 19 14 32 C14 45 24 56 38 56 C30 50 26 42 26 32 C26 22 30 14 38 8 Z" fill="url(#moonGrad)"/><ellipse cx="28" cy="20" rx="5" ry="4" fill="url(#moonShine)" transform="rotate(-15 28 20)"/><circle cx="46" cy="14" r="2" fill="#E0E7FF" opacity="0.9"/><circle cx="52" cy="24" r="1.5" fill="#C7D2FE" opacity="0.8"/><circle cx="50" cy="10" r="1" fill="#EEF2FF" opacity="0.7"/></svg>`;
 
 function initTheme() {
   const savedTheme = localStorage.getItem('theme') || 'light';
   const themeIcon = document.getElementById('theme-icon');
   if (savedTheme === 'dark') {
     document.documentElement.setAttribute('data-theme', 'dark');
+    document.body.classList.add('dark-mode');
     if (themeIcon) themeIcon.innerHTML = sunSvg;
   } else {
     document.documentElement.setAttribute('data-theme', 'light');
+    document.body.classList.remove('dark-mode');
     if (themeIcon) themeIcon.innerHTML = moonSvg;
   }
 }
@@ -88,20 +90,67 @@ initTheme();
 function toggleTheme() {
   const root = document.documentElement;
   const currentTheme = root.getAttribute('data-theme');
-  const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+  // If ocean is active, go back to light; otherwise toggle light/dark
+  const isOcean = root.getAttribute('data-theme') === 'ocean';
+  const newTheme = (isOcean || currentTheme === 'light') && !isOcean ? 'dark' : 'light';
   const themeIcon = document.getElementById('theme-icon');
 
-  if (newTheme === 'dark') {
-    root.setAttribute('data-theme', 'dark');
-    if (themeIcon) themeIcon.innerHTML = sunSvg;
-    localStorage.setItem('theme', 'dark');
-  } else {
+  // Remove ocean first
+  root.removeAttribute('data-ocean');
+  document.body.classList.remove('ocean-mode');
+
+  if (currentTheme === 'dark') {
     root.setAttribute('data-theme', 'light');
+    document.body.classList.remove('dark-mode');
     if (themeIcon) themeIcon.innerHTML = moonSvg;
     localStorage.setItem('theme', 'light');
+  } else {
+    root.setAttribute('data-theme', 'dark');
+    document.body.classList.add('dark-mode');
+    if (themeIcon) themeIcon.innerHTML = sunSvg;
+    localStorage.setItem('theme', 'dark');
+  }
+  // Update ocean btn state
+  const oceanBtn = document.getElementById('ocean-theme-btn');
+  if (oceanBtn) oceanBtn.classList.remove('active');
+}
+
+// ========= Ocean Theme =========
+function toggleOceanTheme() {
+  const root = document.documentElement;
+  const isOcean = document.body.classList.contains('ocean-mode');
+  const oceanBtn = document.getElementById('ocean-theme-btn');
+  const themeIcon = document.getElementById('theme-icon');
+
+  if (isOcean) {
+    // Exit ocean → go back to light
+    document.body.classList.remove('ocean-mode', 'dark-mode');
+    root.setAttribute('data-theme', 'light');
+    if (themeIcon) themeIcon.innerHTML = moonSvg;
+    if (oceanBtn) oceanBtn.classList.remove('active');
+    localStorage.setItem('theme', 'light');
+    localStorage.removeItem('ocean-theme');
+  } else {
+    // Enter ocean
+    document.body.classList.add('ocean-mode');
+    document.body.classList.remove('dark-mode');
+    root.setAttribute('data-theme', 'ocean');
+    if (themeIcon) themeIcon.innerHTML = moonSvg;
+    if (oceanBtn) oceanBtn.classList.add('active');
+    localStorage.setItem('theme', 'ocean');
+    localStorage.setItem('ocean-theme', '1');
   }
 }
 
+// Restore ocean theme on load
+(function initOceanTheme() {
+  if (localStorage.getItem('theme') === 'ocean') {
+    document.body.classList.add('ocean-mode');
+    document.documentElement.setAttribute('data-theme', 'ocean');
+    const oceanBtn = document.getElementById('ocean-theme-btn');
+    if (oceanBtn) oceanBtn.classList.add('active');
+  }
+})();
 
 // ========= PWA / تنزيل التطبيق =========
 let deferredPrompt;
@@ -185,10 +234,10 @@ function updateTime() {
   const now = new Date();
   const lang = localStorage.getItem('pos_lang') || 'ar';
   const locale = (lang === 'ku' || lang === 'kbd') ? 'ckb-IQ' : 'ar-IQ';
-  
+
   const time = now.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit', second: '2-digit' });
   const date = now.toLocaleDateString(locale, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-  el.textContent = `${date} | ${time}`;
+  el.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-inline-end: 6px; opacity: 0.8;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg><span>${date} | ${time}</span>`;
 }
 
 // ========= تسجيل الدخول =========
@@ -685,7 +734,7 @@ function switchArchiveTab(tab, btn) {
   else {
     const tabs = document.querySelectorAll('#sales-tab-invoice-archive .archive-period-tabs .archive-tab');
     tabs.forEach(t => {
-      if(t.getAttribute('onclick') && t.getAttribute('onclick').includes(`'${tab}'`)) {
+      if (t.getAttribute('onclick') && t.getAttribute('onclick').includes(`'${tab}'`)) {
         t.classList.add('active');
       }
     });
@@ -1437,7 +1486,7 @@ function renderCart() {
 
   const badges = document.querySelectorAll('.pos-cart-badge');
   const totalBadge = document.getElementById('pos-cart-total-badge');
-  
+
   const count = state.cart.reduce((sum, item) => sum + item.qty, 0);
   badges.forEach(badge => {
     if (count > 0) {
@@ -1584,20 +1633,20 @@ function loadCustomerSelect() {
   const list = document.getElementById('cart-custom-dropdown');
   const input = document.getElementById('cart-customer-input');
   if (!list || !input) return;
-  
+
   const val = input.value.trim().toLowerCase();
   const customers = DB.getCustomers();
-  
+
   let filtered = customers;
   if (val) {
     filtered = customers.filter(c => {
-       const plainStr = c.customerNumber ? `${c.name} (${c.customerNumber})` : c.name;
-       return plainStr.toLowerCase().includes(val) || 
-              (c.customerNumber && c.customerNumber.toString() === val) ||
-              c.name.toLowerCase().includes(val);
+      const plainStr = c.customerNumber ? `${c.name} (${c.customerNumber})` : c.name;
+      return plainStr.toLowerCase().includes(val) ||
+        (c.customerNumber && c.customerNumber.toString() === val) ||
+        c.name.toLowerCase().includes(val);
     });
   }
-  
+
   // Sort customers by customer number ascending
   // Sort customers by customer number ascending, correctly handling letter prefixes (A1, B1)
   filtered.sort((a, b) => {
@@ -1611,17 +1660,17 @@ function loadCustomerSelect() {
       return strA.localeCompare(strB);
     }
   });
-  
+
   list.innerHTML = '';
   if (filtered.length === 0) {
     list.innerHTML = `<div style="padding:12px; text-align:center; color:var(--text-muted); font-size:13px;">${t('لا توجد نتائج')}</div>`;
     return;
   }
-  
+
   filtered.forEach(c => {
     const displayStr = c.customerNumber ? `${c.name} <span style="background:var(--primary); color:white; padding:2px 8px; border-radius:12px; font-size:11px; margin-right:auto;">${c.customerNumber}</span>` : c.name;
     const plainStr = c.customerNumber ? `${c.name} (${c.customerNumber})` : c.name;
-    
+
     const div = document.createElement('div');
     div.innerHTML = `<div style="display:flex; align-items:center; width:100%; gap:8px;">${displayStr}</div>`;
     div.style.padding = '10px 14px';
@@ -1631,17 +1680,17 @@ function loadCustomerSelect() {
     div.style.fontWeight = '700';
     div.style.color = 'var(--text-primary)';
     div.style.transition = 'all 0.2s';
-    
+
     div.onmouseover = () => { div.style.background = 'rgba(99,102,241,0.08)'; div.style.color = 'var(--primary)'; };
     div.onmouseout = () => { div.style.background = 'transparent'; div.style.color = 'var(--text-primary)'; };
-    
+
     div.onmousedown = (e) => { // Use mousedown so it fires before input onblur
       e.preventDefault();
       input.value = plainStr;
       handleCustomerInput(plainStr);
       list.style.display = 'none';
     };
-    
+
     list.appendChild(div);
   });
 }
@@ -1661,9 +1710,9 @@ function handleCustomerInput(val) {
   const customers = DB.getCustomers();
   const match = customers.find(c => {
     const displayStr = c.customerNumber ? `${c.name} (${c.customerNumber})` : c.name;
-    return displayStr === val || 
-           (c.customerNumber && c.customerNumber.toString() === val.trim()) ||
-           c.name === val.trim();
+    return displayStr === val ||
+      (c.customerNumber && c.customerNumber.toString() === val.trim()) ||
+      c.name === val.trim();
   });
   state.selectedCustomer = match ? match.id : null;
 
@@ -2308,7 +2357,7 @@ function loadCategoryFilterSelect() {
       item.className = 'custom-dropdown-item';
       const iconHTML = c.icon ? `<span class="cat-icon" style="margin-left: 10px; font-size: 16px;">${c.icon}</span>` : '';
       item.innerHTML = `${iconHTML}<span class="cat-name">${t(c.name)}</span>`;
-      item.onmousedown = function(e) {
+      item.onmousedown = function (e) {
         // use onmousedown instead of onclick to fire before input blur
         e.preventDefault();
         const catInput = document.getElementById('pm-category');
@@ -2322,7 +2371,7 @@ function loadCategoryFilterSelect() {
   }
 }
 
-window.filterCategoryDropdown = function(query) {
+window.filterCategoryDropdown = function (query) {
   const dropdown = document.getElementById('pm-category-dropdown');
   if (!dropdown) return;
   const items = dropdown.querySelectorAll('.custom-dropdown-item');
@@ -2427,7 +2476,7 @@ function calculateBag() {
   }
 }
 
-window.filterSupplierDropdown = function(val) {
+window.filterSupplierDropdown = function (val) {
   const dropdown = document.getElementById('pm-supplier-dropdown');
   if (!dropdown) return;
   const items = dropdown.querySelectorAll('.custom-dropdown-item');
@@ -2451,20 +2500,20 @@ function openProductModal(productId = null) {
   const pmSupplierId = document.getElementById('pm-supplier-id');
   const pmSupplierSearch = document.getElementById('pm-supplier-search');
   const pmPurchaseType = document.getElementById('pm-purchase-type');
-  
+
   if (pmSupplierDropdown && pmSupplierId && pmSupplierSearch) {
     pmSupplierDropdown.innerHTML = '';
     pmSupplierId.value = '';
     pmSupplierSearch.value = '';
     if (pmPurchaseType) pmPurchaseType.value = 'cash';
-    
+
     const suppliers = JSON.parse(localStorage.getItem('pos_suppliers') || '[]');
     suppliers.forEach(s => {
       const item = document.createElement('div');
       item.className = 'custom-dropdown-item';
       const labelText = s.company ? `${s.company} (مندوب: ${s.name})` : `${s.name} (مندوب مستقل)`;
       item.innerHTML = `<span><strong>${s.shortId || s.id}</strong> - ${labelText}</span> <small style="color:var(--text-muted)">الدين: ${formatIQD(s.debt || 0)}</small>`;
-      item.onmousedown = function(e) {
+      item.onmousedown = function (e) {
         e.preventDefault();
         pmSupplierId.value = s.id;
         pmSupplierSearch.value = s.company || s.name;
@@ -2605,15 +2654,15 @@ function saveProduct() {
     DB.addActivity('product_update', { name: data.name, price: data.priceIQD, stock: data.stock, category: data.category });
   } else {
     const newProduct = DB.addProduct(data);
-    
+
     // Process starting stock payment/debt record
     if (supplierId && data.stock > 0 && data.cost > 0) {
       const purchaseType = document.getElementById('pm-purchase-type').value; // 'cash' or 'debt'
       const totalCost = data.cost * data.stock;
-      
+
       const suppliers = JSON.parse(localStorage.getItem('pos_suppliers') || '[]');
       const supplier = suppliers.find(s => s.id === supplierId);
-      
+
       if (supplier) {
         if (purchaseType === 'debt') {
           // Increase supplier debt
@@ -2631,7 +2680,7 @@ function saveProduct() {
           });
           localStorage.setItem('pos_expenses', JSON.stringify(expenses));
         }
-        
+
         // Log in purchases list
         const purchaseInvoices = JSON.parse(localStorage.getItem('pos_purchases') || '[]');
         purchaseInvoices.push({
@@ -2868,13 +2917,13 @@ function loadCustomersPage() {
 function goBackToCustomersGrid() {
   const detailContainer = document.getElementById('customer-detail-view-container');
   if (detailContainer) detailContainer.style.display = 'none';
-  
+
   const pageHeader = document.querySelector('#page-customers .page-header-bar');
   if (pageHeader) pageHeader.style.display = 'flex';
-  
+
   const tabsBar = document.querySelector('#page-customers .archive-tabs-bar');
   if (tabsBar) tabsBar.style.display = 'flex';
-  
+
   const grid = document.getElementById('customers-grid');
   if (grid) grid.style.display = 'grid';
 
@@ -2882,17 +2931,17 @@ function goBackToCustomersGrid() {
   const strip = document.getElementById('customers-stats-strip');
   if (strip) strip.style.display = 'grid';
   updateCustomersStats();
-  
+
   selectedDebtorId = null;
 }
 
 function toggleTxnItems(id, cardEl) {
   const itemsBox = document.getElementById(id);
   if (!itemsBox) return;
-  
+
   const isHidden = itemsBox.style.display === 'none';
   itemsBox.style.display = isHidden ? 'block' : 'none';
-  
+
   // Rotate chevron
   const chevron = cardEl.querySelector('.txn-chevron');
   if (chevron) {
@@ -2907,7 +2956,7 @@ function showCustomerDetailOnPage(customerId) {
   if (!customer) return;
 
   const debts = DB.getDebts().filter(d => d.customerId === customerId);
-  
+
   const totalOriginal = debts.reduce((s, d) => s + (parseFloat(d.totalIQD) || 0), 0);
   const totalPaid = debts.reduce((s, d) => s + (parseFloat(d.paidAmount) || 0), 0);
   const totalDebt = Math.max(0, totalOriginal - totalPaid);
@@ -2925,7 +2974,7 @@ function showCustomerDetailOnPage(customerId) {
   let deleteBtnHtml = `<button class="btn-icon delete" onclick="deleteCustomer('${customerId}')" title="ژێبرنا کڕیاری" style="padding: 10px 16px; border-radius: 12px; display: flex; align-items: center; gap: 8px; font-weight: 800; font-family: inherit; background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(220, 38, 38, 0.15)); color: #dc2626; border: 1px solid rgba(239, 68, 68, 0.2); cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='rgba(239, 68, 68, 0.2)'; this.style.transform='scale(1.02)'" onmouseout="this.style.background='linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(220, 38, 38, 0.15))'; this.style.transform='none'">
     <span style="font-size: 16px;">🗑️</span> <span data-translate="ژێبرنا کڕیاری">ژێبرنا کڕیاري</span>
   </button>`;
-  
+
   if (existingReq) {
     if (existingReq.status === 'pending') {
       deleteBtnHtml = `<button class="btn-icon" style="padding: 10px 16px; border-radius: 12px; display: flex; align-items: center; gap: 8px; font-weight: 800; font-family: inherit; background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(217, 119, 6, 0.15)); color: #d97706; border: 1px solid rgba(245, 158, 11, 0.2); cursor: pointer;" onclick="deleteCustomer('${customerId}')" title="قيد المراجعة"><span style="font-size: 16px;">⏳</span> <span data-translate="قيد المراجعة">قيد المراجعة</span></button>`;
@@ -3047,38 +3096,38 @@ function showCustomerDetailOnPage(customerId) {
 
       if (entry.type === 'debt') {
         const d = entry.raw;
-        
+
         // Build payments history inside expanded box if payments exist
         let paymentsListHtml = '';
         if (d.payments && d.payments.length > 0) {
           paymentsListHtml = `
-            <div style="margin: 10px 16px 16px 16px; border-top: 1px dashed #c8d6e5; padding-top: 14px;">
-              <div style="display: inline-flex; align-items: center; gap: 7px; font-size: 12px; font-weight: 800; color: #3d6e5e; background: rgba(77,139,111,0.09); padding: 5px 12px; border-radius: 20px; border: 1px solid rgba(77,139,111,0.18); margin-bottom: 10px;">
+            <div style="margin: 10px 16px 16px 16px; border-top: 1px dashed var(--border); padding-top: 14px;">
+              <div style="display: inline-flex; align-items: center; gap: 7px; font-size: 12px; font-weight: 800; color: var(--success); background: rgba(125,181,154,0.09); padding: 5px 12px; border-radius: 20px; border: 1px solid rgba(125,181,154,0.18); margin-bottom: 10px;">
                 <span>💰</span> ${t('سجل دفعات سداد الفاتورة')}
               </div>
-              <div style="border: 1px solid #c8d6e5; border-radius: 10px; overflow: hidden; background: #ffffff;">
+              <div style="border: 1px solid var(--border); border-radius: 10px; overflow: hidden; background: var(--bg-card);">
                 <table style="width: 100%; border-collapse: collapse; text-align: right; font-size: 12px;">
                   <thead>
-                    <tr style="background: linear-gradient(135deg, #e8f0ec 0%, #ddeae3 100%); border-bottom: 1.5px solid #b8d4c4;">
-                      <th style="padding: 9px 14px; text-align: right; font-weight: 800; color: #2d5a47; font-size: 11.5px;">${t('التاريخ')}</th>
-                      <th style="padding: 9px 14px; text-align: center; font-weight: 800; color: #2d5a47; font-size: 11.5px;">${t('الدفعة')}</th>
-                      <th style="padding: 9px 14px; text-align: center; font-weight: 800; color: #2d5a47; font-size: 11.5px;">${t('الملاحظات')}</th>
-                      <th style="padding: 9px 14px; text-align: left; font-weight: 800; color: #2d5a47; font-size: 11.5px;">${t('المبلغ')}</th>
+                    <tr style="background: linear-gradient(135deg, var(--success) 0%, #66a185 100%); border-bottom: 1.5px solid var(--success);">
+                      <th style="padding: 9px 14px; text-align: right; font-weight: 800; color: #ffffff; font-size: 11.5px;">${t('التاريخ')}</th>
+                      <th style="padding: 9px 14px; text-align: center; font-weight: 800; color: #ffffff; font-size: 11.5px;">${t('الدفعة')}</th>
+                      <th style="padding: 9px 14px; text-align: center; font-weight: 800; color: #ffffff; font-size: 11.5px;">${t('الملاحظات')}</th>
+                      <th style="padding: 9px 14px; text-align: left; font-weight: 800; color: #ffffff; font-size: 11.5px;">${t('المبلغ')}</th>
                     </tr>
                   </thead>
                   <tbody>
                     ${d.payments.map((p, pi) => {
-                      const pDate = p.date ? new Date(p.date).toLocaleDateString('ar-IQ') : entryDate;
-                      const rowBg = pi % 2 === 0 ? '#ffffff' : '#f6faf8';
-                      return `
-                        <tr style="border-bottom: 1px solid #edf2f7; background: ${rowBg};">
-                          <td style="padding: 9px 14px; font-weight: 700; color: #1a2a3a; font-size: 12px;">${pDate}</td>
-                          <td style="padding: 9px 14px; text-align: center; color: #5a7a94; font-size: 11.5px;">#${p.id ? p.id.substring(0,8) : '-'}</td>
-                          <td style="padding: 9px 14px; text-align: center; color: #6a8a7a; font-size: 11.5px;">${p.note || t('سداد جزء من الدين')}</td>
-                          <td style="padding: 9px 14px; text-align: left; font-weight: 900; color: #3d6e5e; direction: ltr; font-size: 13px;">${formatIQD(p.amountIQD)}</td>
+            const pDate = p.date ? new Date(p.date).toLocaleDateString('ar-IQ') : entryDate;
+            const rowBg = pi % 2 === 0 ? 'var(--bg-card)' : 'var(--bg-secondary)';
+            return `
+                        <tr style="border-bottom: 1px solid var(--border-light); background: ${rowBg};">
+                          <td style="padding: 9px 14px; font-weight: 700; color: var(--text-primary); font-size: 12px;">${pDate}</td>
+                          <td style="padding: 9px 14px; text-align: center; color: var(--text-muted); font-size: 11.5px;">#${p.id ? p.id.substring(0, 8) : '-'}</td>
+                          <td style="padding: 9px 14px; text-align: center; color: var(--text-secondary); font-size: 11.5px;">${p.note || t('سداد جزء من الدين')}</td>
+                          <td style="padding: 9px 14px; text-align: left; font-weight: 900; color: var(--success); direction: ltr; font-size: 13px;">${formatIQD(p.amountIQD)}</td>
                         </tr>
                       `;
-                    }).join('')}
+          }).join('')}
                   </tbody>
                 </table>
               </div>
@@ -3091,54 +3140,56 @@ function showCustomerDetailOnPage(customerId) {
         if (entry.items && entry.items.length > 0) {
           itemsHtml = `
             <div class="expanded-items-box" id="customer-inv-items-${entry.id}" style="display: none; padding: 0; background: transparent; border-radius: 0 0 20px 20px; margin-top: -8px; margin-bottom: 12px;">
-              <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-top: none; border-radius: 0 0 18px 18px; overflow: hidden;">
+              <div style="background: var(--bg-glass); border: 1px solid var(--border); border-top: none; border-radius: 0 0 18px 18px; overflow: hidden;">
 
                 <!-- Section header -->
-                <div style="display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; background: linear-gradient(135deg, #f1f5f9 0%, #e8f0f7 100%); border-bottom: 1px solid #dde6ef;">
-                  <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(91, 127, 166, 0.1); color: #3a5a7a; padding: 6px 14px; border-radius: 20px; font-size: 12.5px; font-weight: 800; border: 1px solid rgba(91,127,166,0.15);">
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-secondary) 100%); border-bottom: 1px solid var(--border-light);">
+                  <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(91, 127, 166, 0.08); color: var(--primary); padding: 6px 14px; border-radius: 20px; font-size: 12.5px; font-weight: 800; border: 1px solid rgba(91,127,166,0.15);">
                     <span>📦</span> ${t('تفاصيل الفاتورة والمنتجات المباعة')}
                   </div>
-                  <span style="font-size: 11px; color: #7a9ab5; font-weight: 700; background: rgba(91,127,166,0.07); padding: 4px 10px; border-radius: 10px; border: 1px solid rgba(91,127,166,0.12);">${t('عدد المواد')}: ${entry.items.length}</span>
+                  <span style="font-size: 11px; color: var(--text-secondary); font-weight: 700; background: rgba(91,127,166,0.06); padding: 4px 10px; border-radius: 10px; border: 1px solid rgba(91,127,166,0.12);">${t('عدد المواد')}: ${entry.items.length}</span>
                 </div>
 
                 <!-- Products Table -->
                 <div style="padding: 14px 16px 6px 16px;">
-                  <table style="width: 100%; border-collapse: collapse; text-align: right; font-size: 13px; border-radius: 12px; overflow: hidden; border: 1px solid #dde6ef;">
+                  <table style="width: 100%; border-collapse: collapse; text-align: right; font-size: 13px; border-radius: 12px; overflow: hidden; border: 1px solid var(--border);">
                     <thead>
-                      <tr style="background: linear-gradient(135deg, #e8edf3 0%, #dde6ef 100%); border-bottom: 1.5px solid #c8d6e5;">
-                        <th style="padding: 11px 16px; text-align: right; font-weight: 800; color: #2d4a66; font-size: 12px; letter-spacing: 0.02em;">${t('اسم المنتج')}</th>
-                        <th style="padding: 11px 16px; text-align: center; font-weight: 800; color: #2d4a66; font-size: 12px;">${t('الكمية')}</th>
-                        <th style="padding: 11px 16px; text-align: center; font-weight: 800; color: #2d4a66; font-size: 12px;">${t('السعر المفرد')}</th>
-                        <th style="padding: 11px 16px; text-align: left; font-weight: 800; color: #2d4a66; font-size: 12px;">${t('الإجمالي')}</th>
+                      <tr style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); border-bottom: 1.5px solid var(--primary-dark);">
+                        <th style="padding: 11px 16px; text-align: right; font-weight: 800; color: #ffffff; font-size: 12px; letter-spacing: 0.02em;">${t('اسم المنتج')}</th>
+                        <th style="padding: 11px 16px; text-align: center; font-weight: 800; color: #ffffff; font-size: 12px;">${t('الكمية')}</th>
+                        <th style="padding: 11px 16px; text-align: center; font-weight: 800; color: #ffffff; font-size: 12px;">${t('السعر المفرد')}</th>
+                        <th style="padding: 11px 16px; text-align: left; font-weight: 800; color: #ffffff; font-size: 12px;">${t('الإجمالي')}</th>
                       </tr>
                     </thead>
                     <tbody>
                       ${entry.items.map((item, idx) => {
-                        const price = parseFloat(item.priceIQD || item.price) || 0;
-                        const qty = parseFloat(item.qty || item.quantity) || 1;
-                        const rowBg = idx % 2 === 0 ? '#ffffff' : '#f8fafc';
-                        return `
-                          <tr style="background: ${rowBg}; border-bottom: 1px solid #edf2f7; transition: background 0.18s;" onmouseover="this.style.background='#eef4fa'" onmouseout="this.style.background='${rowBg}'">
-                            <td style="padding: 11px 16px; font-weight: 700; color: #1a2a3a; display: flex; align-items: center; gap: 9px;">
-                              <span style="width: 7px; height: 7px; border-radius: 50%; background: #5b7fa6; display: inline-block; flex-shrink: 0;"></span>
+            const price = parseFloat(item.priceIQD || item.price) || 0;
+            const qty = parseFloat(item.qty || item.quantity) || 1;
+            const rowBg = idx % 2 === 0 ? 'var(--bg-card)' : 'var(--bg-secondary)';
+            return `
+                          <tr style="background: ${rowBg}; border-bottom: 1px solid var(--border-light); transition: background 0.18s;" onmouseover="this.style.background='var(--bg-card-hover)'" onmouseout="this.style.background='${rowBg}'">
+                            <td style="padding: 11px 16px; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 8px;">
+                              <span style="font-size: 16px; margin-left: 6px; display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; flex-shrink: 0;">
+                                ${renderEmojiHTML(item.emoji || '📦')}
+                              </span>
                               ${item.name}
                             </td>
                             <td style="padding: 11px 16px; text-align: center;">
-                              <span style="background: rgba(91,127,166,0.1); color: #3a5a7a; padding: 3px 10px; border-radius: 20px; font-size: 11.5px; font-weight: 800; border: 1px solid rgba(91,127,166,0.18);">
+                              <span style="background: rgba(91,127,166,0.08); color: var(--primary); padding: 3px 10px; border-radius: 20px; font-size: 11.5px; font-weight: 800; border: 1px solid rgba(91,127,166,0.15);">
                                 ${qty} ${item.unit || t('قطعة')}
                               </span>
                             </td>
-                            <td style="padding: 11px 16px; text-align: center; font-weight: 600; color: #5a7a94; direction: ltr; font-size: 12.5px;">${formatIQD(price)}</td>
-                            <td style="padding: 11px 16px; text-align: left; font-weight: 900; color: #2d4a66; direction: ltr; font-size: 13px;">${formatIQD(price * qty)}</td>
+                            <td style="padding: 11px 16px; text-align: center; font-weight: 600; color: var(--text-secondary); direction: ltr; font-size: 12.5px;">${formatIQD(price)}</td>
+                            <td style="padding: 11px 16px; text-align: left; font-weight: 900; color: var(--text-primary); direction: ltr; font-size: 13px;">${formatIQD(price * qty)}</td>
                           </tr>
                         `;
-                      }).join('')}
+          }).join('')}
                     </tbody>
                     <!-- Total row -->
                     <tfoot>
-                      <tr style="background: linear-gradient(135deg, #e8edf3 0%, #dde6ef 100%); border-top: 1.5px solid #c8d6e5;">
-                        <td colspan="3" style="padding: 10px 16px; font-weight: 800; color: #3a5a7a; font-size: 12.5px; text-align: right;">${t('المجموع الكلي')}</td>
-                        <td style="padding: 10px 16px; font-weight: 900; color: #2d4a66; direction: ltr; font-size: 14px; text-align: left;">${formatIQD(entry.total)}</td>
+                      <tr style="background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-secondary) 100%); border-top: 1.5px solid var(--border);">
+                        <td colspan="3" style="padding: 10px 16px; font-weight: 800; color: var(--text-secondary); font-size: 12.5px; text-align: right;">${t('المجموع الكلي')}</td>
+                        <td style="padding: 10px 16px; font-weight: 900; color: var(--primary); direction: ltr; font-size: 14.5px; text-align: left;">${formatIQD(entry.total)}</td>
                       </tr>
                     </tfoot>
                   </table>
@@ -3915,26 +3966,26 @@ function saveCustomer() {
 
   // Auto-prefix logic for numbers 1 to 100
   if (customerNumber && /^\d+$/.test(customerNumber)) {
-     let num = parseInt(customerNumber, 10);
-     if (num >= 1 && num <= 100) {
-        const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        let assigned = false;
-        const customers = DB.getCustomers();
-        
-        for (let i = 0; i < letters.length; i++) {
-           let candidate = letters[i] + num; // e.g. A1, B1
-           let exists = customers.find(c => c.customerNumber === candidate && c.id !== id);
-           if (!exists) {
-              customerNumber = candidate;
-              assigned = true;
-              break;
-           }
+    let num = parseInt(customerNumber, 10);
+    if (num >= 1 && num <= 100) {
+      const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+      let assigned = false;
+      const customers = DB.getCustomers();
+
+      for (let i = 0; i < letters.length; i++) {
+        let candidate = letters[i] + num; // e.g. A1, B1
+        let exists = customers.find(c => c.customerNumber === candidate && c.id !== id);
+        if (!exists) {
+          customerNumber = candidate;
+          assigned = true;
+          break;
         }
-        if (!assigned) {
-           showToast(t('تم استنفاد جميع الحروف لهذا الرقم (A-Z)') || 'تم استنفاد جميع الحروف', 'warning');
-           return;
-        }
-     }
+      }
+      if (!assigned) {
+        showToast(t('تم استنفاد جميع الحروف لهذا الرقم (A-Z)') || 'تم استنفاد جميع الحروف', 'warning');
+        return;
+      }
+    }
   }
 
   const data = {
@@ -3966,8 +4017,8 @@ function saveCustomer() {
     data.oldDebtPaid = 0;
     // تسجيل تاريخ الإضافة تلقائياً
     const today = new Date();
-    const dd = today.getDate().toString().padStart(2,'0');
-    const mm = (today.getMonth()+1).toString().padStart(2,'0');
+    const dd = today.getDate().toString().padStart(2, '0');
+    const mm = (today.getMonth() + 1).toString().padStart(2, '0');
     const yyyy = today.getFullYear();
     data.joinDate = `${yyyy}-${mm}-${dd}`;
     data.loyaltyPoints = 0;
@@ -5166,10 +5217,10 @@ function renderDebtTransactionCard(debt, idx) {
             ${debt.status !== 'paid' ? `<div style="font-size:12px; font-weight:700; color:#6366f1; direction:ltr; margin-top:2px;">یێ مای: ${formatIQD(remaining)}</div>` : ''}
           </div>
           <span style="padding:5px 12px; border-radius:20px; font-size:12px; font-weight:800; white-space:nowrap;
-            background:${statusClass==='paid'?'rgba(16,185,129,0.15)':statusClass==='partial'?'rgba(245,158,11,0.15)':'rgba(239,68,68,0.12)'};
-            color:${statusClass==='paid'?'#047857':statusClass==='partial'?'#b45309':'#b91c1c'};
-            border:1.5px solid ${statusClass==='paid'?'rgba(16,185,129,0.35)':statusClass==='partial'?'rgba(245,158,11,0.35)':'rgba(239,68,68,0.3)'}">
-            ${statusClass==='paid'?'✅ هاتیە دان':statusClass==='partial'?'🟡 پشکەک':'🔴 نەهاتیە دان'}
+            background:${statusClass === 'paid' ? 'rgba(16,185,129,0.15)' : statusClass === 'partial' ? 'rgba(245,158,11,0.15)' : 'rgba(239,68,68,0.12)'};
+            color:${statusClass === 'paid' ? '#047857' : statusClass === 'partial' ? '#b45309' : '#b91c1c'};
+            border:1.5px solid ${statusClass === 'paid' ? 'rgba(16,185,129,0.35)' : statusClass === 'partial' ? 'rgba(245,158,11,0.35)' : 'rgba(239,68,68,0.3)'}">
+            ${statusClass === 'paid' ? '✅ هاتیە دان' : statusClass === 'partial' ? '🟡 پشکەک' : '🔴 نەهاتیە دان'}
           </span>
           <span id="expand-icon-${debt.id}" style="font-size:14px; color:#6366f1; transition:transform 0.3s;">▼</span>
         </div>
@@ -5191,16 +5242,16 @@ function renderDebtTransactionCard(debt, idx) {
           <!-- rows -->
           <div>
             ${(debt.items || []).map((i, index, arr) => {
-              const allProds = typeof DB !== 'undefined' && DB.getProducts ? DB.getProducts() : [];
-              const prod = allProds.find(p => p.id === i.id || p.name === i.name);
-              const emoji = prod?.emoji || i.emoji || '📦';
-              const unitPrice = i.priceIQD || i.price || 0;
-              const qty = i.qty || 1;
-              const lineTotal = unitPrice * qty;
-              const isEven = index % 2 === 0;
-              const rowBg = isEven ? 'rgba(99,102,241,0.04)' : 'rgba(99,102,241,0.01)';
-              return `
-              <div style="display:grid; grid-template-columns:2fr 0.7fr 1.1fr 1.1fr; align-items:center; padding:12px 16px; border-bottom:${index===arr.length-1?'none':'1px solid rgba(99,102,241,0.08)'}; background:${rowBg}; transition:background 0.2s;" onmouseover="this.style.background='rgba(99,102,241,0.10)'" onmouseout="this.style.background='${rowBg}'">
+    const allProds = typeof DB !== 'undefined' && DB.getProducts ? DB.getProducts() : [];
+    const prod = allProds.find(p => p.id === i.id || p.name === i.name);
+    const emoji = prod?.emoji || i.emoji || '📦';
+    const unitPrice = i.priceIQD || i.price || 0;
+    const qty = i.qty || 1;
+    const lineTotal = unitPrice * qty;
+    const isEven = index % 2 === 0;
+    const rowBg = isEven ? 'rgba(99,102,241,0.04)' : 'rgba(99,102,241,0.01)';
+    return `
+              <div style="display:grid; grid-template-columns:2fr 0.7fr 1.1fr 1.1fr; align-items:center; padding:12px 16px; border-bottom:${index === arr.length - 1 ? 'none' : '1px solid rgba(99,102,241,0.08)'}; background:${rowBg}; transition:background 0.2s;" onmouseover="this.style.background='rgba(99,102,241,0.10)'" onmouseout="this.style.background='${rowBg}'">
                 <div style="display:flex; align-items:center; gap:10px;">
                   <span style="font-size:22px;">${emoji}</span>
                   <span style="font-weight:700; color:var(--text-primary); font-size:14px;">${i.name || 'بەرهەم'}</span>
@@ -5211,7 +5262,7 @@ function renderDebtTransactionCard(debt, idx) {
                 <div style="text-align:center; font-weight:700; color:var(--text-primary); font-size:14px; direction:ltr;">${formatIQD(unitPrice)}</div>
                 <div style="text-align:left; font-weight:900; color:#4338ca; font-size:15px; direction:ltr;">${formatIQD(lineTotal)}</div>
               </div>`;
-            }).join('')}
+  }).join('')}
           </div>
           <!-- total footer -->
           <div style="background:linear-gradient(90deg,rgba(99,102,241,0.12),rgba(139,92,246,0.08)); padding:14px 16px; display:flex; justify-content:space-between; align-items:center; border-top:2px solid rgba(99,102,241,0.18);">
@@ -5228,19 +5279,19 @@ function renderDebtTransactionCard(debt, idx) {
           </div>
           <div>
           ${debt.payments.map((p, pi, pa) => {
-            let pDate = new Date();
-            try { pDate = new Date(p.date); if (isNaN(pDate.getTime())) pDate = new Date(); } catch (e) {}
-            const pDay = pDate.getDate().toString().padStart(2,'0');
-            const pMonth = (pDate.getMonth()+1).toString().padStart(2,'0');
-            const pYear = pDate.getFullYear();
-            const pDateStr = `${pDay}/${pMonth}/${pYear}`;
-            const rowBg = pi%2===0?'rgba(16,185,129,0.05)':'rgba(16,185,129,0.01)';
-            return `
-            <div style="display:flex; justify-content:space-between; align-items:center; padding:11px 16px; border-bottom:${pi===pa.length-1?'none':'1px solid rgba(16,185,129,0.08)'}; background:${rowBg};">
+    let pDate = new Date();
+    try { pDate = new Date(p.date); if (isNaN(pDate.getTime())) pDate = new Date(); } catch (e) { }
+    const pDay = pDate.getDate().toString().padStart(2, '0');
+    const pMonth = (pDate.getMonth() + 1).toString().padStart(2, '0');
+    const pYear = pDate.getFullYear();
+    const pDateStr = `${pDay}/${pMonth}/${pYear}`;
+    const rowBg = pi % 2 === 0 ? 'rgba(16,185,129,0.05)' : 'rgba(16,185,129,0.01)';
+    return `
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:11px 16px; border-bottom:${pi === pa.length - 1 ? 'none' : '1px solid rgba(16,185,129,0.08)'}; background:${rowBg};">
               <span style="color:var(--text-primary); font-size:13px; font-weight:700;">📅 ${pDateStr}</span>
               <span style="font-weight:900; color:#047857; font-size:15px; direction:ltr;">+ ${formatIQD(p.amountIQD || p.amount || 0)}</span>
             </div>`;
-          }).join('')}
+  }).join('')}
           </div>
         </div>
         ` : ''}
@@ -5315,14 +5366,14 @@ async function deleteDebtEntry(debtId) {
 function openGlobalDebtPayModal(preselectedId = null) {
   const allDebts = DB.getDebts().filter(d => d.status !== 'paid');
   const customers = DB.getCustomers();
-  
+
   // Find customers with old debt remaining
   const oldDebtorsIds = customers.filter(c => (c.oldDebt || 0) - (c.oldDebtPaid || 0) > 0).map(c => c.id);
   // Find customers with new debts
   const newDebtorsIds = allDebts.map(d => d.customerId);
-  
+
   const debtorIds = [...new Set([...oldDebtorsIds, ...newDebtorsIds])];
-  
+
   if (debtorIds.length === 0) {
     showToast('لا توجد ديون مسجلة', 'info');
     return;
@@ -5355,7 +5406,7 @@ function updateBulkDebtRemaining() {
   const oldDebt = customer ? parseFloat(customer.oldDebt) || 0 : 0;
   const oldDebtPaid = customer ? parseFloat(customer.oldDebtPaid) || 0 : 0;
   const oldDebtRemaining = Math.max(0, oldDebt - oldDebtPaid);
-  
+
   const debts = DB.getDebts().filter(d => d.customerId === customerId && d.status !== 'paid');
   const totalRemaining = oldDebtRemaining + debts.reduce((sum, d) => sum + Math.max(0, (parseFloat(d.totalIQD) || 0) - (parseFloat(d.paidAmount) || 0)), 0);
 
@@ -5369,7 +5420,7 @@ function calcBulkDebtRemaining() {
   const oldDebt = customer ? parseFloat(customer.oldDebt) || 0 : 0;
   const oldDebtPaid = customer ? parseFloat(customer.oldDebtPaid) || 0 : 0;
   const oldDebtRemaining = Math.max(0, oldDebt - oldDebtPaid);
-  
+
   const debts = DB.getDebts().filter(d => d.customerId === customerId && d.status !== 'paid');
   const totalRemaining = oldDebtRemaining + debts.reduce((sum, d) => sum + Math.max(0, (parseFloat(d.totalIQD) || 0) - (parseFloat(d.paidAmount) || 0)), 0);
   const inputVal = parseFloat(document.getElementById('bdpm-amount').value) || 0;
@@ -5437,7 +5488,7 @@ function submitBulkDebtPayment() {
   if (paidTotal > 0) {
     customer.lastPaymentDate = new Date().toISOString();
     DB.updateCustomer(customer.id, customer);
-    
+
     showToast(`تم سداد ${formatIQD(paidTotal)} بنجاح`, 'success');
     const payMsg = `💳 *تسديد دفعة ديون*\nالعميل: ${customer.name}\nالمبلغ المسدد: ${formatIQD(paidTotal)}`;
     if (typeof sendTelegramMessage === 'function') sendTelegramMessage(payMsg);
@@ -5655,20 +5706,20 @@ function printDebtDetail() {
 function openPDFSendModal() {
   const selectEl = document.getElementById('pdf-customer-select');
   if (!selectEl) return;
-  
+
   const customers = DB.getCustomers();
   if (customers.length === 0) {
     showToast('لا يوجد عملاء في النظام', 'warning');
     return;
   }
-  
-  selectEl.innerHTML = '<option value="">-- اختر العميل --</option>' + 
+
+  selectEl.innerHTML = '<option value="">-- اختر العميل --</option>' +
     customers.map(c => `<option value="${c.id}">${c.customerNumber ? c.name + ' (' + c.customerNumber + ')' : c.name}</option>`).join('');
-    
+
   if (selectedDebtorId) {
     selectEl.value = selectedDebtorId;
   }
-  
+
   openModal('pdf-send-modal');
 }
 
@@ -5785,7 +5836,7 @@ async function executeSendPDF() {
         </thead>
         <tbody>
     `;
-    
+
     [...debts].reverse().forEach((d, index) => {
       let dateObj;
       try {
@@ -5798,9 +5849,9 @@ async function executeSendPDF() {
       const dTotal = parseFloat(d.totalIQD) || 0;
       const dPaid = parseFloat(d.paidAmount) || 0;
       const dRem = Math.max(0, dTotal - dPaid);
-      
+
       const bgColor = index % 2 === 0 ? '#f8fafc' : '#ffffff';
-      
+
       html += `
         <tr style="background: ${bgColor}; border-bottom: 1px solid #e2e8f0;">
           <td style="padding:8px; color:#334155; font-weight:600;">${dDate}</td>
@@ -5852,26 +5903,26 @@ async function executeSendPDF() {
 
   html2pdf().set(opt).from(pdfContainer).save().then(() => {
     showToast('تم تحميل الكشف بنجاح! سيتم تحويلك لواتساب لإرساله', 'success');
-    
+
     setTimeout(() => {
       let phone = customer.phone || '';
       phone = phone.replace(/[^0-9]/g, '');
       if (phone.startsWith('0')) {
-        phone = '964' + phone.substring(1); 
+        phone = '964' + phone.substring(1);
       } else if (phone.length === 10) {
-        phone = '964' + phone; 
+        phone = '964' + phone;
       }
-      
+
       const message = encodeURIComponent(`سلاڤ و ڕێز بۆ تە بەرێز *${customer.name}*،\n\n` +
-        `ئەم دخوازین وەبیرا تە بینین ل دور لیستا قەرزێ تە ل جهێ مە *${settings.storeName || 'المتجر'}*:\n\n` + 
+        `ئەم دخوازین وەبیرا تە بینین ل دور لیستا قەرزێ تە ل جهێ مە *${settings.storeName || 'المتجر'}*:\n\n` +
         `📊 *کورتیا هژمارا تە:*\n` +
-        `🔹 قەرزێن كەڤن يێن ماى: ${formatIQD(oldDebtRemaining)}\n` + 
-        `🔹 قەرزێن نوى يێن ماى: ${formatIQD(totalDebt)} ` + (debts.length > 0 ? `(هژمارا پسولان: ${debts.length})` : '') + `\n` + 
-        `------------------------\n` + 
-        `🔴 *كۆما گشتی یا قەرزێ ماى:* ${formatIQD(finalRemaining)}\n\n` + 
+        `🔹 قەرزێن كەڤن يێن ماى: ${formatIQD(oldDebtRemaining)}\n` +
+        `🔹 قەرزێن نوى يێن ماى: ${formatIQD(totalDebt)} ` + (debts.length > 0 ? `(هژمارا پسولان: ${debts.length})` : '') + `\n` +
+        `------------------------\n` +
+        `🔴 *كۆما گشتی یا قەرزێ ماى:* ${formatIQD(finalRemaining)}\n\n` +
         `(تێبینی: لیستا قەرزێ تە ب درێژى ب شێوێ PDF ل دەڤ من هاتیە ئامادەکرن، ئەگەر تە بڤێت دێ ل ڤێرە بۆ تە فريکەم).\n\n` +
         `سوپاس بۆ مامەلەکرنا تە دگەل مە 🌸`);
-      
+
       if (phone.length >= 10) {
         const whatsappUrl = `https://wa.me/${phone}?text=${message}`;
         window.open(whatsappUrl, '_blank');
@@ -6040,7 +6091,7 @@ function switchPosMobileView(view) {
     if (numpad) {
       numpad.style.setProperty('display', 'flex', 'important');
       if (container) container.style.gridTemplateColumns = '1fr 1fr';
-      
+
       // On small mobile, stack them instead
       if (window.innerWidth <= 768 && container) {
         container.style.gridTemplateColumns = '1fr';
@@ -6490,7 +6541,7 @@ function openSupplierPaymentModal(supplierId = null) {
   if (suppliers.length === 0) { showToast('لا يوجد موردون حالياً', 'warning'); return; }
 
   document.getElementById('spm-supplier').innerHTML = suppliers.map(s => `<option value="${s.id}">${s.company ? `${s.company} (مندوب: ${s.name})` : s.name}</option>`).join('');
-  
+
   if (supplierId) {
     document.getElementById('spm-supplier').value = supplierId;
   }
@@ -6564,7 +6615,7 @@ async function submitSupplierPayment() {
   closeModal('supplier-payment-modal');
   loadPurchasesPage();
   loadSuppliersPage();
-  
+
   // Refresh detail panel
   if (selectedSupplierId === supplierId) {
     selectedSupplierId = null;
@@ -6857,7 +6908,7 @@ function editSupplier(id) {
 function generateShortSupplierId(isCompany) {
   const suppliers = JSON.parse(localStorage.getItem('pos_suppliers') || '[]');
   const existingIds = new Set(suppliers.map(s => s.shortId || s.id));
-  
+
   if (isCompany) {
     const letters = "ABCDEFGHIJKLMOPQRSTUVWXY"; // Exclude Z
     for (let i = 0; i < letters.length; i++) {
@@ -6908,7 +6959,7 @@ function submitSupplierForm() {
   } else {
     const isCompany = !!company;
     const shortId = generateShortSupplierId(isCompany);
-    
+
     suppliers.push({
       id: Date.now().toString(),
       shortId,
@@ -7053,7 +7104,7 @@ function switchSalesTab(tab, btn) {
     const el = document.getElementById('sales-tab-' + t);
     if (el) el.style.display = t === tab ? 'block' : 'none';
   });
-  
+
   // Highlight the active button in the top tabs bar
   document.querySelectorAll('#sales-sub-tabs .archive-tab').forEach(b => b.classList.remove('active'));
   if (btn) {
@@ -7062,7 +7113,7 @@ function switchSalesTab(tab, btn) {
     // If no btn provided, try to find the matching button by finding an onclick that contains the tab name
     const tabs = document.querySelectorAll('#sales-sub-tabs .archive-tab');
     tabs.forEach(t => {
-      if(t.getAttribute('onclick') && t.getAttribute('onclick').includes(`'${tab}'`)) {
+      if (t.getAttribute('onclick') && t.getAttribute('onclick').includes(`'${tab}'`)) {
         t.classList.add('active');
       }
     });
@@ -7611,7 +7662,7 @@ function loadSuppliersPage() {
 
 function searchSuppliers(query) {
   const q = query.toLowerCase();
-  
+
   // 1. Search in purchases-suppliers-grid (Purchases Supplier Tab)
   const purchasesCards = document.querySelectorAll('#purchases-suppliers-grid .customer-card');
   purchasesCards.forEach(card => {
@@ -7636,7 +7687,7 @@ function renderSuppliersList(query = '') {
 
   if (query) {
     const q = query.toLowerCase();
-    filtered = suppliers.filter(s => 
+    filtered = suppliers.filter(s =>
       s.name.toLowerCase().includes(q) ||
       (s.company && s.company.toLowerCase().includes(q)) ||
       (s.shortId && s.shortId.toLowerCase().includes(q)) ||
@@ -7744,20 +7795,20 @@ function renderSuppliersList(query = '') {
       </div>
     `;
   }).join('');
-  
+
   if (typeof applyLanguage === 'function') applyLanguage();
 }
 
 function goBackToSuppliersGrid() {
   const detailContainer = document.getElementById('supplier-detail-view-container');
   if (detailContainer) detailContainer.style.display = 'none';
-  
+
   const searchBar = document.getElementById('purchases-suppliers-search-bar');
   if (searchBar) searchBar.style.display = 'flex';
-  
+
   const grid = document.getElementById('purchases-suppliers-grid');
   if (grid) grid.style.display = 'grid';
-  
+
   selectedSupplierId = null;
 }
 
@@ -8656,17 +8707,17 @@ function loadBarcodePage() {
     const dropdown = document.getElementById(type + '-product-dropdown');
     const input = document.getElementById(type + '-product-search');
     const hidden = document.getElementById(type + '-product-id');
-    
+
     if (dropdown && input && hidden) {
       input.value = '';
       hidden.value = '';
       dropdown.innerHTML = '';
-      
+
       products.forEach(p => {
         const item = document.createElement('div');
         item.className = 'custom-dropdown-item';
         item.innerHTML = `<span class="cat-name">${window.t(p.name)}</span> <small style="color:var(--text-muted)">(${p.barcode || window.t('بدون باركود')})</small>`;
-        item.onmousedown = function(e) {
+        item.onmousedown = function (e) {
           e.preventDefault();
           hidden.value = p.id;
           input.value = p.name;
@@ -8686,7 +8737,7 @@ function toggleCustomDropdown(dropdownId, inputId) {
   const d = document.getElementById(dropdownId);
   const inp = document.getElementById(inputId);
   if (!d || !inp) return;
-  
+
   if (d.classList.contains('show')) {
     d.classList.remove('show');
     inp.blur();
@@ -8727,8 +8778,10 @@ function generateBarcodePreview() {
 
   let barcodeValue = '';
   let label = '';
-  let priceStr = '';
-  let storeName = DB.getSettings().storeName || 'سوبرماركت';
+  let priceIQDStr = '';
+  let priceUSDStr = '';
+  let storeName = DB.getSettings().storeName;
+  if (!storeName || storeName === 'undefined') storeName = 'سوبرماركت';
 
   if (manual && manual.value.trim()) {
     barcodeValue = manual.value.trim();
@@ -8739,9 +8792,11 @@ function generateBarcodePreview() {
     if (p) {
       barcodeValue = p.barcode;
       label = p.name;
+      const priceIQD = p.priceIQD || p.price || 0;
       const exchangeRate = DB.getSettings().exchangeRate || 1500;
-      const priceUSD = p.priceUSD || (p.priceIQD / exchangeRate);
-      priceStr = `${p.priceIQD.toLocaleString()} د.ع | $${priceUSD.toFixed(2)}`;
+      const priceUSD = p.priceUSD || (priceIQD / exchangeRate);
+      priceIQDStr = `${priceIQD.toLocaleString()} د.ع`;
+      priceUSDStr = `$${priceUSD.toFixed(2)}`;
     }
   }
 
@@ -8765,7 +8820,12 @@ function generateBarcodePreview() {
         ${bars}
       </div>
       <div style="font-family: monospace; font-size: 12px; color: #475569; font-weight: 600; margin-bottom: 8px;">${barcodeValue}</div>
-      ${priceStr ? `<div style="font-size: 13px; font-weight: 800; color: #00c896; background: rgba(0, 200, 150, 0.08); padding: 4px 8px; border-radius: 6px; display: inline-block;">${priceStr}</div>` : ''}
+      ${priceIQDStr ? `
+        <div style="display: inline-flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; background: rgba(0, 200, 150, 0.08); padding: 6px 16px; border-radius: 8px; min-width: 120px; line-height: 1.1;">
+          <div style="font-size: 16px; font-weight: 800; color: #000;">${priceIQDStr}</div>
+          <div style="font-size: 13px; font-weight: 700; color: #555; margin-top: 1px;">${priceUSDStr}</div>
+        </div>
+      ` : ''}
     </div>
   `;
 }
@@ -8857,11 +8917,11 @@ function downloadBarcode() {
   }
 }
 
-window.togglePrinterTypeFields = function() {
+window.togglePrinterTypeFields = function () {
   const printerType = document.getElementById('printer-type').value;
   const thermalContainer = document.getElementById('thermal-size-container');
   const a4Container = document.getElementById('a4-layout-container');
-  
+
   if (printerType === 'thermal') {
     thermalContainer.style.display = 'block';
     a4Container.style.display = 'none';
@@ -8874,7 +8934,7 @@ window.togglePrinterTypeFields = function() {
   updateLabelPreviewText();
 };
 
-window.toggleCustomThermalSize = function() {
+window.toggleCustomThermalSize = function () {
   const size = document.getElementById('thermal-label-size').value;
   const customDims = document.getElementById('custom-thermal-dims');
   if (size === 'custom') {
@@ -8888,7 +8948,7 @@ window.toggleCustomThermalSize = function() {
 function updateLabelPreviewText() {
   const desc = document.getElementById('guide-size-desc');
   if (!desc) return;
-  
+
   const printerType = document.getElementById('printer-type') ? document.getElementById('printer-type').value : 'thermal';
   if (printerType === 'thermal') {
     const size = document.getElementById('thermal-label-size') ? document.getElementById('thermal-label-size').value : '50x30';
@@ -8909,7 +8969,7 @@ function updateLabelPreviewText() {
     if (layout === '3x8') layoutText = '24 ملصقاً (3 أعمدة × 8 صفوف)';
     else if (layout === '4x10') layoutText = '40 ملصقاً (4 أعمدة × 10 صفوف)';
     else if (layout === '5x13') layoutText = '65 ملصقاً (5 أعمدة × 13 صفوف)';
-    
+
     desc.innerHTML = `📄 <strong>طابعة مكتبية عادية (A4):</strong> سيتم ترتيب الملصقات في شبكة متناسقة تناسب أوراق الملصقات الجاهزة المقسمة إلى <strong>${layoutText}</strong>.`;
   }
 }
@@ -8931,16 +8991,20 @@ function printPriceLabels() {
   showToast('جارٍ تهيئة طباعة الملصقات...', 'info');
 
   const barcodeValue = product.barcode || '0000000000000';
-  const storeName = DB.getSettings().storeName || 'سوبرماركت';
+  let storeName = DB.getSettings().storeName;
+  if (!storeName || storeName === 'undefined') storeName = 'سوبرماركت';
+  const exchangeRate = DB.getSettings().exchangeRate || 1500;
+  const priceIQD = product.priceIQD || product.price || 0;
+  const priceUSD = product.priceUSD || (priceIQD / exchangeRate);
 
   let printWindowHtml = '';
-  
+
   if (printerType === 'thermal') {
     // Determine label dimensions
     const size = document.getElementById('thermal-label-size').value;
     let width = 50;
     let height = 30;
-    
+
     if (size === '38x25') { width = 38; height = 25; }
     else if (size === '50x30') { width = 50; height = 30; }
     else if (size === '58x40') { width = 58; height = 40; }
@@ -8949,18 +9013,20 @@ function printPriceLabels() {
       width = parseInt(document.getElementById('custom-label-width').value) || 50;
       height = parseInt(document.getElementById('custom-label-height').value) || 30;
     }
-    
+
     // Scale properties based on size
     let titleFontSize = '12px';
     let priceFontSize = '14px';
+    let usdFontSize = '11px';
     let codeFontSize = '10px';
     let storeFontSize = '8px';
     let barWidth = 1.2;
     let barHeight = 25;
-    
+
     if (width <= 40) {
       titleFontSize = '9px';
       priceFontSize = '11px';
+      usdFontSize = '9px';
       codeFontSize = '8px';
       storeFontSize = '7px';
       barWidth = 0.9;
@@ -8968,6 +9034,7 @@ function printPriceLabels() {
     } else if (width <= 50) {
       titleFontSize = '11px';
       priceFontSize = '13px';
+      usdFontSize = '10px';
       codeFontSize = '9px';
       storeFontSize = '8px';
       barWidth = 1.1;
@@ -8975,6 +9042,7 @@ function printPriceLabels() {
     } else if (width > 60) {
       titleFontSize = '14px';
       priceFontSize = '18px';
+      usdFontSize = '14px';
       codeFontSize = '11px';
       storeFontSize = '10px';
       barWidth = 1.6;
@@ -9011,7 +9079,10 @@ function printPriceLabels() {
             ${bars}
           </div>
           <div style="font-size: ${codeFontSize}; color: #333; margin-bottom: 0.5mm; font-family: monospace;">${barcodeValue}</div>
-          <div style="font-size: ${priceFontSize}; font-weight: 800; color: #000;">${formatIQD(product.priceIQD || product.price)}</div>
+          <div style="display: flex; flex-direction: column; align-items: center; line-height: 1.1;">
+            <div style="font-size: ${priceFontSize}; font-weight: 800; color: #000;">${formatIQD(priceIQD)}</div>
+            <div style="font-size: ${usdFontSize}; font-weight: 700; color: #555; margin-top: 0.5mm;">$${priceUSD.toFixed(2)}</div>
+          </div>
         </div>
       `;
     }
@@ -9065,23 +9136,26 @@ function printPriceLabels() {
 
     const labelsPerPage = cols * rows;
     const totalPages = Math.ceil(qty / labelsPerPage);
-    
+
     // Scale barcode depending on density
     let barWidth = 1.2;
     let barHeight = 28;
     let titleFontSize = '12px';
     let priceFontSize = '14px';
-    
+    let usdFontSize = '11px';
+
     if (cols === 4) {
       barWidth = 0.9;
       barHeight = 24;
       titleFontSize = '10px';
       priceFontSize = '12px';
+      usdFontSize = '9px';
     } else if (cols === 5) {
       barWidth = 0.7;
       barHeight = 20;
       titleFontSize = '9px';
       priceFontSize = '11px';
+      usdFontSize = '8px';
     }
 
     const bars = barcodeValue.split('').map(ch => {
@@ -9117,7 +9191,10 @@ function printPriceLabels() {
                 ${bars}
               </div>
               <div style="font-size: 9px; color: #333; margin-bottom: 1px; font-family: monospace;">${barcodeValue}</div>
-              <div style="font-size: ${priceFontSize}; font-weight: 800; color: #000;">${formatIQD(product.priceIQD || product.price)}</div>
+              <div style="display: flex; flex-direction: column; align-items: center; line-height: 1.1;">
+                <div style="font-size: ${priceFontSize}; font-weight: 800; color: #000;">${formatIQD(priceIQD)}</div>
+                <div style="font-size: ${usdFontSize}; font-weight: 700; color: #555; margin-top: 0.5mm;">$${priceUSD.toFixed(2)}</div>
+              </div>
             </div>
           `;
           qtyLeft--;
@@ -9548,7 +9625,7 @@ function buildNotifications() {
       if (!lastActionDate && c.joinDate) {
         lastActionDate = new Date(c.joinDate);
       }
-      
+
       if (lastActionDate) {
         const diffDays = (now - lastActionDate) / (1000 * 60 * 60 * 24);
         if (diffDays >= 40) {
@@ -10615,7 +10692,7 @@ function openGeneralPurchaseModal() {
   // Load suppliers into datalist
   const suppliers = JSON.parse(localStorage.getItem('pos_suppliers') || '[]');
   const datalist = document.getElementById('gpm-suppliers-list');
-  if(datalist) {
+  if (datalist) {
     datalist.innerHTML = suppliers.map(s => `<option value="${s.name}"></option>`).join('');
   }
 
@@ -10637,7 +10714,7 @@ function handleSupermarketExpenseImageSelect(event) {
   const file = event.target.files[0];
   if (file) {
     const reader = new FileReader();
-    reader.onload = function(e) {
+    reader.onload = function (e) {
       currentExpenseImage = e.target.result;
       const preview = document.getElementById('expense-image-preview');
       preview.style.display = 'block';
@@ -10685,7 +10762,7 @@ function saveSupermarketExpense() {
     note: note,
     image: currentExpenseImage
   });
-  
+
   localStorage.setItem('pos_supermarket_expenses', JSON.stringify(expenses));
   closeSupermarketExpenseModal();
   showToast('تم تسجيل المصروف بنجاح', 'success');
@@ -10696,15 +10773,15 @@ function renderExpenses() {
   const tbody = document.getElementById('purchases-expenses-tbody');
   if (!tbody) return;
   const expenses = JSON.parse(localStorage.getItem('pos_supermarket_expenses') || '[]');
-  
+
   if (expenses.length === 0) {
     tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text-secondary);padding:40px;" data-translate="لا توجد مصروفات مسجلة بعد">لا توجد مصروفات مسجلة بعد</td></tr>';
     applyTranslations();
     return;
   }
-  
-  expenses.sort((a,b) => new Date(b.date) - new Date(a.date));
-  
+
+  expenses.sort((a, b) => new Date(b.date) - new Date(a.date));
+
   let html = '';
   expenses.forEach(exp => {
     html += `
@@ -10721,13 +10798,13 @@ function renderExpenses() {
       </tr>
     `;
   });
-  
+
   tbody.innerHTML = html;
   applyTranslations();
 }
 
 function deleteExpense(id) {
-  if(!confirm('هل أنت متأكد من حذف هذا المصروف؟')) return;
+  if (!confirm('هل أنت متأكد من حذف هذا المصروف؟')) return;
   let expenses = JSON.parse(localStorage.getItem('pos_supermarket_expenses') || '[]');
   expenses = expenses.filter(e => e.id !== id);
   localStorage.setItem('pos_supermarket_expenses', JSON.stringify(expenses));
@@ -10751,7 +10828,7 @@ function switchPurchasesTab(tab, btn) {
   const btnExpense = document.getElementById('btn-add-expense');
   const btnPurchase = document.getElementById('btn-add-purchase');
   const btnSupplier = document.getElementById('btn-add-supplier');
-  
+
   if (btnExpense) btnExpense.style.display = tab === 'expenses' ? 'inline-flex' : 'none';
   if (btnPurchase) btnPurchase.style.display = tab === 'invoices' ? 'inline-flex' : 'none';
   if (btnSupplier) btnSupplier.style.display = tab === 'suppliers' ? 'inline-flex' : 'none';
@@ -10776,9 +10853,9 @@ function handleNumpad(key) {
     if (key === '.' && currentNumpadValue.includes('.')) return;
     currentNumpadValue += key;
   }
-  
+
   if (display) display.value = currentNumpadValue;
-  
+
   if (cashInput) {
     cashInput.value = currentNumpadValue;
     const event = new Event('input', { bubbles: true });
@@ -10789,19 +10866,19 @@ function handleNumpad(key) {
 function applyNumpadValue() {
   const display = document.getElementById('numpad-input');
   const cashInput = document.getElementById('cash-received');
-  
+
   if (!display || !cashInput) return;
-  
+
   if (currentNumpadValue !== "") {
     cashInput.value = currentNumpadValue;
     // Trigger the input event so calculateChange() fires
     const event = new Event('input', { bubbles: true });
     cashInput.dispatchEvent(event);
-    
+
     // Clear numpad after applying
     currentNumpadValue = "";
     display.value = "";
-    
+
     showToast('تم إدخال المبلغ بنجاح', 'success');
   }
 }
@@ -10818,7 +10895,7 @@ let continuousScannerLastScanTime = 0;
 
 async function startContinuousScanner() {
   if (continuousScannerActive) return;
-  
+
   const video = document.getElementById('continuous-scanner-video');
   if (!video) return;
 
@@ -10826,14 +10903,14 @@ async function startContinuousScanner() {
     continuousScannerStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
     video.srcObject = continuousScannerStream;
     continuousScannerActive = true;
-    
+
     if ('BarcodeDetector' in window) {
       const supportedFormats = await BarcodeDetector.getSupportedFormats();
       const barcodeDetector = new BarcodeDetector({ formats: supportedFormats });
-      
+
       const scanLoop = async () => {
         if (!continuousScannerActive) return;
-        
+
         if (video.readyState === video.HAVE_ENOUGH_DATA) {
           try {
             const barcodes = await barcodeDetector.detect(video);
@@ -10844,10 +10921,10 @@ async function startContinuousScanner() {
               if (code !== continuousScannerLastScanned || (now - continuousScannerLastScanTime) > 3000) {
                 continuousScannerLastScanned = code;
                 continuousScannerLastScanTime = now;
-                
+
                 // Process the scanned barcode
                 lookupScannedBarcode(code);
-                
+
                 // Play a beep sound if possible, or visual flash
                 const overlay = document.querySelector('.scanner-overlay');
                 if (overlay) {
@@ -10860,15 +10937,15 @@ async function startContinuousScanner() {
             console.error('Barcode detection error:', e);
           }
         }
-        
+
         requestAnimationFrame(scanLoop);
       };
-      
+
       scanLoop();
     } else {
       showToast('جهازك لا يدعم قارئ الباركود المدمج، يرجى التحديث', 'warning');
     }
-    
+
   } catch (err) {
     console.error('Camera access denied:', err);
     showToast('يرجى السماح بالوصول للكاميرا لاستخدام الماسح', 'error');
@@ -10887,13 +10964,13 @@ function stopContinuousScanner() {
 function renderScannerCart() {
   const container = document.getElementById('scanner-cart-items');
   const totalEl = document.getElementById('scanner-total-price');
-  
+
   if (!container || !totalEl) return;
-  
+
   // Update total
   const finalTotal = state.cart.reduce((sum, item) => sum + (item.priceIQD * item.qty), 0) - (state.discount || 0);
   totalEl.textContent = formatIQD(finalTotal > 0 ? finalTotal : 0);
-  
+
   if (state.cart.length === 0) {
     container.innerHTML = `
       <div class="sbs-empty">
@@ -10904,7 +10981,7 @@ function renderScannerCart() {
     `;
     return;
   }
-  
+
   // Only show the latest 10 items or so to avoid massive lists
   const itemsHTML = state.cart.slice().reverse().map(item => {
     return `
@@ -10916,7 +10993,7 @@ function renderScannerCart() {
       </div>
     `;
   }).join('');
-  
+
   container.innerHTML = itemsHTML;
 }
 
@@ -10934,7 +11011,7 @@ function holdCurrentCart() {
     if (typeof showToast === 'function') showToast(t ? t('no_items_in_cart') : 'السلة فارغة', 'warning');
     return;
   }
-  
+
   if (!state.heldCarts) state.heldCarts = [];
 
   const cartTotal = state.cart.reduce((sum, item) => sum + ((item.priceIQD || item.price || 0) * (item.qty || item.quantity || 1)), 0) - (state.discount || 0);
@@ -10953,7 +11030,7 @@ function holdCurrentCart() {
 
   state.heldCarts.push(cartSnapshot);
   saveHeldCarts();
-  
+
   if (typeof clearCart === 'function') {
     clearCart(false);
   } else {
@@ -10963,7 +11040,7 @@ function holdCurrentCart() {
     if (typeof renderCart === 'function') renderCart();
     if (typeof updateCartTotals === 'function') updateCartTotals();
   }
-  
+
   if (typeof showToast === 'function') showToast('تم تعليق الفاتورة بنجاح', 'success');
 }
 
@@ -11031,10 +11108,10 @@ function _doResumeCart(index) {
   state.discount = heldCart.discount || 0;
   state.discountType = heldCart.discountType || 'percent';
   state.selectedCustomer = heldCart.customer || null;
-  
+
   state.heldCarts.splice(index, 1);
   saveHeldCarts();
-  
+
   if (typeof renderCart === 'function') renderCart();
   if (typeof updateCartTotals === 'function') updateCartTotals();
   if (typeof loadCustomerSelect === 'function') loadCustomerSelect();

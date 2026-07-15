@@ -1,0 +1,5005 @@
+/* ==========================================
+   CLAYMORPHISM DESIGN SYSTEM OVERRIDES
+   Fully responsive 3D clay-like aesthetics
+   ========================================== */
+
+/* ------------------------------------------
+   1. Design Tokens & CSS Variables
+   ------------------------------------------ */
+
+/* Default/Dark Mode theme values */
+:root {
+  --clay-card-radius: 24px;
+  --clay-btn-radius: 14px;
+  --clay-input-radius: 14px;
+
+  /* Application Background (Dark Mode Radial Auroras) */
+  --clay-app-bg: radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.12) 0, transparent 50%),
+    radial-gradient(at 50% 0%, rgba(14, 165, 233, 0.08) 0, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(16, 185, 129, 0.08) 0, transparent 50%);
+  --clay-app-bg-color: #0b071e;
+
+  /* Card Color Themes (Dark Mode) */
+  --clay-bg-purple: linear-gradient(135deg, rgba(99, 102, 241, 0.25), rgba(67, 56, 202, 0.15));
+  --clay-shadow-purple: 8px 8px 20px rgba(0, 0, 0, 0.45),
+    inset -6px -6px 12px rgba(0, 0, 0, 0.7),
+    inset 6px 6px 12px rgba(255, 255, 255, 0.08);
+  --clay-shadow-purple-hover: 12px 12px 28px rgba(0, 0, 0, 0.55),
+    inset -6px -6px 12px rgba(0, 0, 0, 0.8),
+    inset 6px 6px 12px rgba(255, 255, 255, 0.12);
+
+  --clay-bg-green: linear-gradient(135deg, rgba(16, 185, 129, 0.25), rgba(4, 120, 87, 0.15));
+  --clay-shadow-green: 8px 8px 20px rgba(0, 0, 0, 0.45),
+    inset -6px -6px 12px rgba(0, 0, 0, 0.7),
+    inset 6px 6px 12px rgba(255, 255, 255, 0.08);
+
+  --clay-bg-orange: linear-gradient(135deg, rgba(245, 158, 11, 0.25), rgba(180, 83, 9, 0.15));
+  --clay-shadow-orange: 8px 8px 20px rgba(0, 0, 0, 0.45),
+    inset -6px -6px 12px rgba(0, 0, 0, 0.7),
+    inset 6px 6px 12px rgba(255, 255, 255, 0.08);
+
+  --clay-bg-blue: linear-gradient(135deg, rgba(14, 165, 233, 0.25), rgba(3, 105, 161, 0.15));
+  --clay-shadow-blue: 8px 8px 20px rgba(0, 0, 0, 0.45),
+    inset -6px -6px 12px rgba(0, 0, 0, 0.7),
+    inset 6px 6px 12px rgba(255, 255, 255, 0.08);
+
+  --clay-bg-red: linear-gradient(135deg, rgba(239, 68, 68, 0.25), rgba(153, 27, 27, 0.15));
+  --clay-shadow-red: 8px 8px 20px rgba(0, 0, 0, 0.45),
+    inset -6px -6px 12px rgba(0, 0, 0, 0.7),
+    inset 6px 6px 12px rgba(255, 255, 255, 0.08);
+
+  /* General Cards (Neutral Clay) */
+  --clay-bg-card: rgba(24, 19, 51, 0.9);
+  --clay-shadow-card: 10px 10px 24px rgba(0, 0, 0, 0.4),
+    inset -8px -8px 16px rgba(0, 0, 0, 0.6),
+    inset 8px 8px 16px rgba(255, 255, 255, 0.05);
+  --clay-shadow-card-hover: 14px 14px 32px rgba(0, 0, 0, 0.5),
+    inset -8px -8px 16px rgba(0, 0, 0, 0.7),
+    inset 8px 8px 16px rgba(255, 255, 255, 0.08);
+
+  /* Primary Button (Indigo/Blue Theme) */
+  --clay-bg-btn-primary: linear-gradient(135deg, #4f46e5, #3730a3);
+  --clay-shadow-btn-primary: 6px 6px 14px rgba(0, 0, 0, 0.4),
+    inset -4px -4px 8px rgba(0, 0, 0, 0.5),
+    inset 4px 4px 8px rgba(255, 255, 255, 0.25);
+  --clay-shadow-btn-primary-hover: 8px 8px 18px rgba(0, 0, 0, 0.5),
+    inset -4px -4px 8px rgba(0, 0, 0, 0.6),
+    inset 4px 4px 8px rgba(255, 255, 255, 0.35);
+
+  /* Secondary Button */
+  --clay-bg-btn-secondary: rgba(28, 22, 59, 0.95);
+  --clay-shadow-btn-secondary: 6px 6px 12px rgba(0, 0, 0, 0.4),
+    inset -4px -4px 8px rgba(0, 0, 0, 0.5),
+    inset 4px 4px 8px rgba(255, 255, 255, 0.06);
+  --clay-shadow-btn-secondary-hover: 8px 8px 16px rgba(0, 0, 0, 0.5),
+    inset -4px -4px 8px rgba(0, 0, 0, 0.6),
+    inset 4px 4px 8px rgba(255, 255, 255, 0.09);
+
+  /* Success Button */
+  --clay-bg-btn-success: linear-gradient(135deg, #10b981, #059669);
+  --clay-shadow-btn-success: 6px 6px 12px rgba(0, 0, 0, 0.4),
+    inset -4px -4px 8px rgba(0, 0, 0, 0.5),
+    inset 4px 4px 8px rgba(255, 255, 255, 0.25);
+
+  /* Danger Button */
+  --clay-bg-btn-danger: linear-gradient(135deg, #ef4444, #dc2626);
+  --clay-shadow-btn-danger: 6px 6px 12px rgba(0, 0, 0, 0.4),
+    inset -4px -4px 8px rgba(0, 0, 0, 0.5),
+    inset 4px 4px 8px rgba(255, 255, 255, 0.25);
+
+  /* Warning Button */
+  --clay-bg-btn-warning: linear-gradient(135deg, #f59e0b, #d97706);
+  --clay-shadow-btn-warning: 6px 6px 12px rgba(0, 0, 0, 0.4),
+    inset -4px -4px 8px rgba(0, 0, 0, 0.5),
+    inset 4px 4px 8px rgba(255, 255, 255, 0.25);
+
+  /* Inputs (Dark Mode Recessed) */
+  --clay-bg-input: rgba(21, 16, 44, 0.95);
+  --clay-shadow-input: inset 4px 4px 8px rgba(0, 0, 0, 0.55),
+    inset -4px -4px 8px rgba(255, 255, 255, 0.02);
+  --clay-shadow-input-focus: 0 0 0 3px rgba(167, 139, 250, 0.25),
+    inset 4px 4px 8px rgba(0, 0, 0, 0.65),
+    inset -4px -4px 8px rgba(255, 255, 255, 0.04);
+}
+
+/* Light mode overrides */
+html[data-theme="light"],
+body:not(.dark-mode) {
+  /* Application Background (Light Mode Radial Auroras) */
+  --clay-app-bg: radial-gradient(at 0% 0%, rgba(245, 243, 255, 0.95) 0, transparent 50%),
+    radial-gradient(at 50% 0%, rgba(224, 242, 254, 0.65) 0, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(240, 253, 250, 0.95) 0, transparent 50%);
+  --clay-app-bg-color: #f1f5f9;
+
+  /* Card Color Themes (Light Mode) */
+  --clay-bg-purple: linear-gradient(135deg, #e0e7ff, #c7d2fe);
+  --clay-shadow-purple: 8px 8px 20px rgba(99, 102, 241, 0.12),
+    inset -6px -6px 12px rgba(99, 102, 241, 0.15),
+    inset 6px 6px 12px rgba(255, 255, 255, 0.9);
+  --clay-shadow-purple-hover: 12px 12px 28px rgba(99, 102, 241, 0.18),
+    inset -6px -6px 12px rgba(99, 102, 241, 0.2),
+    inset 6px 6px 12px rgba(255, 255, 255, 0.95);
+
+  --clay-bg-green: linear-gradient(135deg, #d1fae5, #a7f3d0);
+  --clay-shadow-green: 8px 8px 20px rgba(16, 185, 129, 0.12),
+    inset -6px -6px 12px rgba(16, 185, 129, 0.15),
+    inset 6px 6px 12px rgba(255, 255, 255, 0.9);
+
+  --clay-bg-orange: linear-gradient(135deg, #fef3c7, #fde68a);
+  --clay-shadow-orange: 8px 8px 20px rgba(245, 158, 11, 0.12),
+    inset -6px -6px 12px rgba(245, 158, 11, 0.15),
+    inset 6px 6px 12px rgba(255, 255, 255, 0.9);
+
+  --clay-bg-blue: linear-gradient(135deg, #e0f2fe, #bae6fd);
+  --clay-shadow-blue: 8px 8px 20px rgba(14, 165, 233, 0.12),
+    inset -6px -6px 12px rgba(14, 165, 233, 0.15),
+    inset 6px 6px 12px rgba(255, 255, 255, 0.9);
+
+  --clay-bg-red: linear-gradient(135deg, #fee2e2, #fecaca);
+  --clay-shadow-red: 8px 8px 20px rgba(239, 68, 68, 0.12),
+    inset -6px -6px 12px rgba(239, 68, 68, 0.15),
+    inset 6px 6px 12px rgba(255, 255, 255, 0.9);
+
+  /* General Cards (Neutral Clay) */
+  --clay-bg-card: rgba(255, 255, 255, 0.85);
+  --clay-shadow-card: 10px 10px 24px rgba(91, 127, 166, 0.08),
+    inset -8px -8px 16px rgba(0, 0, 0, 0.05),
+    inset 8px 8px 16px rgba(255, 255, 255, 0.9);
+  --clay-shadow-card-hover: 14px 14px 32px rgba(91, 127, 166, 0.12),
+    inset -8px -8px 16px rgba(0, 0, 0, 0.06),
+    inset 8px 8px 16px rgba(255, 255, 255, 0.95);
+
+  /* Primary Button */
+  --clay-bg-btn-primary: linear-gradient(135deg, #6366f1, #4f46e5);
+  --clay-shadow-btn-primary: 6px 6px 14px rgba(99, 102, 241, 0.2),
+    inset -4px -4px 8px rgba(67, 56, 202, 0.4),
+    inset 4px 4px 8px rgba(255, 255, 255, 0.4);
+  --clay-shadow-btn-primary-hover: 8px 8px 18px rgba(99, 102, 241, 0.3),
+    inset -4px -4px 8px rgba(67, 56, 202, 0.5),
+    inset 4px 4px 8px rgba(255, 255, 255, 0.5);
+
+  /* Secondary Button */
+  --clay-bg-btn-secondary: rgba(241, 245, 249, 0.9);
+  --clay-shadow-btn-secondary: 6px 6px 12px rgba(91, 127, 166, 0.08),
+    inset -4px -4px 8px rgba(0, 0, 0, 0.04),
+    inset 4px 4px 8px rgba(255, 255, 255, 0.9);
+  --clay-shadow-btn-secondary-hover: 8px 8px 16px rgba(91, 127, 166, 0.12),
+    inset -4px -4px 8px rgba(0, 0, 0, 0.06),
+    inset 4px 4px 8px rgba(255, 255, 255, 0.95);
+
+  /* Success Button */
+  --clay-bg-btn-success: linear-gradient(135deg, #10b981, #059669);
+  --clay-shadow-btn-success: 6px 6px 12px rgba(16, 185, 129, 0.2),
+    inset -4px -4px 8px rgba(4, 120, 87, 0.4),
+    inset 4px 4px 8px rgba(255, 255, 255, 0.45);
+
+  /* Danger Button */
+  --clay-bg-btn-danger: linear-gradient(135deg, #ef4444, #dc2626);
+  --clay-shadow-btn-danger: 6px 6px 12px rgba(239, 68, 68, 0.2),
+    inset -4px -4px 8px rgba(185, 28, 28, 0.4),
+    inset 4px 4px 8px rgba(255, 255, 255, 0.45);
+
+  /* Warning Button */
+  --clay-bg-btn-warning: linear-gradient(135deg, #ffa502, #ff6348);
+  --clay-shadow-btn-warning: 6px 6px 12px rgba(245, 158, 11, 0.2),
+    inset -4px -4px 8px rgba(180, 83, 9, 0.4),
+    inset 4px 4px 8px rgba(255, 255, 255, 0.45);
+
+  /* Inputs (Light Mode Recessed - Stronger Depth & Visibility) */
+  --clay-bg-input: rgba(240, 243, 248, 0.95);
+  --clay-shadow-input: inset 3px 3px 6px rgba(91, 127, 166, 0.22),
+    inset -3px -3px 6px rgba(255, 255, 255, 0.9);
+  --clay-shadow-input-focus: 0 0 0 3px rgba(167, 139, 250, 0.25),
+    inset 3px 3px 6px rgba(91, 127, 166, 0.32),
+    inset -3px -3px 6px rgba(255, 255, 255, 0.95);
+}
+
+/* Also replicate for admin dark-mode body class explicitly */
+body.dark-mode {
+  --clay-app-bg: radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.12) 0, transparent 50%),
+    radial-gradient(at 50% 0%, rgba(14, 165, 233, 0.08) 0, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(16, 185, 129, 0.08) 0, transparent 50%) !important;
+  --clay-app-bg-color: #0b071e !important;
+
+  --clay-bg-purple: linear-gradient(135deg, rgba(99, 102, 241, 0.25), rgba(67, 56, 202, 0.15)) !important;
+  --clay-shadow-purple: 8px 8px 20px rgba(0, 0, 0, 0.4),
+    inset -6px -6px 12px rgba(0, 0, 0, 0.7),
+    inset 6px 6px 12px rgba(255, 255, 255, 0.08) !important;
+
+  --clay-bg-green: linear-gradient(135deg, rgba(16, 185, 129, 0.25), rgba(4, 120, 87, 0.15)) !important;
+  --clay-shadow-green: 8px 8px 20px rgba(0, 0, 0, 0.4),
+    inset -6px -6px 12px rgba(0, 0, 0, 0.7),
+    inset 6px 6px 12px rgba(255, 255, 255, 0.08) !important;
+
+  --clay-bg-orange: linear-gradient(135deg, rgba(245, 158, 11, 0.25), rgba(180, 83, 9, 0.15)) !important;
+  --clay-shadow-orange: 8px 8px 20px rgba(0, 0, 0, 0.4),
+    inset -6px -6px 12px rgba(0, 0, 0, 0.7),
+    inset 6px 6px 12px rgba(255, 255, 255, 0.08) !important;
+
+  --clay-bg-blue: linear-gradient(135deg, rgba(14, 165, 233, 0.25), rgba(3, 105, 161, 0.15)) !important;
+  --clay-shadow-blue: 8px 8px 20px rgba(0, 0, 0, 0.4),
+    inset -6px -6px 12px rgba(0, 0, 0, 0.7),
+    inset 6px 6px 12px rgba(255, 255, 255, 0.08) !important;
+
+  --clay-bg-red: linear-gradient(135deg, rgba(239, 68, 68, 0.25), rgba(153, 27, 27, 0.15)) !important;
+  --clay-shadow-red: 8px 8px 20px rgba(0, 0, 0, 0.4),
+    inset -6px -6px 12px rgba(0, 0, 0, 0.7),
+    inset 6px 6px 12px rgba(255, 255, 255, 0.08) !important;
+
+  --clay-bg-card: rgba(22, 18, 51, 0.9) !important;
+  --clay-shadow-card: 10px 10px 24px rgba(0, 0, 0, 0.45),
+    inset -8px -8px 16px rgba(0, 0, 0, 0.65),
+    inset 8px 8px 16px rgba(255, 255, 255, 0.05) !important;
+
+  --clay-bg-btn-primary: linear-gradient(135deg, #6366f1, #4f46e5) !important;
+  --clay-shadow-btn-primary: 6px 6px 14px rgba(0, 0, 0, 0.4),
+    inset -4px -4px 8px rgba(0, 0, 0, 0.5),
+    inset 4px 4px 8px rgba(255, 255, 255, 0.25) !important;
+
+  --clay-bg-btn-secondary: rgba(30, 25, 68, 0.95) !important;
+  --clay-shadow-btn-secondary: 6px 6px 12px rgba(0, 0, 0, 0.45),
+    inset -4px -4px 8px rgba(0, 0, 0, 0.5),
+    inset 4px 4px 8px rgba(255, 255, 255, 0.06) !important;
+
+  --clay-bg-input: rgba(21, 16, 44, 0.95) !important;
+  --clay-shadow-input: inset 4px 4px 8px rgba(0, 0, 0, 0.55),
+    inset -4px -4px 8px rgba(255, 255, 255, 0.02) !important;
+}
+
+/* ------------------------------------------
+   Global Background Aurora
+   ------------------------------------------ */
+body {
+  background-color: var(--clay-app-bg-color) !important;
+  background-image: var(--clay-app-bg) !important;
+  background-attachment: fixed !important;
+}
+
+/* ------------------------------------------
+   2. Main Dashboard Cards (.home-nav-card)
+   ------------------------------------------ */
+.home-nav-card {
+  border-radius: var(--clay-card-radius) !important;
+  border: none !important;
+  transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+/* Color Coding with beautiful 3D clay look */
+/* POS (Purple) */
+.home-nav-card.pos {
+  background: var(--clay-bg-purple) !important;
+  box-shadow: var(--clay-shadow-purple) !important;
+}
+
+.home-nav-card.pos:hover {
+  box-shadow: var(--clay-shadow-purple-hover) !important;
+  transform: translateY(-8px) scale(1.02) !important;
+}
+
+/* Products & Inventory (Blue) */
+.home-nav-card.products {
+  background: var(--clay-bg-blue) !important;
+  box-shadow: var(--clay-shadow-blue) !important;
+}
+
+.home-nav-card.products:hover {
+  box-shadow: var(--clay-shadow-purple-hover) !important;
+  transform: translateY(-8px) scale(1.02) !important;
+}
+
+/* Customers & Debts (Orange) */
+.home-nav-card.debts {
+  background: var(--clay-bg-orange) !important;
+  box-shadow: var(--clay-shadow-orange) !important;
+}
+
+.home-nav-card.debts:hover {
+  box-shadow: var(--clay-shadow-purple-hover) !important;
+  transform: translateY(-8px) scale(1.02) !important;
+}
+
+/* Financial Reports (Green) */
+.home-nav-card.reports {
+  background: var(--clay-bg-green) !important;
+  box-shadow: var(--clay-shadow-green) !important;
+}
+
+.home-nav-card.reports:hover {
+  box-shadow: var(--clay-shadow-purple-hover) !important;
+  transform: translateY(-8px) scale(1.02) !important;
+}
+
+/* Purchases & Suppliers (Indigo) */
+.home-nav-card.purchases {
+  background: var(--clay-bg-purple) !important;
+  box-shadow: var(--clay-shadow-purple) !important;
+}
+
+.home-nav-card.purchases:hover {
+  box-shadow: var(--clay-shadow-purple-hover) !important;
+  transform: translateY(-8px) scale(1.02) !important;
+}
+
+/* Notifications (Red) */
+.home-nav-card.notifications {
+  background: var(--clay-bg-red) !important;
+  box-shadow: var(--clay-shadow-red) !important;
+}
+
+.home-nav-card.notifications:hover {
+  box-shadow: var(--clay-shadow-purple-hover) !important;
+  transform: translateY(-8px) scale(1.02) !important;
+}
+
+/* Offers & Discounts (Pink/Gold) */
+.home-nav-card.discounts {
+  background: var(--clay-bg-orange) !important;
+  box-shadow: var(--clay-shadow-orange) !important;
+}
+
+.home-nav-card.discounts:hover {
+  box-shadow: var(--clay-shadow-purple-hover) !important;
+  transform: translateY(-8px) scale(1.02) !important;
+}
+
+/* System Settings (Teal/Slate) */
+.home-nav-card.settings {
+  background: var(--clay-bg-blue) !important;
+  box-shadow: var(--clay-shadow-blue) !important;
+}
+
+.home-nav-card.settings:hover {
+  box-shadow: var(--clay-shadow-purple-hover) !important;
+  transform: translateY(-8px) scale(1.02) !important;
+}
+
+/* Archive card */
+.home-nav-card.archive {
+  background: var(--clay-bg-purple) !important;
+  box-shadow: var(--clay-shadow-purple) !important;
+}
+
+.home-nav-card.archive:hover {
+  box-shadow: var(--clay-shadow-purple-hover) !important;
+  transform: translateY(-8px) scale(1.02) !important;
+}
+
+/* Light Theme home-nav-card Specificity Overrides */
+[data-theme="light"] .home-nav-card.pos {
+  background: var(--clay-bg-purple) !important;
+  box-shadow: var(--clay-shadow-purple) !important;
+}
+
+[data-theme="light"] .home-nav-card.products {
+  background: var(--clay-bg-blue) !important;
+  box-shadow: var(--clay-shadow-blue) !important;
+}
+
+[data-theme="light"] .home-nav-card.debts {
+  background: var(--clay-bg-orange) !important;
+  box-shadow: var(--clay-shadow-orange) !important;
+}
+
+[data-theme="light"] .home-nav-card.reports {
+  background: var(--clay-bg-green) !important;
+  box-shadow: var(--clay-shadow-green) !important;
+}
+
+[data-theme="light"] .home-nav-card.purchases {
+  background: var(--clay-bg-purple) !important;
+  box-shadow: var(--clay-shadow-purple) !important;
+}
+
+[data-theme="light"] .home-nav-card.notifications {
+  background: var(--clay-bg-red) !important;
+  box-shadow: var(--clay-shadow-red) !important;
+}
+
+[data-theme="light"] .home-nav-card.discounts {
+  background: var(--clay-bg-orange) !important;
+  box-shadow: var(--clay-shadow-orange) !important;
+}
+
+[data-theme="light"] .home-nav-card.settings {
+  background: var(--clay-bg-blue) !important;
+  box-shadow: var(--clay-shadow-blue) !important;
+}
+
+[data-theme="light"] .home-nav-card.archive {
+  background: var(--clay-bg-purple) !important;
+  box-shadow: var(--clay-shadow-purple) !important;
+}
+
+[data-theme="light"] .home-nav-card:hover {
+  box-shadow: var(--clay-shadow-purple-hover) !important;
+  transform: translateY(-8px) scale(1.02) !important;
+}
+
+/* Dashboard Header & Footer Overrides */
+.home-header-panel,
+[data-theme="light"] .home-header-panel {
+  border-radius: var(--clay-card-radius) !important;
+  background: var(--clay-bg-card) !important;
+  box-shadow: var(--clay-shadow-card) !important;
+  border: none !important;
+  padding: 24px !important;
+}
+
+.home-status-badge {
+  background: var(--clay-bg-green) !important;
+  box-shadow: var(--clay-shadow-green) !important;
+  border-radius: 30px !important;
+  border: none !important;
+  color: #10b981 !important;
+  padding: 4px 12px !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+}
+
+body.dark-mode .home-status-badge {
+  color: #6ee7b7 !important;
+}
+
+.home-currency-card {
+  border-radius: 30px !important;
+  background: var(--clay-bg-blue) !important;
+  box-shadow: var(--clay-shadow-blue) !important;
+  border: none !important;
+  color: var(--text-primary) !important;
+  padding: 8px 16px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+.btn-home-action.logout {
+  background: var(--clay-bg-btn-danger) !important;
+  box-shadow: var(--clay-shadow-btn-danger) !important;
+  border-radius: var(--clay-btn-radius) !important;
+  border: none !important;
+  color: white !important;
+  font-weight: 700 !important;
+  padding: 10px 20px !important;
+  transition: all 0.2s ease !important;
+}
+
+.btn-home-action.logout:hover {
+  box-shadow: var(--clay-shadow-btn-danger-hover) !important;
+  transform: translateY(-2px) !important;
+}
+
+.btn-home-action.install {
+  background: var(--clay-bg-btn-success) !important;
+  box-shadow: var(--clay-shadow-btn-success) !important;
+  border-radius: var(--clay-btn-radius) !important;
+  border: none !important;
+  color: white !important;
+  font-weight: 700 !important;
+  padding: 10px 20px !important;
+  transition: all 0.2s ease !important;
+}
+
+.btn-home-action.install:hover {
+  box-shadow: var(--clay-shadow-btn-success-hover) !important;
+  transform: translateY(-2px) !important;
+}
+
+/* ------------------------------------------
+   3. Stat, Info & Customer Cards (Dashboard / Pages)
+   ------------------------------------------ */
+.page:not(#page-pos) .inv-stat-card,
+.page:not(#page-pos) .report-stat-card,
+.page:not(#page-pos) .archive-stat-card,
+.page:not(#page-pos) .supplier-stat-card,
+.page:not(#page-pos) .settings-card,
+.page:not(#page-pos) .supplier-card,
+.page:not(#page-pos) .employee-card,
+.report-table-card,
+.dash-table-card,
+.customer-card {
+  border-radius: var(--clay-card-radius) !important;
+  border: none !important;
+  background: var(--clay-bg-card) !important;
+  box-shadow: var(--clay-shadow-card) !important;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.customer-card:hover {
+  box-shadow: var(--clay-shadow-card-hover) !important;
+  transform: translateY(-4px) !important;
+}
+
+/* Overriding colors for stat cards dynamically */
+/* 1. Purple Cards */
+.page:not(#page-pos) .inv-stat-card:not(.warning):not(.danger),
+.page:not(#page-pos) .report-stat-card:nth-child(2),
+.page:not(#page-pos) .report-stat-card:nth-child(5),
+.page:not(#page-pos) .archive-stat-card.primary,
+[data-theme="light"] .inv-stat-card:not(.warning):not(.danger),
+[data-theme="light"] .report-stat-card:nth-child(2),
+[data-theme="light"] .report-stat-card:nth-child(5),
+[data-theme="light"] .archive-stat-card.primary {
+  background: var(--clay-bg-purple) !important;
+  box-shadow: var(--clay-shadow-purple) !important;
+  border: none !important;
+}
+
+/* 2. Green Cards */
+.page:not(#page-pos) .report-stat-card:nth-child(1),
+.page:not(#page-pos) .archive-stat-card.success,
+.page:not(#page-pos) .inv-stat-card:nth-child(1),
+[data-theme="light"] .report-stat-card:nth-child(1),
+[data-theme="light"] .archive-stat-card.success,
+[data-theme="light"] .inv-stat-card:nth-child(1) {
+  background: var(--clay-bg-green) !important;
+  box-shadow: var(--clay-shadow-green) !important;
+  border: none !important;
+}
+
+/* 3. Orange Cards */
+.page:not(#page-pos) .inv-stat-card.warning,
+.page:not(#page-pos) .report-stat-card:nth-child(4),
+.page:not(#page-pos) .archive-stat-card.warning,
+[data-theme="light"] .inv-stat-card.warning,
+[data-theme="light"] .report-stat-card:nth-child(4),
+[data-theme="light"] .archive-stat-card.warning {
+  background: var(--clay-bg-orange) !important;
+  box-shadow: var(--clay-shadow-orange) !important;
+  border: none !important;
+}
+
+/* 4. Blue Cards */
+.page:not(#page-pos) .report-stat-card:nth-child(3),
+.page:not(#page-pos) .archive-stat-card.info,
+[data-theme="light"] .report-stat-card:nth-child(3),
+[data-theme="light"] .archive-stat-card.info {
+  background: var(--clay-bg-blue) !important;
+  box-shadow: var(--clay-shadow-blue) !important;
+  border: none !important;
+}
+
+/* 5. Red Cards */
+.page:not(#page-pos) .inv-stat-card.danger,
+.page:not(#page-pos) .inv-stat-card:nth-child(5),
+[data-theme="light"] .inv-stat-card.danger,
+[data-theme="light"] .inv-stat-card:nth-child(5) {
+  background: var(--clay-bg-red) !important;
+  box-shadow: var(--clay-shadow-red) !important;
+  border: none !important;
+}
+
+/* ------------------------------------------
+   4. Buttons (All Types)
+   ------------------------------------------ */
+.btn-primary,
+.btn-login,
+.bl,
+.home-currency-card,
+.currency-display,
+.btn-home-header,
+.btn-action-purchase {
+  border-radius: var(--clay-btn-radius) !important;
+  background: var(--clay-bg-btn-primary) !important;
+  box-shadow: var(--clay-shadow-btn-primary) !important;
+  border: none !important;
+  transition: all 0.25s ease !important;
+}
+
+.btn-primary:hover,
+.btn-login:hover,
+.bl:hover,
+.btn-home-header:hover,
+.btn-action-purchase:hover {
+  box-shadow: var(--clay-shadow-btn-primary-hover) !important;
+  transform: translateY(-2px) !important;
+}
+
+.btn-secondary,
+.br {
+  border-radius: var(--clay-btn-radius) !important;
+  background: var(--clay-bg-btn-secondary) !important;
+  box-shadow: var(--clay-shadow-btn-secondary) !important;
+  border: none !important;
+  transition: all 0.25s ease !important;
+}
+
+.btn-secondary:hover,
+.br:hover {
+  box-shadow: var(--clay-shadow-btn-secondary-hover) !important;
+  transform: translateY(-2px) !important;
+}
+
+.btn-success,
+.kg-btn,
+.pcs-btn-complete,
+.btn-home-action.install {
+  border-radius: var(--clay-btn-radius) !important;
+  background: var(--clay-bg-btn-success) !important;
+  box-shadow: var(--clay-shadow-btn-success) !important;
+  border: none !important;
+  transition: all 0.25s ease !important;
+}
+
+.btn-success:hover,
+.kg-btn:hover,
+.pcs-btn-complete:hover,
+.btn-home-action.install:hover {
+  transform: translateY(-2px) !important;
+  filter: brightness(1.05);
+}
+
+.btn-danger,
+.btn-logout,
+.bx,
+.pcs-btn-return,
+.btn-action-expense,
+.btn-home-action.logout {
+  border-radius: var(--clay-btn-radius) !important;
+  background: var(--clay-bg-btn-danger) !important;
+  box-shadow: var(--clay-shadow-btn-danger) !important;
+  border: none !important;
+  transition: all 0.25s ease !important;
+}
+
+.btn-danger:hover,
+.btn-logout:hover,
+.bx:hover,
+.pcs-btn-return:hover,
+.btn-action-expense:hover,
+.btn-home-action.logout:hover {
+  transform: translateY(-2px) !important;
+  filter: brightness(1.05);
+}
+
+.btn-warning,
+.pcs-btn-debt,
+.btn-action-supplier {
+  border-radius: var(--clay-btn-radius) !important;
+  background: var(--clay-bg-btn-warning) !important;
+  box-shadow: var(--clay-shadow-btn-warning) !important;
+  border: none !important;
+  transition: all 0.25s ease !important;
+}
+
+.btn-warning:hover,
+.pcs-btn-debt:hover,
+.btn-action-supplier:hover {
+  transform: translateY(-2px) !important;
+  filter: brightness(1.05);
+}
+
+.btn-outline {
+  border-radius: var(--clay-btn-radius) !important;
+  border: 1.5px solid var(--primary-light) !important;
+  background: transparent !important;
+  transition: all 0.2s ease !important;
+}
+
+.btn-outline:hover {
+  background: rgba(167, 139, 250, 0.12) !important;
+  transform: translateY(-1px) !important;
+}
+
+/* ------------------------------------------
+   Tabs (Specific overrides matching light/dark specificity)
+   ------------------------------------------ */
+.archive-tab,
+.tab-btn,
+[data-theme="light"] .archive-tab,
+[data-theme="light"] .tab-btn {
+  border-radius: var(--clay-btn-radius) !important;
+  border: 1.5px solid rgba(167, 139, 250, 0.3) !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  transition: all 0.25s ease !important;
+  color: var(--text-secondary) !important;
+  box-shadow: none !important;
+  padding: 8px 18px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+}
+
+.archive-tab:hover,
+.tab-btn:hover,
+[data-theme="light"] .archive-tab:hover,
+[data-theme="light"] .tab-btn:hover {
+  background: rgba(167, 139, 250, 0.15) !important;
+  transform: translateY(-2px) !important;
+}
+
+/* Active Archive / Filter Tabs with full specificity overrides */
+.ftb.ac,
+.archive-tab.active,
+.tab-btn.active,
+[data-theme="light"] .archive-tab.active,
+[data-theme="light"] .tab-btn.active,
+[data-theme="light"] .archive-tabs-bar .archive-tab.active {
+  background: var(--clay-bg-btn-primary) !important;
+  box-shadow: var(--clay-shadow-btn-primary) !important;
+  border: none !important;
+  color: white !important;
+}
+
+/* PCS Cart Action Buttons */
+.pcs-action-btn {
+  border-radius: 12px !important;
+  border: none !important;
+  transition: all 0.25s ease !important;
+}
+
+.pcs-btn-clear {
+  background: var(--clay-bg-red) !important;
+  box-shadow: var(--clay-shadow-red) !important;
+}
+
+.pcs-btn-scan {
+  background: var(--clay-bg-blue) !important;
+  box-shadow: var(--clay-shadow-blue) !important;
+}
+
+.pcs-btn-hold {
+  background: var(--clay-bg-orange) !important;
+  box-shadow: var(--clay-shadow-orange) !important;
+}
+
+.pcs-btn-retrieve {
+  background: var(--clay-bg-purple) !important;
+  box-shadow: var(--clay-shadow-purple) !important;
+}
+
+.pcs-action-btn:hover {
+  transform: translateY(-2px) !important;
+  filter: brightness(1.08);
+}
+
+/* Checkout Panel Buttons */
+.pcs-cur-btn {
+  border-radius: 10px !important;
+  border: none !important;
+  background: var(--clay-bg-btn-secondary) !important;
+  box-shadow: var(--clay-shadow-btn-secondary) !important;
+  transition: all 0.2s !important;
+}
+
+.pcs-cur-btn.active {
+  background: var(--clay-bg-btn-primary) !important;
+  box-shadow: var(--clay-shadow-btn-primary) !important;
+  color: white !important;
+}
+
+.quick-amount-btn {
+  border-radius: 10px !important;
+  border: none !important;
+  background: var(--clay-bg-btn-secondary) !important;
+  box-shadow: var(--clay-shadow-btn-secondary) !important;
+  transition: all 0.2s !important;
+}
+
+.quick-amount-btn:hover {
+  transform: translateY(-1px) !important;
+  filter: brightness(1.05);
+}
+
+/* Circular edit/delete buttons inside customer-card */
+.customer-card button[onclick*="editSupplier"],
+.customer-card button[onclick*="editCustomer"] {
+  border-radius: 50% !important;
+  background: var(--clay-bg-blue) !important;
+  box-shadow: var(--clay-shadow-blue) !important;
+  border: none !important;
+  color: var(--primary) !important;
+  width: 32px !important;
+  height: 32px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: all 0.2s ease !important;
+  padding: 0 !important;
+}
+
+.customer-card button[onclick*="editSupplier"]:hover,
+.customer-card button[onclick*="editCustomer"]:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: var(--clay-shadow-btn-secondary-hover) !important;
+  filter: brightness(1.05) !important;
+}
+
+.customer-card button[onclick*="deleteSupplier"],
+.customer-card button[onclick*="deleteCustomer"] {
+  border-radius: 50% !important;
+  background: var(--clay-bg-red) !important;
+  box-shadow: var(--clay-shadow-red) !important;
+  border: none !important;
+  color: #ef4444 !important;
+  width: 32px !important;
+  height: 32px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: all 0.2s ease !important;
+  padding: 0 !important;
+}
+
+.customer-card button[onclick*="deleteSupplier"]:hover,
+.customer-card button[onclick*="deleteCustomer"]:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: var(--clay-shadow-btn-danger) !important;
+  filter: brightness(1.05) !important;
+}
+
+/* ------------------------------------------
+   5. Form Inputs & Select Dropdowns (Enhanced Specificity Overrides)
+   ------------------------------------------ */
+input[type="text"],
+input[type="number"],
+input[type="password"],
+input[type="date"],
+input[type="tel"],
+input[type="email"],
+input[type="search"],
+input:not([type]),
+select,
+textarea,
+.form-control,
+.pcs-customer-input,
+.pcs-product-search-input,
+.pcs-input-num,
+.pcs-input-txt,
+.pcs-select,
+.li,
+.form-group input,
+.form-group select,
+.form-group textarea,
+[data-theme="light"] .form-group input,
+[data-theme="light"] .form-group select,
+[data-theme="light"] .form-group textarea,
+body:not(.dark-mode) .form-group input,
+body:not(.dark-mode) .form-group select,
+body:not(.dark-mode) .form-group textarea,
+body.dark-mode .form-group input,
+body.dark-mode .form-group select,
+body.dark-mode .form-group textarea {
+  border-radius: var(--clay-input-radius) !important;
+  border: none !important;
+  background: var(--clay-bg-input) !important;
+  box-shadow: var(--clay-shadow-input) !important;
+  transition: all 0.3s ease !important;
+  color: var(--text-primary) !important;
+  padding: 10px 14px !important;
+  box-sizing: border-box !important;
+}
+
+input:focus,
+select:focus,
+textarea:focus,
+.pcs-customer-input:focus,
+.pcs-product-search-input:focus,
+.pcs-input-num:focus,
+.pcs-input-txt:focus,
+.pcs-select:focus,
+.li:focus,
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus,
+[data-theme="light"] .form-group input:focus,
+[data-theme="light"] .form-group select:focus,
+[data-theme="light"] .form-group textarea:focus,
+body:not(.dark-mode) .form-group input:focus,
+body:not(.dark-mode) .form-group select:focus,
+body:not(.dark-mode) .form-group textarea:focus,
+body.dark-mode .form-group input:focus,
+body.dark-mode .form-group select:focus,
+body.dark-mode .form-group textarea:focus {
+  box-shadow: var(--clay-shadow-input-focus) !important;
+  background: var(--clay-bg-input) !important;
+  outline: none !important;
+  border: none !important;
+}
+
+/* ------------------------------------------
+   6. Sidebar & Nav Items
+   ------------------------------------------ */
+aside.sidebar {
+  background: var(--clay-bg-card) !important;
+  box-shadow: var(--clay-shadow-card) !important;
+  border: none !important;
+}
+
+.sidebar-nav .nav-item {
+  border-radius: 12px !important;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  border: none !important;
+  margin-bottom: 4px !important;
+}
+
+.sidebar-nav .nav-item:hover {
+  background: rgba(255, 255, 255, 0.04) !important;
+  transform: translateX(-4px) !important;
+}
+
+html[data-theme="light"] .sidebar-nav .nav-item:hover {
+  background: rgba(0, 0, 0, 0.03) !important;
+}
+
+.sidebar-nav .nav-item.active {
+  background: var(--clay-bg-btn-primary) !important;
+  box-shadow: var(--clay-shadow-btn-primary) !important;
+  color: white !important;
+}
+
+.sidebar-nav .nav-item.active:hover {
+  background: var(--clay-bg-btn-primary) !important;
+  box-shadow: var(--clay-shadow-btn-primary-hover) !important;
+  transform: translateX(-4px) !important;
+}
+
+/* ------------------------------------------
+   7. Product & Cashier POS Panels
+   ------------------------------------------ */
+.product-card,
+[data-theme="light"] .product-card {
+  border-radius: 20px !important;
+  background: var(--clay-bg-card) !important;
+  box-shadow: var(--clay-shadow-card) !important;
+  border: none !important;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.product-card:hover,
+[data-theme="light"] .product-card:hover {
+  box-shadow: var(--clay-shadow-card-hover) !important;
+  transform: translateY(-4px) scale(1.02) !important;
+}
+
+.pos-cart,
+.pcs-cart-container,
+.home-actions-panel,
+[data-theme="light"] .pos-cart,
+[data-theme="light"] .pcs-cart-container {
+  border-radius: var(--clay-card-radius) !important;
+  background: var(--clay-bg-card) !important;
+  box-shadow: var(--clay-shadow-card) !important;
+  border: none !important;
+}
+
+.cart-item,
+[data-theme="light"] .cart-item {
+  border-radius: 12px !important;
+  background: var(--clay-bg-input) !important;
+  box-shadow: var(--clay-shadow-input) !important;
+  border: none !important;
+  transition: all 0.2s ease !important;
+}
+
+.cart-item:hover,
+[data-theme="light"] .cart-item:hover {
+  box-shadow: var(--clay-shadow-input-focus) !important;
+}
+
+.qty-btn,
+[data-theme="light"] .qty-btn {
+  border-radius: 50% !important;
+  background: var(--clay-bg-btn-secondary) !important;
+  box-shadow: var(--clay-shadow-btn-secondary) !important;
+  border: none !important;
+  transition: all 0.2s ease !important;
+  width: 26px !important;
+  height: 26px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 !important;
+  color: var(--text-primary) !important;
+}
+
+.qty-btn:hover,
+[data-theme="light"] .qty-btn:hover {
+  transform: scale(1.1) !important;
+  box-shadow: var(--clay-shadow-btn-secondary-hover) !important;
+}
+
+/* ------------------------------------------
+   8. Modals & Dialogs (Windows)
+   ------------------------------------------ */
+.modal-content,
+.modal,
+.login-card,
+.lb,
+.notifications-panel {
+  border-radius: 28px !important;
+  background: var(--clay-bg-card) !important;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.45), var(--clay-shadow-card) !important;
+  border: none !important;
+  overflow: hidden !important;
+}
+
+.modal-overlay {
+  -webkit-backdrop-filter: blur(8px) !important;
+  backdrop-filter: blur(8px) !important;
+  background: rgba(12, 8, 30, 0.6) !important;
+  transition: all 0.3s ease !important;
+}
+
+.modal-header {
+  border-bottom: 1px solid var(--border-light) !important;
+  padding: 16px 20px !important;
+}
+
+.modal-footer {
+  border-top: 1px solid var(--border-light) !important;
+  padding: 16px 20px !important;
+}
+
+/* ------------------------------------------
+   9. Tables (Clay Row-Pills Grid)
+   ------------------------------------------ */
+.data-table,
+.supplier-table-wrapper table {
+  border-collapse: separate !important;
+  border-spacing: 0 8px !important;
+  width: 100% !important;
+}
+
+.data-table thead th,
+.page:not(#page-pos) .data-table thead th,
+.supplier-table-wrapper table thead th {
+  border: none !important;
+  background: var(--clay-bg-btn-secondary) !important;
+  box-shadow: var(--clay-shadow-btn-secondary) !important;
+  color: var(--text-secondary) !important;
+  padding: 12px 16px !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  border-radius: 10px !important;
+}
+
+.products-table-container,
+.inventory-table-container,
+.customers-table-container,
+.debts-table-container,
+.reports-table-container,
+.report-table-card,
+.dash-table-card,
+.supplier-table-wrapper {
+  border-radius: var(--clay-card-radius) !important;
+  background: var(--clay-bg-card) !important;
+  box-shadow: var(--clay-shadow-card) !important;
+  border: none !important;
+  padding: 20px !important;
+  margin-bottom: 20px !important;
+}
+
+.data-table tbody tr,
+.supplier-table-wrapper table tbody tr {
+  background: var(--clay-bg-input) !important;
+  box-shadow: none !important;
+  transition: all 0.25s ease !important;
+}
+
+.data-table tbody tr td,
+.supplier-table-wrapper table tbody tr td {
+  border: none !important;
+  background: transparent !important;
+  padding: 14px 16px !important;
+  color: var(--text-primary) !important;
+  font-size: 13px !important;
+  vertical-align: middle !important;
+}
+
+/* Pill edges for table rows (higher specificity overrides) */
+.data-table tbody tr td:first-child,
+.page:not(#page-pos) .data-table tbody tr td:first-child,
+.supplier-table-wrapper table tbody tr td:first-child {
+  border-radius: 0 14px 14px 0 !important;
+  border-right: none !important;
+}
+
+.data-table tbody tr td:last-child,
+.page:not(#page-pos) .data-table tbody tr td:last-child,
+.supplier-table-wrapper table tbody tr td:last-child {
+  border-radius: 14px 0 0 14px !important;
+  border-left: none !important;
+}
+
+/* LTR Direction Overrides */
+[dir="ltr"] .data-table tbody tr td:first-child,
+[dir="ltr"] .page:not(#page-pos) .data-table tbody tr td:first-child,
+[dir="ltr"] .supplier-table-wrapper table tbody tr td:first-child,
+html:not([dir="rtl"]) .data-table tbody tr td:first-child,
+html:not([dir="rtl"]) .page:not(#page-pos) .data-table tbody tr td:first-child,
+html:not([dir="rtl"]) .supplier-table-wrapper table tbody tr td:first-child {
+  border-radius: 14px 0 0 14px !important;
+}
+
+[dir="ltr"] .data-table tbody tr td:last-child,
+[dir="ltr"] .page:not(#page-pos) .data-table tbody tr td:last-child,
+[dir="ltr"] .supplier-table-wrapper table tbody tr td:last-child,
+html:not([dir="rtl"]) .data-table tbody tr td:last-child,
+html:not([dir="rtl"]) .page:not(#page-pos) .data-table tbody tr td:last-child,
+html:not([dir="rtl"]) .supplier-table-wrapper table tbody tr td:last-child {
+  border-radius: 0 14px 14px 0 !important;
+}
+
+.data-table tbody tr:hover td,
+.supplier-table-wrapper table tbody tr:hover td {
+  background: var(--clay-bg-btn-secondary) !important;
+  box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* ------------------------------------------
+   10. Notifications (التنبيهات)
+   ------------------------------------------ */
+
+/* Dropdown Notification popup items */
+.notif-item {
+  border-radius: 12px !important;
+  background: var(--clay-bg-input) !important;
+  box-shadow: var(--clay-shadow-input) !important;
+  border: none !important;
+  padding: 10px 14px !important;
+  transition: all 0.2s ease !important;
+}
+
+.notif-item:hover {
+  background: var(--clay-bg-btn-secondary) !important;
+  box-shadow: var(--clay-shadow-btn-secondary-hover) !important;
+  transform: translateY(-1px) !important;
+}
+
+/* Notification Page Cards */
+.notif-card {
+  border-radius: 16px !important;
+  background: var(--clay-bg-card) !important;
+  box-shadow: var(--clay-shadow-card) !important;
+  border-right: 4px solid var(--border-color) !important;
+  border-left: none !important;
+  transition: all 0.25s ease !important;
+  padding: 16px 20px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 14px !important;
+}
+
+.notif-card:hover {
+  box-shadow: var(--clay-shadow-card-hover) !important;
+  transform: translateX(-3px) !important;
+}
+
+/* Color prioritize tags override for inline priority indicators */
+.notif-card[style*="rgba(245,158,11"],
+.notif-card[style*="rgba(245, 158, 11"] {
+  background: var(--clay-bg-orange) !important;
+  box-shadow: var(--clay-shadow-orange) !important;
+  border-right: 4px solid #f59e0b !important;
+}
+
+.notif-card[style*="rgba(239,68,68"],
+.notif-card[style*="rgba(239, 68, 68"] {
+  background: var(--clay-bg-red) !important;
+  box-shadow: var(--clay-shadow-red) !important;
+  border-right: 4px solid #ef4444 !important;
+}
+
+.notif-card[style*="rgba(6,182,212"],
+.notif-card[style*="rgba(6, 182, 212"] {
+  background: var(--clay-bg-blue) !important;
+  box-shadow: var(--clay-shadow-blue) !important;
+  border-right: 4px solid #06b6d4 !important;
+}
+
+.notif-card[style*="rgba(16,185,129"],
+.notif-card[style*="rgba(16, 185, 129"] {
+  background: var(--clay-bg-green) !important;
+  box-shadow: var(--clay-shadow-green) !important;
+  border-right: 4px solid #10b981 !important;
+}
+
+/* ------------------------------------------
+   11. Admin Specific Components
+   ------------------------------------------ */
+.sc {
+  border-radius: 20px !important;
+  border: none !important;
+  box-shadow: var(--clay-shadow-card) !important;
+}
+
+.sc.g {
+  background: var(--clay-bg-green) !important;
+  box-shadow: var(--clay-shadow-green) !important;
+}
+
+.sc.r {
+  background: var(--clay-bg-red) !important;
+  box-shadow: var(--clay-shadow-red) !important;
+}
+
+.sc.b {
+  background: var(--clay-bg-blue) !important;
+  box-shadow: var(--clay-shadow-blue) !important;
+}
+
+.sc.o {
+  background: var(--clay-bg-orange) !important;
+  box-shadow: var(--clay-shadow-orange) !important;
+}
+
+.fc {
+  border-radius: 20px !important;
+  border: none !important;
+  background: var(--clay-bg-card) !important;
+  box-shadow: var(--clay-shadow-card) !important;
+}
+
+.ai-item {
+  border-radius: 12px !important;
+  border: none !important;
+  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.04),
+    inset -2px -2px 4px rgba(0, 0, 0, 0.04),
+    inset 2px 2px 4px rgba(255, 255, 255, 0.04) !important;
+  transition: all 0.2s ease !important;
+  background: var(--clay-bg-input) !important;
+}
+
+.ai-item:hover {
+  transform: scale(1.003) translateY(-1px) !important;
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.06),
+    inset -2px -2px 4px rgba(0, 0, 0, 0.04),
+    inset 2px 2px 4px rgba(255, 255, 255, 0.06) !important;
+  background: var(--clay-bg-btn-secondary) !important;
+}
+
+/* ------------------------------------------
+   12. Puffed 3D Emojis, Icons & Badges
+   ------------------------------------------ */
+
+/* Circular Icons & Badges (50% Radius) */
+.inv-stat-icon,
+.report-stat-icon,
+.archive-stat-icon,
+.supplier-stat-icon,
+.login-logo,
+.ll,
+.splash-icon,
+.user-avatar,
+.notifications-btn,
+.customer-card button[onclick*="Supplier"],
+.customer-card button[onclick*="Customer"] {
+  border-radius: 50% !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.15),
+    inset -3px -3px 6px rgba(0, 0, 0, 0.15),
+    inset 3px 3px 6px rgba(255, 255, 255, 0.1) !important;
+  transition: all 0.25s ease !important;
+}
+
+/* Rounded Square Icons & Logos (Keeping Original Shapes) */
+.home-card-icon-wrapper {
+  border-radius: 20px !important;
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.15),
+    inset -3px -3px 6px rgba(0, 0, 0, 0.15),
+    inset 3px 3px 6px rgba(255, 255, 255, 0.1) !important;
+  transition: all 0.25s ease !important;
+}
+
+.store-logo,
+.ai {
+  border-radius: 12px !important;
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.15),
+    inset -3px -3px 6px rgba(0, 0, 0, 0.15),
+    inset 3px 3px 6px rgba(255, 255, 255, 0.1) !important;
+  transition: all 0.25s ease !important;
+}
+
+/* Rounded Pill Headers Buttons (Keeping Original Rounded Pill Shape) */
+.lang-toggle-btn {
+  border-radius: 30px !important;
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.15),
+    inset -3px -3px 6px rgba(0, 0, 0, 0.15),
+    inset 3px 3px 6px rgba(255, 255, 255, 0.1) !important;
+  transition: all 0.25s ease !important;
+}
+
+/* Light mode overrides for all icons/badges shadows */
+html[data-theme="light"] .inv-stat-icon,
+html[data-theme="light"] .report-stat-icon,
+html[data-theme="light"] .archive-stat-icon,
+html[data-theme="light"] .supplier-stat-icon,
+html[data-theme="light"] .login-logo,
+html[data-theme="light"] .ll,
+html[data-theme="light"] .splash-icon,
+html[data-theme="light"] .user-avatar,
+html[data-theme="light"] .notifications-btn,
+html[data-theme="light"] .home-card-icon-wrapper,
+html[data-theme="light"] .store-logo,
+html[data-theme="light"] .ai,
+html[data-theme="light"] .lang-toggle-btn,
+body:not(.dark-mode) .ll,
+body:not(.dark-mode) .ai {
+  box-shadow: 4px 4px 10px rgba(91, 127, 166, 0.12),
+    inset -3px -3px 6px rgba(0, 0, 0, 0.04),
+    inset 3px 3px 6px rgba(255, 255, 255, 0.85) !important;
+}
+
+/* ------------------------------------------
+   13. Dynamic Customer/Supplier Grid Card Blocks
+   ------------------------------------------ */
+.customer-card div[style*="linear-gradient"] {
+  border-radius: 50% !important;
+  background: var(--clay-bg-purple) !important;
+  box-shadow: var(--clay-shadow-purple) !important;
+  border: none !important;
+  width: 50px !important;
+  height: 50px !important;
+}
+
+/* Dynamic colors for grid cells matching priority inline styles */
+.customer-card div[style*="rgba(139,92,246"],
+.customer-card div[style*="rgba(139, 92, 246"] {
+  background: var(--clay-bg-purple) !important;
+  box-shadow: var(--clay-shadow-purple) !important;
+  border: none !important;
+}
+
+.customer-card div[style*="rgba(16,185,129"],
+.customer-card div[style*="rgba(16, 185, 129"],
+.customer-card div[style*="rgba(5,150,105"],
+.customer-card div[style*="rgba(5, 150, 105"] {
+  background: var(--clay-bg-green) !important;
+  box-shadow: var(--clay-shadow-green) !important;
+  border: none !important;
+}
+
+.customer-card div[style*="rgba(239,68,68"],
+.customer-card div[style*="rgba(239, 68, 68"] {
+  background: var(--clay-bg-red) !important;
+  box-shadow: var(--clay-shadow-red) !important;
+  border: none !important;
+}
+
+.customer-card div[style*="rgba(59,130,246"],
+.customer-card div[style*="rgba(59, 130, 246"] {
+  background: var(--clay-bg-blue) !important;
+  box-shadow: var(--clay-shadow-blue) !important;
+  border: none !important;
+}
+
+.customer-card div[style*="rgba(245,158,11"],
+.customer-card div[style*="rgba(245, 158, 11"] {
+  background: var(--clay-bg-orange) !important;
+  box-shadow: var(--clay-shadow-orange) !important;
+  border: none !important;
+}
+
+/* ID Badge styling */
+.customer-card span[style*="rgba(99,102,241"],
+.customer-card span[style*="rgba(99, 102, 241"],
+.customer-card span[style*="rgba(124,58,237"],
+.customer-card span[style*="rgba(124, 58, 237"] {
+  background: var(--clay-bg-purple) !important;
+  box-shadow: var(--clay-shadow-purple) !important;
+  color: var(--primary) !important;
+  border-radius: 12px !important;
+  border: none !important;
+}
+
+/* ------------------------------------------
+   14. Inline Styled Cards & Containers Overrides (Barcode & Filters)
+   ------------------------------------------ */
+.settings-card[style*="background:var(--bg-card)"],
+.settings-card[style*="background: var(--bg-card)"],
+div[style*="background:var(--bg-card)"][style*="border-radius:var(--radius-lg)"],
+div[style*="background: var(--bg-card)"][style*="border-radius: var(--radius-lg)"],
+div[style*="background:var(--bg-card)"][style*="box-shadow:var(--shadow-sm)"],
+div[style*="background: var(--bg-card)"][style*="box-shadow: var(--shadow-sm)"] {
+  background: var(--clay-bg-card) !important;
+  box-shadow: var(--clay-shadow-card) !important;
+  border-radius: var(--clay-card-radius) !important;
+  border: none !important;
+}
+
+/* ------------------------------------------
+   15. POS Cashier Cart & Payment Layout Overrides
+   ------------------------------------------ */
+.pcs-total-strip {
+  background: var(--clay-bg-green) !important;
+  box-shadow: var(--clay-shadow-green) !important;
+  border: none !important;
+  border-radius: 14px !important;
+}
+
+.pcs-total-label {
+  color: #065f46 !important;
+}
+
+.dark-mode .pcs-total-label,
+[data-theme="dark"] .pcs-total-label {
+  color: #a7f3d0 !important;
+}
+
+.pcs-total-iqd {
+  background: linear-gradient(135deg, #059669, #047857) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+}
+
+.dark-mode .pcs-total-iqd,
+[data-theme="dark"] .pcs-total-iqd {
+  background: linear-gradient(135deg, #a7f3d0, #34d399) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+}
+
+.pcs-summary {
+  background: var(--clay-bg-purple) !important;
+  box-shadow: var(--clay-shadow-purple) !important;
+  border: none !important;
+  border-radius: 18px !important;
+}
+
+.pcs-customer-dropdown {
+  border-radius: 14px !important;
+  background: var(--clay-bg-card) !important;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25), var(--clay-shadow-card) !important;
+  border: none !important;
+}
+
+.pcs-btn-redeem {
+  background: var(--clay-bg-green) !important;
+  box-shadow: var(--clay-shadow-green) !important;
+  border: none !important;
+  color: #10b981 !important;
+  border-radius: 10px !important;
+}
+
+.dark-mode .pcs-btn-redeem,
+[data-theme="dark"] .pcs-btn-redeem {
+  color: #a7f3d0 !important;
+}
+
+/* Payment Methods Grid */
+.pcs-method {
+  background: var(--clay-bg-card) !important;
+  box-shadow: var(--clay-shadow-card) !important;
+  border: none !important;
+  border-radius: 12px !important;
+  color: var(--text-muted) !important;
+}
+
+.pcs-method:hover {
+  box-shadow: var(--clay-shadow-card-hover) !important;
+  transform: translateY(-2px) !important;
+  color: var(--text-primary) !important;
+}
+
+.pcs-method.active.method-cash {
+  background: var(--clay-bg-green) !important;
+  box-shadow: var(--clay-shadow-green) !important;
+  color: #047857 !important;
+  border: none !important;
+}
+
+.dark-mode .pcs-method.active.method-cash,
+[data-theme="dark"] .pcs-method.active.method-cash {
+  color: #34d399 !important;
+}
+
+.pcs-method.active.method-card {
+  background: var(--clay-bg-blue) !important;
+  box-shadow: var(--clay-shadow-blue) !important;
+  color: #0369a1 !important;
+  border: none !important;
+}
+
+.dark-mode .pcs-method.active.method-card,
+[data-theme="dark"] .pcs-method.active.method-card {
+  color: #22d3ee !important;
+}
+
+.pcs-method.active.method-transfer {
+  background: var(--clay-bg-purple) !important;
+  box-shadow: var(--clay-shadow-purple) !important;
+  color: #5b21b6 !important;
+  border: none !important;
+}
+
+.dark-mode .pcs-method.active.method-transfer,
+[data-theme="dark"] .pcs-method.active.method-transfer {
+  color: #818cf8 !important;
+}
+
+.pcs-method.active.method-debt {
+  background: var(--clay-bg-orange) !important;
+  box-shadow: var(--clay-shadow-orange) !important;
+  color: #b45309 !important;
+  border: none !important;
+}
+
+.dark-mode .pcs-method.active.method-debt,
+[data-theme="dark"] .pcs-method.active.method-debt {
+  color: #fbbf24 !important;
+}
+
+/* ------------------------------------------
+   16. Customer & Supplier Profile/Detail View Overrides
+   ------------------------------------------ */
+.supplier-detail-header-card,
+[data-theme="light"] .supplier-detail-header-card {
+  background: var(--clay-bg-card) !important;
+  box-shadow: var(--clay-shadow-card) !important;
+  border-radius: var(--clay-card-radius) !important;
+  border: none !important;
+}
+
+.supplier-avatar-glow {
+  border-radius: 50% !important;
+  background: var(--clay-bg-purple) !important;
+  box-shadow: var(--clay-shadow-purple) !important;
+  border: none !important;
+}
+
+.supplier-avatar-glow::after {
+  display: none !important;
+  /* remove old glow filter */
+}
+
+/* Action Buttons inside Profile Header */
+.supplier-action-buttons button,
+.supplier-action-buttons .btn-edit,
+.supplier-action-buttons .btn-pay,
+.supplier-action-buttons .btn-delete {
+  border-radius: var(--clay-btn-radius) !important;
+  border: none !important;
+  height: 44px !important;
+  transition: all 0.25s ease !important;
+}
+
+.supplier-action-buttons .btn-edit {
+  background: var(--clay-bg-btn-secondary) !important;
+  box-shadow: var(--clay-shadow-btn-secondary) !important;
+  color: var(--text-primary) !important;
+}
+
+.supplier-action-buttons .btn-edit:hover {
+  box-shadow: var(--clay-shadow-btn-secondary-hover) !important;
+  transform: translateY(-2px) !important;
+}
+
+.supplier-action-buttons .btn-pay {
+  background: var(--clay-bg-btn-success) !important;
+  box-shadow: var(--clay-shadow-btn-success) !important;
+  color: white !important;
+}
+
+.supplier-action-buttons .btn-pay:hover {
+  transform: translateY(-2px) !important;
+  filter: brightness(1.05) !important;
+}
+
+.supplier-action-buttons button[onclick*="deleteCustomer"],
+.supplier-action-buttons button[onclick*="deleteSupplier"],
+.supplier-action-buttons .btn-delete {
+  background: var(--clay-bg-red) !important;
+  box-shadow: var(--clay-shadow-red) !important;
+  color: #ef4444 !important;
+}
+
+.supplier-action-buttons button[onclick*="deleteCustomer"]:hover,
+.supplier-action-buttons button[onclick*="deleteSupplier"]:hover,
+.supplier-action-buttons .btn-delete:hover {
+  transform: translateY(-2px) !important;
+  filter: brightness(1.05) !important;
+}
+
+/* Profile Detail Stats Cards */
+.supplier-stat-card,
+.debt-detail-totals>div,
+.debt-detail-body div[style*="grid"]>div {
+  border-radius: 18px !important;
+  border: none !important;
+  transition: all 0.25s ease !important;
+}
+
+.supplier-stat-card:hover,
+.debt-detail-totals>div:hover,
+.debt-detail-body div[style*="grid"]>div:hover {
+  transform: translateY(-4px) !important;
+}
+
+/* Color codes mapping for stats blocks - nth-child based */
+/* Yellow/Orange Cards (Old Debt, Purchases, Old Debt remaining - 1st and 2nd children) */
+.supplier-stat-card:nth-child(1),
+.supplier-stat-card:nth-child(2),
+.debt-detail-totals>div:nth-child(1),
+.debt-detail-totals>div:nth-child(2),
+.debt-detail-body div[style*="grid"]>div:nth-child(1),
+.debt-detail-body div[style*="grid"]>div:nth-child(2) {
+  background: var(--clay-bg-orange) !important;
+  box-shadow: var(--clay-shadow-orange) !important;
+  border: none !important;
+}
+
+/* Purple Cards (Total Debt / Grand Total - 3rd child) */
+.supplier-stat-card:nth-child(3),
+.debt-detail-totals>div:nth-child(3),
+.debt-detail-body div[style*="grid"]>div:nth-child(3) {
+  background: var(--clay-bg-purple) !important;
+  box-shadow: var(--clay-shadow-purple) !important;
+  border: none !important;
+}
+
+/* Green Cards (Paid Debt - 4th child) */
+.supplier-stat-card:nth-child(4),
+.debt-detail-totals>div:nth-child(4),
+.debt-detail-body div[style*="grid"]>div:nth-child(4) {
+  background: var(--clay-bg-green) !important;
+  box-shadow: var(--clay-shadow-green) !important;
+  border: none !important;
+}
+
+/* Red Cards (Remaining Debt - 5th child) */
+.supplier-stat-card:nth-child(5),
+.debt-detail-totals>div:nth-child(5),
+.debt-detail-body div[style*="grid"]>div:nth-child(5) {
+  background: var(--clay-bg-red) !important;
+  box-shadow: var(--clay-shadow-red) !important;
+  border: none !important;
+}
+
+/* Ensure text contrast is deep, bold and highly legible inside colored stat boxes */
+.supplier-stat-card span,
+.debt-detail-totals>div span,
+.debt-detail-body div[style*="grid"]>div span {
+  font-weight: 700 !important;
+}
+
+.supplier-stat-card span:last-child,
+.debt-detail-totals>div span:last-child,
+.debt-detail-body div[style*="grid"]>div span:last-child {
+  font-weight: 900 !important;
+}
+
+/* Orange/Yellow boxes (Old Debt, Purchases) - Deep Rust/Orange text */
+.supplier-stat-card:nth-child(1) span,
+.supplier-stat-card:nth-child(2) span,
+.debt-detail-totals>div:nth-child(1) span,
+.debt-detail-totals>div:nth-child(2) span,
+.debt-detail-body div[style*="grid"]>div:nth-child(1) span,
+.debt-detail-body div[style*="grid"]>div:nth-child(2) span {
+  color: #7c2d12 !important;
+  /* Deep Orange/Rust */
+}
+
+/* Purple boxes (Total Debt / Grand Total) - Deep Indigo/Purple text */
+.supplier-stat-card:nth-child(3) span,
+.debt-detail-totals>div:nth-child(3) span,
+.debt-detail-body div[style*="grid"]>div:nth-child(3) span {
+  color: #3b0764 !important;
+  /* Deep Royal Purple */
+}
+
+/* Green boxes (Paid Debt) - Deep Emerald/Forest green text */
+.supplier-stat-card:nth-child(4) span,
+.debt-detail-totals>div:nth-child(4) span,
+.debt-detail-body div[style*="grid"]>div:nth-child(4) span {
+  color: #064e3b !important;
+  /* Deep Forest Green */
+}
+
+/* Red boxes (Remaining Debt) - Deep Crimson/Burgundy text */
+.supplier-stat-card:nth-child(5) span,
+.debt-detail-totals>div:nth-child(5) span,
+.debt-detail-body div[style*="grid"]>div:nth-child(5) span {
+  color: #7f1d1d !important;
+  /* Deep Burgundy Red */
+}
+
+/* Large inline Pay Debt Button (Kurdish "دانا کۆژمەكي ژ قەرزان") */
+.debt-detail-body button[onclick*="openGlobalDebtPayModal"],
+.debt-detail-body button[onclick*="openSupplierPaymentModal"] {
+  background: var(--clay-bg-btn-primary) !important;
+  box-shadow: var(--clay-shadow-btn-primary) !important;
+  border-radius: 18px !important;
+  border: none !important;
+  transition: all 0.3s ease !important;
+}
+
+.debt-detail-body button[onclick*="openGlobalDebtPayModal"]:hover,
+.debt-detail-body button[onclick*="openSupplierPaymentModal"]:hover {
+  box-shadow: var(--clay-shadow-btn-primary-hover) !important;
+  transform: translateY(-2px) !important;
+}
+
+/* Transaction Timeline log cards (.debtor-txn-card) */
+.debtor-txn-card,
+[data-theme="light"] .debtor-txn-card {
+  background: var(--clay-bg-card) !important;
+  box-shadow: var(--clay-shadow-card) !important;
+  border-radius: 20px !important;
+  border: none !important;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.debtor-txn-card:hover,
+[data-theme="light"] .debtor-txn-card:hover {
+  box-shadow: var(--clay-shadow-card-hover) !important;
+  transform: translateY(-3px) !important;
+}
+
+/* Green payment timeline cards */
+.debtor-txn-card[style*="rgba(16, 185, 129"],
+.debtor-txn-card[style*="rgba(16,185,129"] {
+  background: var(--clay-bg-green) !important;
+  box-shadow: var(--clay-shadow-green) !important;
+  border: none !important;
+}
+
+/* Calendar & Money Circle Icons inside log cards */
+.debtor-txn-card div[style*="rgba(99, 102, 241"],
+.debtor-txn-card div[style*="rgba(99,102,241"] {
+  background: var(--clay-bg-purple) !important;
+  box-shadow: var(--clay-shadow-purple) !important;
+  color: #4338ca !important;
+  border: none !important;
+}
+
+body.dark-mode .debtor-txn-card div[style*="rgba(99, 102, 241"],
+body.dark-mode .debtor-txn-card div[style*="rgba(99,102,241"] {
+  color: white !important;
+}
+
+.debtor-txn-card div[style*="rgba(16, 185, 129"],
+.debtor-txn-card div[style*="rgba(16,185,129"] {
+  background: var(--clay-bg-green) !important;
+  box-shadow: var(--clay-shadow-green) !important;
+  color: #064e3b !important;
+  border: none !important;
+}
+
+body.dark-mode .debtor-txn-card div[style*="rgba(16, 185, 129"],
+body.dark-mode .debtor-txn-card div[style*="rgba(16,185,129"] {
+  color: white !important;
+}
+
+/* Status Spans inside log cards (Fully Paid, Partially Paid, Unpaid) */
+.debtor-txn-card span[style*="10b981"],
+.debtor-txn-card span[style*="16, 185, 129"] {
+  background: var(--clay-bg-green) !important;
+  box-shadow: var(--clay-shadow-green) !important;
+  color: #064e3b !important;
+  border: none !important;
+  padding: 6px 14px !important;
+  border-radius: 12px !important;
+  font-weight: 800 !important;
+}
+
+body.dark-mode .debtor-txn-card span[style*="10b981"],
+body.dark-mode .debtor-txn-card span[style*="16, 185, 129"] {
+  color: white !important;
+}
+
+.debtor-txn-card span[style*="f59e0b"],
+.debtor-txn-card span[style*="245, 158, 11"],
+.debtor-txn-card span[style*="ef4444"],
+.debtor-txn-card span[style*="239, 68, 68"] {
+  background: var(--clay-bg-orange) !important;
+  box-shadow: var(--clay-shadow-orange) !important;
+  color: #7c2d12 !important;
+  border: none !important;
+  padding: 6px 14px !important;
+  border-radius: 12px !important;
+  font-weight: 800 !important;
+}
+
+body.dark-mode .debtor-txn-card span[style*="f59e0b"],
+body.dark-mode .debtor-txn-card span[style*="245, 158, 11"],
+body.dark-mode .debtor-txn-card span[style*="ef4444"],
+body.dark-mode .debtor-txn-card span[style*="239, 68, 68"] {
+  color: white !important;
+}
+
+/* ------------------------------------------
+   17. Dark Mode Text Contrast Overrides for Stats Block Numbers
+   ------------------------------------------ */
+body.dark-mode .supplier-stat-card,
+body.dark-mode .debt-detail-body div[style*="grid-template-columns"]>div {
+  color: rgba(255, 255, 255, 0.95) !important;
+}
+
+body.dark-mode .supplier-stat-card span,
+body.dark-mode .debt-detail-body div[style*="grid-template-columns"]>div span {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Specific stats numbers glows in dark mode */
+body.dark-mode .supplier-stat-card.purchases span:last-child,
+body.dark-mode .debt-detail-body div[style*="grid-template-columns"]>div[style*="#ede9fe"] span:last-child,
+body.dark-mode .debt-detail-body div[style*="grid-template-columns"]>div[style*="#7c3aed"] span:last-child {
+  color: #c4b5fd !important;
+  /* light purple */
+}
+
+body.dark-mode .supplier-stat-card.paid span:last-child,
+body.dark-mode .debt-detail-body div[style*="grid-template-columns"]>div[style*="#d1fae5"] span:last-child,
+body.dark-mode .debt-detail-body div[style*="grid-template-columns"]>div[style*="#10b981"] span:last-child {
+  color: #6ee7b7 !important;
+  /* light green */
+}
+
+body.dark-mode .supplier-stat-card.debt span:last-child,
+body.dark-mode .debt-detail-body div[style*="grid-template-columns"]>div[style*="#fee2e2"] span:last-child,
+body.dark-mode .debt-detail-body div[style*="grid-template-columns"]>div[style*="#ef4444"] span:last-child {
+  color: #fca5a5 !important;
+  /* light red */
+}
+
+body.dark-mode .debt-detail-body div[style*="grid-template-columns"]>div[style*="#fef3c7"] span:last-child,
+body.dark-mode .debt-detail-body div[style*="grid-template-columns"]>div[style*="#f59e0b"] span:last-child,
+body.dark-mode .debt-detail-body div[style*="grid-template-columns"]>div[style*="#ffedd5"] span:last-child,
+body.dark-mode .debt-detail-body div[style*="grid-template-columns"]>div[style*="#f97316"] span:last-child {
+  color: #fde047 !important;
+  /* light orange/yellow */
+}
+
+/* ------------------------------------------
+   18. Mobile View Switcher & Bottom Nav Bar Overrides
+   ------------------------------------------ */
+.pos-view-switcher,
+[data-theme="light"] .pos-view-switcher {
+  border-radius: 20px !important;
+  background: var(--clay-bg-card) !important;
+  box-shadow: var(--clay-shadow-card) !important;
+  border: none !important;
+  padding: 8px 12px !important;
+}
+
+.pos-view-btn {
+  background: var(--clay-bg-btn-secondary) !important;
+  box-shadow: var(--clay-shadow-btn-secondary) !important;
+  border-radius: var(--clay-btn-radius) !important;
+  border: none !important;
+  color: var(--text-primary) !important;
+  font-weight: 700 !important;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.pos-view-btn:hover {
+  box-shadow: var(--clay-shadow-btn-secondary-hover) !important;
+  transform: translateY(-1px) !important;
+}
+
+.pos-view-btn.active,
+[data-theme="light"] .pos-view-btn.active {
+  background: var(--clay-bg-btn-primary) !important;
+  box-shadow: var(--clay-shadow-btn-primary) !important;
+  color: white !important;
+  border: none !important;
+  transform: translateY(-2px) !important;
+}
+
+.pcs-cart-summary-badge {
+  background: var(--clay-bg-green) !important;
+  box-shadow: var(--clay-shadow-green) !important;
+  border-radius: var(--clay-btn-radius) !important;
+  border: none !important;
+  transition: all 0.25s ease !important;
+}
+
+.pcs-cart-summary-badge:hover {
+  transform: translateY(-2px) !important;
+  filter: brightness(1.05) !important;
+}
+
+/* Dynamic inner cart icon badge */
+.pcs-cart-summary-badge>div[style*="background: rgba(16,185,129,0.15)"],
+.pcs-cart-summary-badge>div[style*="background:rgba(16,185,129,0.15)"] {
+  background: var(--clay-bg-green) !important;
+  box-shadow: var(--clay-shadow-green) !important;
+  border-radius: 10px !important;
+}
+
+body.dark-mode .pcs-cart-summary-badge span {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+body.dark-mode #pos-cart-total-badge {
+  color: #6ee7b7 !important;
+  /* glowing emerald */
+}
+
+/* Responsive bottom sheet modal in camera scanner */
+.scanner-bottom-sheet {
+  background: var(--clay-bg-card) !important;
+  box-shadow: var(--clay-shadow-card) !important;
+  border-top-left-radius: var(--clay-card-radius) !important;
+  border-top-right-radius: var(--clay-card-radius) !important;
+  border: none !important;
+  padding: 24px !important;
+}
+
+.scanner-bottom-sheet::before {
+  background: var(--clay-bg-input) !important;
+  box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Empty state icon badge */
+.sbs-empty-icon {
+  background: var(--clay-bg-purple) !important;
+  box-shadow: var(--clay-shadow-purple) !important;
+  width: 60px !important;
+  height: 60px !important;
+  border-radius: 50% !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 28px !important;
+  margin: 0 auto 16px auto !important;
+  opacity: 1 !important;
+  /* remove original low opacity */
+}
+
+/* Bottom Sheet Footer Button */
+.sbs-review-btn,
+[data-theme="light"] .sbs-review-btn {
+  background: var(--clay-bg-btn-secondary) !important;
+  box-shadow: var(--clay-shadow-btn-secondary) !important;
+  border-radius: var(--clay-btn-radius) !important;
+  border: none !important;
+  color: var(--text-secondary) !important;
+  font-weight: 700 !important;
+  padding: 14px 28px !important;
+  transition: all 0.3s ease !important;
+  width: 100% !important;
+  display: block !important;
+}
+
+.sbs-review-btn:hover {
+  box-shadow: var(--clay-shadow-btn-secondary-hover) !important;
+  transform: translateY(-2px) !important;
+}
+
+.sbs-review-btn.active,
+[data-theme="light"] .sbs-review-btn.active {
+  background: var(--clay-bg-btn-primary) !important;
+  box-shadow: var(--clay-shadow-btn-primary) !important;
+  color: #ffffff !important;
+}
+
+.sbs-review-btn.active:hover {
+  box-shadow: var(--clay-shadow-btn-primary-hover) !important;
+}
+
+/* Camera Target Overlay box */
+.scanner-overlay {
+  border: 3px solid rgba(167, 139, 250, 0.6) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 0 15px rgba(167, 139, 250, 0.4), inset 0 0 15px rgba(167, 139, 250, 0.4) !important;
+}
+
+/* ------------------------------------------
+   19. Category Tabs & POS Search Bar Overrides
+   ------------------------------------------ */
+.cat-tab,
+[data-theme="light"] .cat-tab {
+  border-radius: 30px !important;
+  /* rounded pill */
+  border: 1.5px solid rgba(167, 139, 250, 0.3) !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: var(--text-secondary) !important;
+  transition: all 0.25s ease !important;
+  box-shadow: none !important;
+  padding: 6px 16px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+}
+
+.cat-tab:hover,
+[data-theme="light"] .cat-tab:hover {
+  background: rgba(167, 139, 250, 0.15) !important;
+  transform: translateY(-2px) !important;
+}
+
+.cat-tab.active,
+[data-theme="light"] .cat-tab.active {
+  background: var(--clay-bg-btn-primary) !important;
+  box-shadow: var(--clay-shadow-btn-primary) !important;
+  border: none !important;
+  color: white !important;
+}
+
+/* POS Search Bar */
+#pos-search,
+input#pos-search {
+  border-radius: var(--clay-input-radius) !important;
+  background: var(--clay-bg-input) !important;
+  box-shadow: var(--clay-shadow-input) !important;
+  border: none !important;
+  padding: 12px 18px !important;
+}
+
+input#pos-search:focus {
+  box-shadow: var(--clay-shadow-input-focus) !important;
+}
+
+/* ------------------------------------------
+   20. POS Numpad & Quick Actions Overrides
+   ------------------------------------------ */
+.pos-numpad {
+  border-radius: var(--clay-card-radius) !important;
+  background: var(--clay-bg-card) !important;
+  box-shadow: var(--clay-shadow-card) !important;
+  border: none !important;
+}
+
+#numpad-input {
+  border-radius: var(--clay-input-radius) !important;
+  background: var(--clay-bg-input) !important;
+  box-shadow: var(--clay-shadow-input) !important;
+  border: none !important;
+  font-family: inherit !important;
+}
+
+.numpad-btn {
+  border-radius: var(--clay-btn-radius) !important;
+  background: var(--clay-bg-btn-secondary) !important;
+  box-shadow: var(--clay-shadow-btn-secondary) !important;
+  border: none !important;
+  color: var(--text-primary) !important;
+  transition: all 0.2s ease !important;
+}
+
+.numpad-btn:hover {
+  box-shadow: var(--clay-shadow-btn-secondary-hover) !important;
+  transform: translateY(-2px) !important;
+}
+
+.numpad-btn:active {
+  transform: translateY(1px) !important;
+}
+
+/* Orange tinted Backspace Key */
+.numpad-btn.bksp-btn {
+  background: var(--clay-bg-orange) !important;
+  box-shadow: var(--clay-shadow-orange) !important;
+  color: #f59e0b !important;
+  border: none !important;
+}
+
+body.dark-mode .numpad-btn.bksp-btn {
+  color: #fde047 !important;
+}
+
+/* Red tinted Clear Display Key */
+.numpad-btn.clear-btn {
+  background: var(--clay-bg-red) !important;
+  box-shadow: var(--clay-shadow-red) !important;
+  color: #ef4444 !important;
+  border: none !important;
+}
+
+body.dark-mode .numpad-btn.clear-btn {
+  color: #fca5a5 !important;
+}
+
+/* Quick Action Colored Clay Buttons */
+.qa-btn {
+  border-radius: var(--clay-btn-radius) !important;
+  border: none !important;
+  transition: all 0.25s ease !important;
+  color: white !important;
+}
+
+.qa-btn:hover {
+  transform: translateY(-3px) !important;
+  filter: brightness(1.05) !important;
+}
+
+.qa-btn:active {
+  transform: translateY(1px) !important;
+}
+
+.qa-btn.qa-clear {
+  background: var(--clay-bg-red) !important;
+  box-shadow: var(--clay-shadow-red) !important;
+}
+
+.qa-btn.qa-discount {
+  background: var(--clay-bg-btn-primary) !important;
+  box-shadow: var(--clay-shadow-btn-primary) !important;
+}
+
+.qa-btn.qa-hold {
+  background: var(--clay-bg-orange) !important;
+  box-shadow: var(--clay-shadow-orange) !important;
+}
+
+.qa-btn.qa-retrieve {
+  background: var(--clay-bg-blue) !important;
+  box-shadow: var(--clay-shadow-blue) !important;
+}
+
+/* ------------------------------------------
+   21. Comprehensive Text & Icon Contrast Enhancements
+   ------------------------------------------ */
+
+/* Active Sidebar Navigation Items - White text & white icons */
+.sidebar-nav .nav-item.active,
+.sidebar-nav .nav-item.active i,
+.sidebar-nav .nav-item.active span,
+.sidebar-nav .nav-item.active .nav-icon {
+  color: #ffffff !important;
+}
+
+/* Active Category/Navigation Tabs - White text & icons */
+.archive-tab.active,
+.tab-btn.active,
+.cat-tab.active,
+.pos-view-btn.active,
+.archive-tab.active i,
+.archive-tab.active span,
+.tab-btn.active i,
+.tab-btn.active span,
+.cat-tab.active i,
+.cat-tab.active span,
+.pos-view-btn.active i,
+.pos-view-btn.active span {
+  color: #ffffff !important;
+}
+
+/* Primary/Action Buttons - Enforce white text & white icons */
+.btn-primary,
+.btn-edit,
+.btn-save,
+.btn-add,
+.numpad-apply-btn,
+.sbs-review-btn,
+.qa-btn,
+.btn-primary i,
+.btn-primary span,
+.btn-edit i,
+.btn-edit span,
+.btn-save i,
+.btn-save span,
+.btn-add i,
+.btn-add span,
+.numpad-apply-btn i,
+.numpad-apply-btn span,
+.sbs-review-btn i,
+.sbs-review-btn span,
+.qa-btn i,
+.qa-btn span {
+  color: #ffffff !important;
+}
+
+/* Form Group Labels Contrast */
+.form-group label {
+  font-weight: 700 !important;
+}
+
+html[data-theme="light"] .form-group label {
+  color: #1e1b4b !important;
+  /* Deep Indigo */
+}
+
+body.dark-mode .form-group label {
+  color: #f1f5f9 !important;
+  /* Light slate */
+}
+
+/* Light Theme Card Titles and Primary Text Contrast (Slate-950/Slate-900) */
+html[data-theme="light"] .card h1,
+html[data-theme="light"] .card h2,
+html[data-theme="light"] .card h3,
+html[data-theme="light"] .card h4,
+html[data-theme="light"] .card h5,
+html[data-theme="light"] .card h6,
+html[data-theme="light"] .home-nav-card h3,
+html[data-theme="light"] .product-card .product-name,
+html[data-theme="light"] .pos-numpad h3,
+html[data-theme="light"] .pcs-cart-title,
+html[data-theme="light"] .modal-content h1,
+html[data-theme="light"] .modal-content h2,
+html[data-theme="light"] .modal-content h3,
+html[data-theme="light"] .modal-content h4,
+html[data-theme="light"] .data-table th,
+html[data-theme="light"] .supplier-table-wrapper table th,
+html[data-theme="light"] .login-card h2,
+html[data-theme="light"] .lb h2 {
+  color: #0f172a !important;
+  /* Deep slate */
+}
+
+/* Light Theme Paragraphs & Subtext Contrast (Slate-700/Slate-800) */
+html[data-theme="light"] .card p,
+html[data-theme="light"] .card span:not([style*="color"]),
+html[data-theme="light"] .home-nav-card p,
+html[data-theme="light"] .product-card span:not([style*="color"]),
+html[data-theme="light"] .cart-item-name,
+html[data-theme="light"] .data-table td,
+html[data-theme="light"] .supplier-table-wrapper table td {
+  color: #334155 !important;
+  /* Rich Slate */
+}
+
+/* Dark Theme Card Titles and Primary Text Contrast (White) */
+body.dark-mode .card h1,
+body.dark-mode .card h2,
+body.dark-mode .card h3,
+body.dark-mode .card h4,
+body.dark-mode .card h5,
+body.dark-mode .card h6,
+body.dark-mode .home-nav-card h3,
+body.dark-mode .product-card .product-name,
+body.dark-mode .pos-numpad h3,
+body.dark-mode .pcs-cart-title,
+body.dark-mode .modal-content h1,
+body.dark-mode .modal-content h2,
+body.dark-mode .modal-content h3,
+body.dark-mode .modal-content h4,
+body.dark-mode .data-table th,
+body.dark-mode .supplier-table-wrapper table th,
+body.dark-mode .login-card h2,
+body.dark-mode .lb h2 {
+  color: #ffffff !important;
+}
+
+/* Dark Theme Paragraphs & Subtext Contrast (Slate-200/Slate-300) */
+body.dark-mode .card p,
+body.dark-mode .card span:not([style*="color"]),
+body.dark-mode .home-nav-card p,
+body.dark-mode .product-card span:not([style*="color"]),
+body.dark-mode .cart-item-name,
+body.dark-mode .data-table td,
+body.dark-mode .supplier-table-wrapper table td {
+  color: #cbd5e1 !important;
+  /* Light Slate */
+}
+
+/* ------------------------------------------
+   22. Header Top Bar & Sidebar Overrides
+   ------------------------------------------ */
+.top-header,
+[data-theme="light"] .top-header {
+  background: var(--clay-bg-card) !important;
+  box-shadow: var(--clay-shadow-card) !important;
+  border: none !important;
+  border-bottom-left-radius: var(--clay-input-radius) !important;
+  border-bottom-right-radius: var(--clay-input-radius) !important;
+}
+
+.lang-toggle-btn,
+[data-theme="light"] .lang-toggle-btn {
+  border-radius: 30px !important;
+  background: var(--clay-bg-btn-secondary) !important;
+  box-shadow: var(--clay-shadow-btn-secondary) !important;
+  border: none !important;
+  transition: all 0.2s ease !important;
+  color: var(--text-primary) !important;
+}
+
+.lang-toggle-btn:hover,
+[data-theme="light"] .lang-toggle-btn:hover {
+  box-shadow: var(--clay-shadow-btn-secondary-hover) !important;
+  transform: scale(1.05) !important;
+}
+
+.notifications-btn,
+.header-icon-btn,
+[data-theme="light"] .notifications-btn,
+[data-theme="light"] .header-icon-btn {
+  border-radius: 50% !important;
+  background: var(--clay-bg-btn-secondary) !important;
+  box-shadow: var(--clay-shadow-btn-secondary) !important;
+  border: none !important;
+  transition: all 0.2s ease !important;
+  color: var(--text-primary) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.notifications-btn:hover,
+.header-icon-btn:hover,
+[data-theme="light"] .notifications-btn:hover,
+[data-theme="light"] .header-icon-btn:hover {
+  box-shadow: var(--clay-shadow-btn-secondary-hover) !important;
+  transform: scale(1.08) !important;
+}
+
+.header-user,
+[data-theme="light"] .header-user {
+  border-radius: 30px !important;
+  background: var(--clay-bg-btn-secondary) !important;
+  box-shadow: var(--clay-shadow-btn-secondary) !important;
+  border: none !important;
+  transition: all 0.2s ease !important;
+  padding: 6px 14px !important;
+  color: var(--text-primary) !important;
+}
+
+.header-user:hover,
+[data-theme="light"] .header-user:hover {
+  box-shadow: var(--clay-shadow-btn-secondary-hover) !important;
+  transform: translateY(-1px) !important;
+}
+
+.notif-badge,
+.notif-badge-sidebar {
+  background: #dc2626 !important;
+  /* Solid red for 100% legibility in light theme */
+  box-shadow: 0 3px 8px rgba(220, 38, 38, 0.3) !important;
+  border: none !important;
+  color: white !important;
+  font-weight: 900 !important;
+}
+
+body.dark-mode .notif-badge,
+body.dark-mode .notif-badge-sidebar {
+  background: #ef4444 !important;
+  /* Brighter red in dark mode */
+  box-shadow: 0 3px 8px rgba(239, 68, 68, 0.4) !important;
+}
+
+.sidebar,
+[data-theme="light"] .sidebar {
+  background: var(--clay-bg-card) !important;
+  box-shadow: var(--clay-shadow-card) !important;
+  border: none !important;
+  border-top-left-radius: var(--clay-card-radius) !important;
+  border-bottom-left-radius: var(--clay-card-radius) !important;
+}
+
+.sidebar-header,
+[data-theme="light"] .sidebar-header {
+  border-bottom: 1.5px solid rgba(167, 139, 250, 0.15) !important;
+}
+
+/* ------------------------------------------
+   23. Expandable Invoice Details & Inner Tables
+   ------------------------------------------ */
+.expanded-items-box>div {
+  background: var(--clay-bg-card) !important;
+  box-shadow: var(--clay-shadow-card) !important;
+  border: none !important;
+  border-radius: 0 0 var(--clay-card-radius) var(--clay-card-radius) !important;
+  overflow: hidden !important;
+}
+
+/* Section Header */
+.expanded-items-box>div>div:first-child {
+  background: rgba(167, 139, 250, 0.05) !important;
+  border-bottom: 1.5px solid rgba(167, 139, 250, 0.1) !important;
+  padding: 14px 20px !important;
+}
+
+.expanded-items-box div[style*="border-radius: 20px"],
+.expanded-items-box span[style*="border-radius: 20px"] {
+  background: var(--clay-bg-btn-secondary) !important;
+  box-shadow: var(--clay-shadow-btn-secondary) !important;
+  border: none !important;
+  color: var(--text-secondary) !important;
+}
+
+.expanded-items-box table {
+  border-collapse: separate !important;
+  border-spacing: 0 6px !important;
+  border: none !important;
+  width: 100% !important;
+  background: transparent !important;
+}
+
+.expanded-items-box thead tr {
+  background: transparent !important;
+  border-bottom: none !important;
+}
+
+.expanded-items-box th {
+  border: none !important;
+  padding: 10px 14px !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  border-radius: 8px !important;
+}
+
+/* Color thematic headers */
+/* First table: Products (Purple theme header) */
+.expanded-items-box table:first-of-type th {
+  background: var(--clay-bg-btn-primary) !important;
+  color: white !important;
+  box-shadow: var(--clay-shadow-btn-primary) !important;
+}
+
+/* Second table: Payments (Green theme header) */
+.expanded-items-box table:nth-of-type(2) th {
+  background: var(--clay-bg-green) !important;
+  color: white !important;
+  box-shadow: var(--clay-shadow-green) !important;
+}
+
+.expanded-items-box tbody tr {
+  background: var(--clay-bg-input) !important;
+  border: none !important;
+  transition: all 0.2s ease !important;
+}
+
+.expanded-items-box td {
+  border: none !important;
+  background: transparent !important;
+  padding: 11px 14px !important;
+  color: var(--text-primary) !important;
+  font-size: 12.5px !important;
+  vertical-align: middle !important;
+}
+
+/* Row pill shapes */
+.expanded-items-box tbody tr td:first-child {
+  border-radius: 0 10px 10px 0 !important;
+}
+
+.expanded-items-box tbody tr td:last-child {
+  border-radius: 10px 0 0 10px !important;
+}
+
+[dir="ltr"] .expanded-items-box tbody tr td:first-child,
+html:not([dir="rtl"]) .expanded-items-box tbody tr td:first-child {
+  border-radius: 10px 0 0 10px !important;
+}
+
+[dir="ltr"] .expanded-items-box tbody tr td:last-child,
+html:not([dir="rtl"]) .expanded-items-box tbody tr td:last-child {
+  border-radius: 0 10px 10px 0 !important;
+}
+
+/* Table Footer Row */
+.expanded-items-box tfoot tr {
+  background: var(--clay-bg-card) !important;
+  box-shadow: var(--clay-shadow-card) !important;
+  border: none !important;
+}
+
+.expanded-items-box tfoot td {
+  border: none !important;
+  background: transparent !important;
+}
+
+.expanded-items-box tfoot tr td:first-child {
+  border-radius: 0 12px 12px 0 !important;
+}
+
+.expanded-items-box tfoot tr td:last-child {
+  border-radius: 12px 0 0 12px !important;
+}
+
+[dir="ltr"] .expanded-items-box tfoot tr td:first-child,
+html:not([dir="rtl"]) .expanded-items-box tfoot tr td:first-child {
+  border-radius: 12px 0 0 12px !important;
+}
+
+[dir="ltr"] .expanded-items-box tfoot tr td:last-child,
+html:not([dir="rtl"]) .expanded-items-box tfoot tr td:last-child {
+  border-radius: 0 12px 12px 0 !important;
+}
+
+/* Quantity and Payment Pills */
+.expanded-items-box td span[style*="border-radius: 20px"] {
+  background: var(--clay-bg-blue) !important;
+  box-shadow: var(--clay-shadow-blue) !important;
+  color: var(--text-primary) !important;
+  border: none !important;
+  padding: 3px 10px !important;
+  display: inline-block !important;
+}
+
+body.dark-mode .expanded-items-box td span[style*="border-radius: 20px"] {
+  color: white !important;
+}
+
+.expanded-items-box div[style*="color: var(--success)"] {
+  background: var(--clay-bg-green) !important;
+  box-shadow: var(--clay-shadow-green) !important;
+  color: #10b981 !important;
+  border: none !important;
+}
+
+body.dark-mode .expanded-items-box div[style*="color: var(--success)"] {
+  color: #6ee7b7 !important;
+}
+
+/* ------------------------------------------
+   24. Customer & Supplier Page Toolbar Actions
+   ------------------------------------------ */
+button[onclick*="openCustomerModal"],
+button[onclick*="openSupplierModal"] {
+  background: var(--clay-bg-btn-primary) !important;
+  box-shadow: var(--clay-shadow-btn-primary) !important;
+  border-radius: var(--clay-btn-radius) !important;
+  border: none !important;
+  color: white !important;
+  font-weight: 800 !important;
+  transition: all 0.2s ease !important;
+}
+
+button[onclick*="openCustomerModal"]:hover,
+button[onclick*="openSupplierModal"]:hover {
+  box-shadow: var(--clay-shadow-btn-primary-hover) !important;
+  transform: translateY(-2px) !important;
+}
+
+button[onclick*="openGlobalDebtPayModal"]:not([class*="btn-home-action"]),
+button[onclick*="openSupplierPaymentModal"]:not([class*="btn-home-action"]) {
+  background: var(--clay-bg-btn-success) !important;
+  box-shadow: var(--clay-shadow-btn-success) !important;
+  border-radius: var(--clay-btn-radius) !important;
+  border: none !important;
+  color: white !important;
+  font-weight: 800 !important;
+  transition: all 0.2s ease !important;
+}
+
+button[onclick*="openGlobalDebtPayModal"]:not([class*="btn-home-action"]):hover,
+button[onclick*="openSupplierPaymentModal"]:not([class*="btn-home-action"]):hover {
+  box-shadow: var(--clay-shadow-btn-success-hover) !important;
+  transform: translateY(-2px) !important;
+}
+
+button[onclick*="openPDFSendModal"],
+button[onclick*="generatePDF"],
+button[onclick*="generateCustomerPDF"] {
+  background: var(--clay-bg-blue) !important;
+  box-shadow: var(--clay-shadow-blue) !important;
+  border-radius: var(--clay-btn-radius) !important;
+  border: none !important;
+  color: #0369a1 !important;
+  /* Deep dark blue text for high contrast on light blue */
+  font-weight: 800 !important;
+  transition: all 0.2s ease !important;
+}
+
+button[onclick*="openPDFSendModal"]:hover,
+button[onclick*="generatePDF"]:hover,
+button[onclick*="generateCustomerPDF"]:hover {
+  box-shadow: var(--clay-shadow-blue-hover) !important;
+  transform: translateY(-2px) !important;
+}
+
+body.dark-mode button[onclick*="openPDFSendModal"],
+body.dark-mode button[onclick*="generatePDF"],
+body.dark-mode button[onclick*="generateCustomerPDF"] {
+  color: white !important;
+  /* White text inside dark mode */
+}
+
+button[onclick*="printCustomersTable"],
+button[onclick*="printSuppliersTable"] {
+  background: var(--clay-bg-btn-secondary) !important;
+  box-shadow: var(--clay-shadow-btn-secondary) !important;
+  border-radius: var(--clay-btn-radius) !important;
+  border: none !important;
+  color: #0f172a !important;
+  /* Deep black-slate text */
+  font-weight: 800 !important;
+  transition: all 0.2s ease !important;
+}
+
+button[onclick*="printCustomersTable"]:hover,
+button[onclick*="printSuppliersTable"]:hover {
+  box-shadow: var(--clay-shadow-btn-secondary-hover) !important;
+  transform: translateY(-2px) !important;
+}
+
+body.dark-mode button[onclick*="printCustomersTable"],
+body.dark-mode button[onclick*="printSuppliersTable"] {
+  color: white !important;
+}
+
+button[onclick*="openArchivedCustomersModal"],
+button[onclick*="openArchivedSuppliersModal"] {
+  background: var(--clay-bg-red) !important;
+  box-shadow: var(--clay-shadow-red) !important;
+  border-radius: var(--clay-btn-radius) !important;
+  border: none !important;
+  color: #7f1d1d !important;
+  /* Deep dark red text for high contrast on light red */
+  font-weight: 800 !important;
+  transition: all 0.2s ease !important;
+}
+
+button[onclick*="openArchivedCustomersModal"]:hover,
+button[onclick*="openArchivedSuppliersModal"]:hover {
+  box-shadow: var(--clay-shadow-red-hover) !important;
+  transform: translateY(-2px) !important;
+}
+
+/* ------------------------------------------
+   25. Customer page report stats cards overrides
+   ------------------------------------------ */
+#customers-stats-strip>div {
+  border: none !important;
+  border-radius: 20px !important;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+#customers-stats-strip>div:hover {
+  transform: translateY(-3px) !important;
+}
+
+/* Blue Card: Number of Customers (1st Card) */
+#customers-stats-strip>div:nth-child(1) {
+  background: var(--clay-bg-blue) !important;
+  box-shadow: var(--clay-shadow-blue) !important;
+}
+
+#customers-stats-strip>div:nth-child(1):hover {
+  box-shadow: var(--clay-shadow-blue-hover) !important;
+}
+
+#customers-stats-strip>div:nth-child(1)>div:first-child {
+  background: var(--clay-bg-blue) !important;
+  box-shadow: var(--clay-shadow-blue) !important;
+  color: #0369a1 !important;
+  border: none !important;
+  border-radius: 12px !important;
+}
+
+#customers-stats-strip>div:nth-child(1) #stat-customers-count {
+  color: #1e3a8a !important;
+  font-weight: 900 !important;
+}
+
+#customers-stats-strip>div:nth-child(1) div[data-translate] {
+  color: #1e40af !important;
+  font-weight: 800 !important;
+}
+
+body.dark-mode #customers-stats-strip>div:nth-child(1)>div:first-child,
+body.dark-mode #customers-stats-strip>div:nth-child(1) #stat-customers-count,
+body.dark-mode #customers-stats-strip>div:nth-child(1) div[data-translate] {
+  color: white !important;
+}
+
+/* Red Card: Total Debt (2nd Card) */
+#customers-stats-strip>div:nth-child(2) {
+  background: var(--clay-bg-red) !important;
+  box-shadow: var(--clay-shadow-red) !important;
+}
+
+#customers-stats-strip>div:nth-child(2):hover {
+  box-shadow: var(--clay-shadow-red-hover) !important;
+}
+
+#customers-stats-strip>div:nth-child(2)>div:first-child {
+  background: var(--clay-bg-red) !important;
+  box-shadow: var(--clay-shadow-red) !important;
+  color: #7f1d1d !important;
+  border: none !important;
+  border-radius: 12px !important;
+}
+
+#customers-stats-strip>div:nth-child(2) #stat-customers-total-debt {
+  color: #7f1d1d !important;
+  font-weight: 900 !important;
+}
+
+#customers-stats-strip>div:nth-child(2) div[data-translate] {
+  color: #991b1b !important;
+  font-weight: 800 !important;
+}
+
+body.dark-mode #customers-stats-strip>div:nth-child(2)>div:first-child,
+body.dark-mode #customers-stats-strip>div:nth-child(2) #stat-customers-total-debt,
+body.dark-mode #customers-stats-strip>div:nth-child(2) div[data-translate] {
+  color: white !important;
+}
+
+/* Green Card: Total Paid (3rd Card) */
+#customers-stats-strip>div:nth-child(3) {
+  background: var(--clay-bg-green) !important;
+  box-shadow: var(--clay-shadow-green) !important;
+}
+
+#customers-stats-strip>div:nth-child(3):hover {
+  box-shadow: var(--clay-shadow-green-hover) !important;
+}
+
+#customers-stats-strip>div:nth-child(3)>div:first-child {
+  background: var(--clay-bg-green) !important;
+  box-shadow: var(--clay-shadow-green) !important;
+  color: #064e3b !important;
+  border: none !important;
+  border-radius: 12px !important;
+}
+
+#customers-stats-strip>div:nth-child(3) #stat-customers-total-paid {
+  color: #064e3b !important;
+  font-weight: 900 !important;
+}
+
+#customers-stats-strip>div:nth-child(3) div[data-translate] {
+  color: #065f46 !important;
+  font-weight: 800 !important;
+}
+
+body.dark-mode #customers-stats-strip>div:nth-child(3)>div:first-child,
+body.dark-mode #customers-stats-strip>div:nth-child(3) #stat-customers-total-paid,
+body.dark-mode #customers-stats-strip>div:nth-child(3) div[data-translate] {
+  color: white !important;
+}
+
+/* ------------------------------------------
+   26. Global Text Legibility & Contrast Overrides (Light Mode Lists)
+   ------------------------------------------ */
+[data-theme="light"] .debtor-txn-card {
+  color: #0f172a !important;
+  /* Premium dark slate */
+}
+
+[data-theme="light"] .debtor-txn-card div,
+[data-theme="light"] .debtor-txn-card span {
+  font-weight: 700 !important;
+}
+
+[data-theme="light"] .debtor-txn-card div[style*="font-weight: 800"],
+[data-theme="light"] .debtor-txn-card div[style*="font-weight: 900"] {
+  font-weight: 900 !important;
+  color: #0f172a !important;
+  /* Deepest black-slate for totals */
+}
+
+[data-theme="light"] .debtor-txn-card span[style*="color: #ef4444"],
+[data-theme="light"] .debtor-txn-card span[style*="color:#ef4444"] {
+  color: #b91c1c !important;
+  /* Solid high-contrast red for remaining debt */
+  font-weight: 800 !important;
+}
+
+[data-theme="light"] .debtor-txn-card div[style*="color: var(--text-primary)"] {
+  color: #0f172a !important;
+  /* Date header */
+}
+
+[data-theme="light"] .debtor-txn-card div[style*="color: var(--text-muted)"] {
+  color: #334155 !important;
+  /* Cashier subtext (darker than default muted) */
+}
+
+/* Supplier Avatar Glows & Headers Detail Text Contrast */
+.supplier-detail-header-card h2,
+.supplier-detail-header-card h3 {
+  font-weight: 900 !important;
+  color: var(--text-primary) !important;
+}
+
+[data-theme="light"] .supplier-detail-header-card div[style*="color: var(--text-muted)"] {
+  color: #334155 !important;
+  font-weight: 700 !important;
+}
+
+/* ------------------------------------------
+   27. Back to Grid Actions (Capsule Claymorphic buttons)
+   ------------------------------------------ */
+button[onclick*="goBackToCustomersGrid"],
+button[onclick*="goBackToSuppliersGrid"] {
+  background: var(--clay-bg-btn-secondary) !important;
+  box-shadow: var(--clay-shadow-btn-secondary) !important;
+  border-radius: 30px !important;
+  /* Elegant capsule pill shape */
+  border: none !important;
+  color: var(--text-primary) !important;
+  font-weight: 800 !important;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+button[onclick*="goBackToCustomersGrid"]:hover,
+button[onclick*="goBackToSuppliersGrid"]:hover {
+  box-shadow: var(--clay-shadow-btn-secondary-hover) !important;
+  transform: translateY(-2px) !important;
+}
+
+/* ------------------------------------------
+   28. Notifications and Alerts Page Overrides
+   ------------------------------------------ */
+/* Main page action buttons */
+button[onclick*="loadNotificationsPage"] {
+  background: var(--clay-bg-btn-secondary) !important;
+  box-shadow: var(--clay-shadow-btn-secondary) !important;
+  border-radius: var(--clay-btn-radius) !important;
+  border: none !important;
+  color: var(--text-primary) !important;
+  font-weight: 800 !important;
+  transition: all 0.2s ease !important;
+}
+
+button[onclick*="loadNotificationsPage"]:hover {
+  box-shadow: var(--clay-shadow-btn-secondary-hover) !important;
+  transform: translateY(-2px) !important;
+}
+
+button[onclick*="markAllNotificationsRead"] {
+  background: var(--clay-bg-red) !important;
+  box-shadow: var(--clay-shadow-red) !important;
+  border-radius: var(--clay-btn-radius) !important;
+  border: none !important;
+  color: #7f1d1d !important;
+  font-weight: 800 !important;
+  transition: all 0.2s ease !important;
+}
+
+button[onclick*="markAllNotificationsRead"]:hover {
+  box-shadow: var(--clay-shadow-red-hover) !important;
+  transform: translateY(-2px) !important;
+}
+
+body.dark-mode button[onclick*="markAllNotificationsRead"] {
+  color: white !important;
+}
+
+/* Filter Tab Row Container */
+#page-notifications div[style*="margin-bottom:20px"][style*="flex-wrap:wrap"] {
+  background: var(--clay-bg-card) !important;
+  box-shadow: var(--clay-shadow-card) !important;
+  border-radius: 20px !important;
+  border: none !important;
+  padding: 12px 16px !important;
+}
+
+/* Faded/Read Notification Cards (Preventing flat looks from 65% opacity) */
+.notif-card[style*="opacity: 0.65"],
+.notif-card[style*="opacity:0.65"] {
+  opacity: 1 !important;
+  background: var(--clay-bg-card) !important;
+  box-shadow: var(--clay-shadow-card) !important;
+  filter: grayscale(40%) !important;
+  border-right: 4px solid var(--text-muted) !important;
+}
+
+.notif-card[style*="opacity: 0.65"] div,
+.notif-card[style*="opacity: 0.65"] span,
+.notif-card[style*="opacity:0.65"] div,
+.notif-card[style*="opacity:0.65"] span {
+  color: var(--text-muted) !important;
+}
+
+/* Notification action buttons */
+.notif-card-actions button {
+  background: var(--clay-bg-btn-secondary) !important;
+  box-shadow: var(--clay-shadow-btn-secondary) !important;
+  border-radius: 8px !important;
+  border: none !important;
+  width: 32px !important;
+  height: 32px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+
+.notif-card-actions button:hover {
+  box-shadow: var(--clay-shadow-btn-secondary-hover) !important;
+  transform: scale(1.08) !important;
+}
+
+.notif-card-actions button[disabled] {
+  opacity: 0.45 !important;
+  cursor: not-allowed !important;
+  box-shadow: none !important;
+}
+
+/* Success pay inline button */
+.notif-card-actions button[style*="background:#10b981"] {
+  background: var(--clay-bg-btn-success) !important;
+  box-shadow: var(--clay-shadow-btn-success) !important;
+  width: auto !important;
+  padding: 6px 12px !important;
+  color: white !important;
+  font-weight: 800 !important;
+  border-radius: var(--clay-btn-radius) !important;
+}
+
+.notif-card-actions button[style*="background:#10b981"]:hover {
+  box-shadow: var(--clay-shadow-btn-success-hover) !important;
+  transform: translateY(-1px) !important;
+}
+
+/* 3D Raised Icon Badge Containers inside notification cards */
+.notif-card>span:first-child {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 44px !important;
+  height: 44px !important;
+  border-radius: 12px !important;
+  background: var(--clay-bg-card) !important;
+  box-shadow: var(--clay-shadow-card) !important;
+  border: none !important;
+  font-size: 20px !important;
+  flex-shrink: 0 !important;
+  transition: all 0.2s ease !important;
+}
+
+.notif-card:hover>span:first-child {
+  transform: scale(1.05) rotate(3deg) !important;
+}
+
+/* Color themed sub-badges overrides inside notification rows */
+.notif-card[style*="rgba(16, 185, 129"]>span:first-child,
+.notif-card[style*="rgba(16,185,129"]>span:first-child {
+  background: var(--clay-bg-green) !important;
+  box-shadow: var(--clay-shadow-green) !important;
+}
+
+.notif-card[style*="rgba(239, 68, 68"]>span:first-child,
+.notif-card[style*="rgba(239,68,68"]>span:first-child {
+  background: var(--clay-bg-red) !important;
+  box-shadow: var(--clay-shadow-red) !important;
+}
+
+.notif-card[style*="rgba(6, 182, 212"]>span:first-child,
+.notif-card[style*="rgba(6,182,212"]>span:first-child {
+  background: var(--clay-bg-blue) !important;
+  box-shadow: var(--clay-shadow-blue) !important;
+}
+
+.notif-card[style*="rgba(245, 158, 11"]>span:first-child,
+.notif-card[style*="rgba(245,158,11"]>span:first-child {
+  background: var(--clay-bg-orange) !important;
+  box-shadow: var(--clay-shadow-orange) !important;
+}
+
+/* Light Theme Text Legibility overrides for notification cards */
+[data-theme="light"] .notif-card {
+  color: #0f172a !important;
+  /* High contrast text */
+}
+
+[data-theme="light"] .notif-card span[style*="font-weight:700"],
+[data-theme="light"] .notif-card span[style*="font-weight: 700"] {
+  font-weight: 900 !important;
+  color: #0f172a !important;
+}
+
+[data-theme="light"] .notif-card div[style*="color:var(--text-secondary)"],
+[data-theme="light"] .notif-card div[style*="color: var(--text-secondary)"],
+[data-theme="light"] .notif-card div[style*="color:var(--text-muted)"],
+[data-theme="light"] .notif-card div[style*="color: var(--text-muted)"] {
+  color: #334155 !important;
+  font-weight: 700 !important;
+}
+
+/* ------------------------------------------
+   29. Header Icon Buttons — Theme & Bell (Light & Dark Mode)
+   ------------------------------------------ */
+
+/* Force icon stroke/color visible in light mode */
+[data-theme="light"] .header-icon-btn,
+[data-theme="light"] .notifications-btn {
+  color: #374151 !important;
+}
+
+[data-theme="light"] .notifications-btn svg {
+  stroke: #374151 !important;
+}
+
+[data-theme="light"] .header-icon-btn:hover,
+[data-theme="light"] .notifications-btn:hover {
+  color: #111827 !important;
+}
+
+[data-theme="light"] .notifications-btn:hover svg {
+  stroke: #111827 !important;
+}
+
+/* Dark mode — keep icon bright and readable */
+body.dark-mode .header-icon-btn,
+body.dark-mode .notifications-btn {
+  color: #e2e8f0 !important;
+}
+
+body.dark-mode .notifications-btn svg {
+  stroke: #e2e8f0 !important;
+}
+
+body.dark-mode .header-icon-btn:hover,
+body.dark-mode .notifications-btn:hover {
+  color: white !important;
+}
+
+body.dark-mode .notifications-btn:hover svg {
+  stroke: white !important;
+}
+
+/* Mobile view switcher — readable label text in both themes */
+[data-theme="light"] .pos-view-btn {
+  color: #374151 !important;
+}
+
+[data-theme="light"] .pos-view-btn.active {
+  color: white !important;
+}
+
+/* Cart Badge Icon container inside pos-view-switcher */
+[data-theme="light"] .pcs-cart-summary-badge span[style*="color: #10b981"],
+[data-theme="light"] .pcs-cart-summary-badge span[style*="color:#10b981"] {
+  color: #065f46 !important;
+  /* Deep green for high contrast in light mode */
+  font-weight: 900 !important;
+}
+
+[data-theme="light"] .pcs-cart-summary-badge span[style*="font-size: 11px"],
+[data-theme="light"] .pcs-cart-summary-badge span[style*="font-size:11px"] {
+  color: #1f2937 !important;
+  font-weight: 800 !important;
+}
+
+/* ==========================================
+   30. Complete Dark Mode — [data-theme="dark"]
+   Full site-wide dark component overrides
+   ========================================== */
+
+/* === APP BODY & BACKGROUND === */
+[data-theme="dark"] body,
+[data-theme="dark"] .app-wrapper,
+[data-theme="dark"] .main-content {
+  background: var(--bg-body) !important;
+  color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .clay-app-bg,
+[data-theme="dark"] .app-bg {
+  background: var(--clay-app-bg-color) !important;
+}
+
+/* === SIDEBAR === */
+[data-theme="dark"] .sidebar {
+  background: var(--bg-sidebar) !important;
+  border-color: var(--border) !important;
+  box-shadow: var(--clay-shadow-card) !important;
+}
+
+[data-theme="dark"] .sidebar-nav a,
+[data-theme="dark"] .sidebar-nav li,
+[data-theme="dark"] .sidebar-item {
+  color: var(--text-secondary) !important;
+}
+
+[data-theme="dark"] .sidebar-nav a:hover,
+[data-theme="dark"] .sidebar-nav a.active,
+[data-theme="dark"] .sidebar-item.active {
+  background: rgba(99, 102, 241, 0.15) !important;
+  color: var(--primary-light) !important;
+}
+
+[data-theme="dark"] .sidebar-header {
+  border-bottom-color: var(--border) !important;
+}
+
+/* === TOP HEADER === */
+[data-theme="dark"] .top-header,
+[data-theme="dark"] header {
+  background: var(--bg-dark) !important;
+  border-bottom-color: var(--border) !important;
+  box-shadow: var(--clay-shadow-card) !important;
+}
+
+[data-theme="dark"] .header-title,
+[data-theme="dark"] .page-header-bar h3,
+[data-theme="dark"] .top-header h1,
+[data-theme="dark"] .top-header h2 {
+  color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .header-time {
+  color: var(--text-secondary) !important;
+  border-color: var(--border) !important;
+  background: rgba(255, 255, 255, 0.04) !important;
+}
+
+/* === CARDS === */
+[data-theme="dark"] .card,
+[data-theme="dark"] .stat-card,
+[data-theme="dark"] .report-stat-card,
+[data-theme="dark"] .inv-stat-card,
+[data-theme="dark"] .archive-stat-card,
+[data-theme="dark"] .home-nav-card,
+[data-theme="dark"] .supplier-detail-header-card,
+[data-theme="dark"] .debt-detail-body {
+  background: var(--clay-bg-card) !important;
+  box-shadow: var(--clay-shadow-card) !important;
+  border-color: var(--border) !important;
+  color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .card h2,
+[data-theme="dark"] .card h3,
+[data-theme="dark"] .card p,
+[data-theme="dark"] .card span,
+[data-theme="dark"] .stat-card h3,
+[data-theme="dark"] .stat-card span {
+  color: inherit !important;
+}
+
+/* === PAGE HEADER BARS === */
+[data-theme="dark"] .page-header-bar {
+  background: var(--clay-bg-card) !important;
+  box-shadow: var(--clay-shadow-card) !important;
+  border-color: var(--border) !important;
+}
+
+/* === TABLES === */
+[data-theme="dark"] table,
+[data-theme="dark"] .data-table,
+[data-theme="dark"] .inv-table,
+[data-theme="dark"] .customers-table,
+[data-theme="dark"] .report-table {
+  background: transparent !important;
+  color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] th {
+  background: var(--clay-bg-btn-primary) !important;
+  color: white !important;
+  border-color: var(--border) !important;
+}
+
+[data-theme="dark"] td {
+  color: var(--text-primary) !important;
+  border-color: var(--border) !important;
+}
+
+[data-theme="dark"] tr:hover td {
+  background: var(--bg-card-hover) !important;
+}
+
+[data-theme="dark"] .table-wrapper,
+[data-theme="dark"] .supplier-table-wrapper {
+  background: var(--clay-bg-card) !important;
+  box-shadow: var(--clay-shadow-card) !important;
+}
+
+/* === MODALS === */
+[data-theme="dark"] .modal-overlay,
+[data-theme="dark"] .modal-backdrop {
+  background: rgba(0, 0, 0, 0.75) !important;
+}
+
+[data-theme="dark"] .modal,
+[data-theme="dark"] .modal-content,
+[data-theme="dark"] .modal-card {
+  background: var(--bg-card) !important;
+  box-shadow: var(--clay-shadow-card) !important;
+  border-color: var(--border) !important;
+  color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .modal-header,
+[data-theme="dark"] .modal-footer {
+  background: var(--bg-dark) !important;
+  border-color: var(--border) !important;
+}
+
+[data-theme="dark"] .modal h2,
+[data-theme="dark"] .modal h3,
+[data-theme="dark"] .modal label,
+[data-theme="dark"] .modal p {
+  color: var(--text-primary) !important;
+}
+
+/* === INPUTS & FORMS === */
+[data-theme="dark"] input,
+[data-theme="dark"] select,
+[data-theme="dark"] textarea {
+  background: var(--bg-input) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border) !important;
+  box-shadow: var(--clay-shadow-input) !important;
+}
+
+[data-theme="dark"] input::placeholder,
+[data-theme="dark"] textarea::placeholder {
+  color: var(--text-muted) !important;
+}
+
+[data-theme="dark"] input:focus,
+[data-theme="dark"] select:focus,
+[data-theme="dark"] textarea:focus {
+  border-color: var(--primary) !important;
+  box-shadow: var(--clay-shadow-input-focus) !important;
+  outline: none !important;
+}
+
+[data-theme="dark"] .form-group label,
+[data-theme="dark"] .form-label {
+  color: var(--text-secondary) !important;
+}
+
+/* === BUTTONS === */
+[data-theme="dark"] .btn-primary,
+[data-theme="dark"] button.btn-primary {
+  background: var(--clay-bg-btn-primary) !important;
+  box-shadow: var(--clay-shadow-btn-primary) !important;
+  color: white !important;
+  border: none !important;
+}
+
+[data-theme="dark"] .btn-secondary,
+[data-theme="dark"] button.btn-secondary,
+[data-theme="dark"] .btn-outline,
+[data-theme="dark"] button.btn-outline {
+  background: var(--clay-bg-btn-secondary) !important;
+  box-shadow: var(--clay-shadow-btn-secondary) !important;
+  color: var(--text-primary) !important;
+  border: none !important;
+}
+
+[data-theme="dark"] .btn-danger,
+[data-theme="dark"] button.btn-danger {
+  background: var(--clay-bg-btn-danger) !important;
+  box-shadow: var(--clay-shadow-btn-danger) !important;
+  color: white !important;
+  border: none !important;
+}
+
+[data-theme="dark"] .btn-success,
+[data-theme="dark"] button.btn-success {
+  background: var(--clay-bg-btn-success) !important;
+  box-shadow: var(--clay-shadow-btn-success) !important;
+  color: white !important;
+  border: none !important;
+}
+
+/* === NOTIFICATION PANEL & ITEMS === */
+[data-theme="dark"] .notifications-panel {
+  background: var(--bg-card) !important;
+  box-shadow: var(--clay-shadow-card) !important;
+  border-color: var(--border) !important;
+}
+
+[data-theme="dark"] .notif-item {
+  background: var(--clay-bg-btn-secondary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border) !important;
+}
+
+[data-theme="dark"] .notif-card {
+  background: var(--clay-bg-card) !important;
+  box-shadow: var(--clay-shadow-card) !important;
+  color: var(--text-primary) !important;
+}
+
+/* === INVENTORY STATS === */
+[data-theme="dark"] .inventory-stats .inv-stat-card {
+  background: var(--clay-bg-card) !important;
+  box-shadow: var(--clay-shadow-card) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border) !important;
+}
+
+[data-theme="dark"] .inv-stat-value {
+  color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .inv-stat-label {
+  color: var(--text-muted) !important;
+}
+
+[data-theme="dark"] .inv-stat-icon {
+  background: rgba(255, 255, 255, 0.06) !important;
+}
+
+/* === SEARCH BAR === */
+[data-theme="dark"] .search-bar,
+[data-theme="dark"] .pos-search-bar input,
+[data-theme="dark"] #pos-search,
+[data-theme="dark"] .search-input {
+  background: var(--bg-input) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border) !important;
+  box-shadow: var(--clay-shadow-input) !important;
+}
+
+/* === HOME PAGE === */
+[data-theme="dark"] .home-header-panel {
+  background: var(--clay-bg-card) !important;
+  box-shadow: var(--clay-shadow-card) !important;
+}
+
+[data-theme="dark"] .home-nav-card {
+  box-shadow: var(--clay-shadow-card) !important;
+}
+
+[data-theme="dark"] .home-nav-card span,
+[data-theme="dark"] .home-nav-card p {
+  color: inherit !important;
+}
+
+[data-theme="dark"] #home-store-name,
+[data-theme="dark"] .home-header-title-row h1 {
+  color: var(--text-primary) !important;
+}
+
+/* === ARCHIVE / FILTER TABS === */
+[data-theme="dark"] .archive-tab,
+[data-theme="dark"] .cat-tab {
+  background: var(--clay-bg-btn-secondary) !important;
+  color: var(--text-secondary) !important;
+  border-color: var(--border) !important;
+}
+
+[data-theme="dark"] .archive-tab.active,
+[data-theme="dark"] .cat-tab.active {
+  background: var(--clay-bg-btn-primary) !important;
+  color: white !important;
+}
+
+/* === CUSTOMER / SUPPLIER GRIDS === */
+[data-theme="dark"] .customer-card,
+[data-theme="dark"] .supplier-card {
+  background: var(--clay-bg-card) !important;
+  box-shadow: var(--clay-shadow-card) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border) !important;
+}
+
+[data-theme="dark"] .customer-card h3,
+[data-theme="dark"] .supplier-card h3 {
+  color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .customer-card span,
+[data-theme="dark"] .supplier-card span {
+  color: var(--text-secondary) !important;
+}
+
+/* === DEBTOR / TRANSACTION CARDS === */
+[data-theme="dark"] .debtor-txn-card {
+  background: var(--clay-bg-card) !important;
+  box-shadow: var(--clay-shadow-card) !important;
+  color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .debtor-txn-card div,
+[data-theme="dark"] .debtor-txn-card span {
+  color: var(--text-secondary) !important;
+}
+
+/* === EXPANDED INVOICE DETAILS === */
+[data-theme="dark"] .expanded-items-box>div {
+  background: var(--clay-bg-card) !important;
+  box-shadow: var(--clay-shadow-card) !important;
+}
+
+[data-theme="dark"] .expanded-items-box table th {
+  color: white !important;
+}
+
+[data-theme="dark"] .expanded-items-box table td {
+  color: var(--text-primary) !important;
+}
+
+/* === SETTINGS PAGE === */
+[data-theme="dark"] .settings-section,
+[data-theme="dark"] .settings-card {
+  background: var(--clay-bg-card) !important;
+  box-shadow: var(--clay-shadow-card) !important;
+  border-color: var(--border) !important;
+  color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .settings-section h3,
+[data-theme="dark"] .settings-card h3 {
+  color: var(--text-primary) !important;
+}
+
+/* === BACKUP PAGE === */
+[data-theme="dark"] .backup-card,
+[data-theme="dark"] #page-backup .card {
+  background: var(--clay-bg-card) !important;
+  box-shadow: var(--clay-shadow-card) !important;
+  color: var(--text-primary) !important;
+}
+
+/* === REPORTS PAGE === */
+[data-theme="dark"] .report-card,
+[data-theme="dark"] #page-reports .card {
+  background: var(--clay-bg-card) !important;
+  box-shadow: var(--clay-shadow-card) !important;
+  color: var(--text-primary) !important;
+}
+
+/* === DROPDOWN MENUS === */
+[data-theme="dark"] .dropdown,
+[data-theme="dark"] .dropdown-menu,
+[data-theme="dark"] .lang-dropdown {
+  background: var(--bg-card) !important;
+  box-shadow: var(--clay-shadow-card) !important;
+  border-color: var(--border) !important;
+}
+
+[data-theme="dark"] .dropdown-menu a,
+[data-theme="dark"] .lang-option {
+  color: var(--text-secondary) !important;
+}
+
+[data-theme="dark"] .dropdown-menu a:hover,
+[data-theme="dark"] .lang-option:hover {
+  background: var(--bg-card-hover) !important;
+  color: var(--text-primary) !important;
+}
+
+/* === EMPTY STATES === */
+[data-theme="dark"] .empty-state,
+[data-theme="dark"] #notifications-page-empty {
+  color: var(--text-muted) !important;
+}
+
+[data-theme="dark"] .empty-state h3 {
+  color: var(--text-secondary) !important;
+}
+
+/* === SCROLLBARS === */
+[data-theme="dark"] ::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-track {
+  background: var(--bg-dark) !important;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+  background: var(--border-glow) !important;
+  border-radius: 3px !important;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+  background: var(--primary) !important;
+}
+
+/* === DIVIDERS & BORDERS === */
+[data-theme="dark"] hr,
+[data-theme="dark"] .divider {
+  border-color: var(--border) !important;
+}
+
+/* === ACTIVITY LOG & HISTORY === */
+[data-theme="dark"] .activity-item,
+[data-theme="dark"] .log-row {
+  background: var(--clay-bg-card) !important;
+  border-color: var(--border) !important;
+  color: var(--text-primary) !important;
+}
+
+/* === POS CART PANEL === */
+[data-theme="dark"] .pos-cart,
+[data-theme="dark"] .cart-panel {
+  background: var(--bg-card) !important;
+  border-color: var(--border) !important;
+}
+
+[data-theme="dark"] .cart-item {
+  background: var(--clay-bg-btn-secondary) !important;
+  color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .pos-numpad {
+  background: var(--clay-bg-card) !important;
+}
+
+[data-theme="dark"] #numpad-input {
+  background: var(--clay-bg-input) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border) !important;
+}
+
+[data-theme="dark"] .numpad-btn {
+  background: var(--clay-bg-btn-secondary) !important;
+  color: var(--text-primary) !important;
+  box-shadow: var(--clay-shadow-btn-secondary) !important;
+}
+
+/* === CUSTOMER STATS STRIP === */
+[data-theme="dark"] #customers-stats-strip>div:nth-child(1) #stat-customers-count,
+[data-theme="dark"] #customers-stats-strip>div:nth-child(1) div[data-translate],
+[data-theme="dark"] #customers-stats-strip>div:nth-child(2) #stat-customers-total-debt,
+[data-theme="dark"] #customers-stats-strip>div:nth-child(2) div[data-translate],
+[data-theme="dark"] #customers-stats-strip>div:nth-child(3) #stat-customers-total-paid,
+[data-theme="dark"] #customers-stats-strip>div:nth-child(3) div[data-translate] {
+  color: white !important;
+}
+
+/* ==========================================
+   31. Calm & Harmonious Home Cards — Color System
+   Muted, editorial palette — inspired by Linear / Notion
+   ========================================== */
+
+/* ════════════════════════════════════════
+   LIGHT MODE — Soft tinted card backgrounds
+   ════════════════════════════════════════ */
+
+/* Base reset: Remove the generic white override so individual colors apply */
+[data-theme="light"] .home-nav-card {
+  background: #f9fafb !important;
+  border: 1px solid rgba(0, 0, 0, 0.07) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06),
+    0 8px 24px rgba(0, 0, 0, 0.04) !important;
+}
+
+/* 1. Cashier (POS) — Dusty Periwinkle */
+[data-theme="light"] .home-nav-card.pos {
+  background: linear-gradient(160deg, #f5f3ff 0%, #ede9fe 100%) !important;
+  border-color: rgba(139, 92, 246, 0.12) !important;
+}
+
+[data-theme="light"] .home-nav-card.pos .home-card-icon-wrapper {
+  background: linear-gradient(135deg, #a78bfa 0%, #c4b5fd 100%) !important;
+  box-shadow: 0 6px 18px rgba(139, 92, 246, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+  border: none !important;
+}
+
+[data-theme="light"] .home-nav-card.pos .home-card-title {
+  color: #5b21b6 !important;
+}
+
+/* 2. Products & Inventory — Sage Green */
+[data-theme="light"] .home-nav-card.products,
+[data-theme="light"] .home-nav-card.inventory {
+  background: linear-gradient(160deg, #f0fdf4 0%, #dcfce7 100%) !important;
+  border-color: rgba(34, 197, 94, 0.12) !important;
+}
+
+[data-theme="light"] .home-nav-card.products .home-card-icon-wrapper,
+[data-theme="light"] .home-nav-card.inventory .home-card-icon-wrapper {
+  background: linear-gradient(135deg, #6ee7b7 0%, #34d399 100%) !important;
+  box-shadow: 0 6px 18px rgba(16, 185, 129, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+  border: none !important;
+}
+
+[data-theme="light"] .home-nav-card.products .home-card-title,
+[data-theme="light"] .home-nav-card.inventory .home-card-title {
+  color: #166534 !important;
+}
+
+/* 3. Customers — Powder Blue */
+[data-theme="light"] .home-nav-card.customers {
+  background: linear-gradient(160deg, #f0f9ff 0%, #e0f2fe 100%) !important;
+  border-color: rgba(14, 165, 233, 0.12) !important;
+}
+
+[data-theme="light"] .home-nav-card.customers .home-card-icon-wrapper {
+  background: linear-gradient(135deg, #7dd3fc 0%, #38bdf8 100%) !important;
+  box-shadow: 0 6px 18px rgba(14, 165, 233, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+  border: none !important;
+}
+
+[data-theme="light"] .home-nav-card.customers .home-card-title {
+  color: #0c4a6e !important;
+}
+
+/* 4. Debts — Blush Rose */
+[data-theme="light"] .home-nav-card.debts {
+  background: linear-gradient(160deg, #fff1f2 0%, #ffe4e6 100%) !important;
+  border-color: rgba(244, 63, 94, 0.1) !important;
+}
+
+[data-theme="light"] .home-nav-card.debts .home-card-icon-wrapper {
+  background: linear-gradient(135deg, #fda4af 0%, #fb7185 100%) !important;
+  box-shadow: 0 6px 18px rgba(244, 63, 94, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+  border: none !important;
+}
+
+[data-theme="light"] .home-nav-card.debts .home-card-title {
+  color: #9f1239 !important;
+}
+
+/* 5. Reports — Soft Lavender */
+[data-theme="light"] .home-nav-card.reports,
+[data-theme="light"] .home-nav-card.dashboard {
+  background: linear-gradient(160deg, #faf5ff 0%, #f3e8ff 100%) !important;
+  border-color: rgba(168, 85, 247, 0.12) !important;
+}
+
+[data-theme="light"] .home-nav-card.reports .home-card-icon-wrapper,
+[data-theme="light"] .home-nav-card.dashboard .home-card-icon-wrapper {
+  background: linear-gradient(135deg, #d8b4fe 0%, #c084fc 100%) !important;
+  box-shadow: 0 6px 18px rgba(168, 85, 247, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+  border: none !important;
+}
+
+[data-theme="light"] .home-nav-card.reports .home-card-title,
+[data-theme="light"] .home-nav-card.dashboard .home-card-title {
+  color: #6b21a8 !important;
+}
+
+/* 6. Settings — Warm Gray/Silver */
+[data-theme="light"] .home-nav-card.settings {
+  background: linear-gradient(160deg, #f8fafc 0%, #f1f5f9 100%) !important;
+  border-color: rgba(100, 116, 139, 0.12) !important;
+}
+
+[data-theme="light"] .home-nav-card.settings .home-card-icon-wrapper {
+  background: linear-gradient(135deg, #94a3b8 0%, #64748b 100%) !important;
+  box-shadow: 0 6px 18px rgba(100, 116, 139, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+  border: none !important;
+}
+
+[data-theme="light"] .home-nav-card.settings .home-card-title {
+  color: #334155 !important;
+}
+
+/* 7. Purchases — Warm Peach */
+[data-theme="light"] .home-nav-card.purchases {
+  background: linear-gradient(160deg, #fff7ed 0%, #ffedd5 100%) !important;
+  border-color: rgba(249, 115, 22, 0.12) !important;
+}
+
+[data-theme="light"] .home-nav-card.purchases .home-card-icon-wrapper {
+  background: linear-gradient(135deg, #fdba74 0%, #fb923c 100%) !important;
+  box-shadow: 0 6px 18px rgba(249, 115, 22, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+  border: none !important;
+}
+
+[data-theme="light"] .home-nav-card.purchases .home-card-title {
+  color: #9a3412 !important;
+}
+
+/* 8. Discounts & Vouchers — Soft Fuchsia */
+[data-theme="light"] .home-nav-card.discounts,
+[data-theme="light"] .home-nav-card.vouchers {
+  background: linear-gradient(160deg, #fdf4ff 0%, #fae8ff 100%) !important;
+  border-color: rgba(217, 70, 239, 0.1) !important;
+}
+
+[data-theme="light"] .home-nav-card.discounts .home-card-icon-wrapper,
+[data-theme="light"] .home-nav-card.vouchers .home-card-icon-wrapper {
+  background: linear-gradient(135deg, #f0abfc 0%, #e879f9 100%) !important;
+  box-shadow: 0 6px 18px rgba(217, 70, 239, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+  border: none !important;
+}
+
+[data-theme="light"] .home-nav-card.discounts .home-card-title,
+[data-theme="light"] .home-nav-card.vouchers .home-card-title {
+  color: #86198f !important;
+}
+
+/* 9. Notifications — Honey Amber */
+[data-theme="light"] .home-nav-card.notifications {
+  background: linear-gradient(160deg, #fffbeb 0%, #fef9c3 100%) !important;
+  border-color: rgba(234, 179, 8, 0.12) !important;
+}
+
+[data-theme="light"] .home-nav-card.notifications .home-card-icon-wrapper {
+  background: linear-gradient(135deg, #fde047 0%, #eab308 100%) !important;
+  box-shadow: 0 6px 18px rgba(234, 179, 8, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+  border: none !important;
+}
+
+[data-theme="light"] .home-nav-card.notifications .home-card-title {
+  color: #854d0e !important;
+}
+
+/* 10. Partners/Companies — Seafoam Teal */
+[data-theme="light"] .home-nav-card.partners {
+  background: linear-gradient(160deg, #f0fdfa 0%, #ccfbf1 100%) !important;
+  border-color: rgba(20, 184, 166, 0.12) !important;
+}
+
+[data-theme="light"] .home-nav-card.partners .home-card-icon-wrapper {
+  background: linear-gradient(135deg, #5eead4 0%, #2dd4bf 100%) !important;
+  box-shadow: 0 6px 18px rgba(20, 184, 166, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+  border: none !important;
+}
+
+[data-theme="light"] .home-nav-card.partners .home-card-title {
+  color: #134e4a !important;
+}
+
+/* ── LIGHT MODE: Description text ── */
+[data-theme="light"] .home-nav-card .home-card-desc {
+  color: rgba(0, 0, 0, 0.42) !important;
+  font-weight: 500 !important;
+  font-size: 12.5px !important;
+}
+
+/* ── LIGHT MODE: Hover — subtle lift only, keep colors ── */
+[data-theme="light"] .home-nav-card:hover {
+  transform: translateY(-6px) scale(1.018) !important;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.1),
+    0 4px 12px rgba(0, 0, 0, 0.06) !important;
+  filter: none !important;
+}
+
+[data-theme="light"] .home-nav-card:hover .home-card-title {
+  color: inherit !important;
+  filter: brightness(0.75) !important;
+}
+
+
+/* ════════════════════════════════════════
+   DARK MODE — Deep tinted card backgrounds
+   ════════════════════════════════════════ */
+
+/* Base dark card */
+[data-theme="dark"] .home-nav-card {
+  background: rgba(20, 16, 40, 0.85) !important;
+  border: 1px solid rgba(255, 255, 255, 0.07) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4),
+    0 1px 3px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* 1. POS — Muted Periwinkle */
+[data-theme="dark"] .home-nav-card.pos {
+  background: linear-gradient(160deg, rgba(109, 40, 217, 0.18) 0%, rgba(139, 92, 246, 0.1) 100%) !important;
+  border-color: rgba(167, 139, 250, 0.18) !important;
+}
+
+[data-theme="dark"] .home-nav-card.pos .home-card-icon-wrapper {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.8) 0%, rgba(167, 139, 250, 0.9) 100%) !important;
+  box-shadow: 0 6px 20px rgba(139, 92, 246, 0.35) !important;
+}
+
+[data-theme="dark"] .home-nav-card.pos .home-card-title {
+  color: #c4b5fd !important;
+}
+
+/* 2. Products & Inventory — Sage Green */
+[data-theme="dark"] .home-nav-card.products,
+[data-theme="dark"] .home-nav-card.inventory {
+  background: linear-gradient(160deg, rgba(5, 150, 105, 0.18) 0%, rgba(16, 185, 129, 0.1) 100%) !important;
+  border-color: rgba(110, 231, 183, 0.15) !important;
+}
+
+[data-theme="dark"] .home-nav-card.products .home-card-icon-wrapper,
+[data-theme="dark"] .home-nav-card.inventory .home-card-icon-wrapper {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.85) 0%, rgba(52, 211, 153, 0.9) 100%) !important;
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3) !important;
+}
+
+[data-theme="dark"] .home-nav-card.products .home-card-title,
+[data-theme="dark"] .home-nav-card.inventory .home-card-title {
+  color: #a7f3d0 !important;
+}
+
+/* 3. Customers — Powder Blue */
+[data-theme="dark"] .home-nav-card.customers {
+  background: linear-gradient(160deg, rgba(2, 132, 199, 0.18) 0%, rgba(14, 165, 233, 0.1) 100%) !important;
+  border-color: rgba(125, 211, 252, 0.15) !important;
+}
+
+[data-theme="dark"] .home-nav-card.customers .home-card-icon-wrapper {
+  background: linear-gradient(135deg, rgba(14, 165, 233, 0.85) 0%, rgba(56, 189, 248, 0.9) 100%) !important;
+  box-shadow: 0 6px 20px rgba(14, 165, 233, 0.3) !important;
+}
+
+[data-theme="dark"] .home-nav-card.customers .home-card-title {
+  color: #bae6fd !important;
+}
+
+/* 4. Debts — Blush Rose */
+[data-theme="dark"] .home-nav-card.debts {
+  background: linear-gradient(160deg, rgba(190, 18, 60, 0.18) 0%, rgba(244, 63, 94, 0.1) 100%) !important;
+  border-color: rgba(253, 164, 175, 0.15) !important;
+}
+
+[data-theme="dark"] .home-nav-card.debts .home-card-icon-wrapper {
+  background: linear-gradient(135deg, rgba(244, 63, 94, 0.85) 0%, rgba(251, 113, 133, 0.9) 100%) !important;
+  box-shadow: 0 6px 20px rgba(244, 63, 94, 0.3) !important;
+}
+
+[data-theme="dark"] .home-nav-card.debts .home-card-title {
+  color: #fecdd3 !important;
+}
+
+/* 5. Reports — Soft Lavender */
+[data-theme="dark"] .home-nav-card.reports,
+[data-theme="dark"] .home-nav-card.dashboard {
+  background: linear-gradient(160deg, rgba(126, 34, 206, 0.18) 0%, rgba(168, 85, 247, 0.1) 100%) !important;
+  border-color: rgba(216, 180, 254, 0.15) !important;
+}
+
+[data-theme="dark"] .home-nav-card.reports .home-card-icon-wrapper,
+[data-theme="dark"] .home-nav-card.dashboard .home-card-icon-wrapper {
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.85) 0%, rgba(196, 132, 252, 0.9) 100%) !important;
+  box-shadow: 0 6px 20px rgba(168, 85, 247, 0.3) !important;
+}
+
+[data-theme="dark"] .home-nav-card.reports .home-card-title,
+[data-theme="dark"] .home-nav-card.dashboard .home-card-title {
+  color: #e9d5ff !important;
+}
+
+/* 6. Settings — Slate */
+[data-theme="dark"] .home-nav-card.settings {
+  background: linear-gradient(160deg, rgba(51, 65, 85, 0.35) 0%, rgba(30, 41, 59, 0.25) 100%) !important;
+  border-color: rgba(148, 163, 184, 0.15) !important;
+}
+
+[data-theme="dark"] .home-nav-card.settings .home-card-icon-wrapper {
+  background: linear-gradient(135deg, rgba(100, 116, 139, 0.9) 0%, rgba(148, 163, 184, 0.9) 100%) !important;
+  box-shadow: 0 6px 20px rgba(100, 116, 139, 0.3) !important;
+}
+
+[data-theme="dark"] .home-nav-card.settings .home-card-title {
+  color: #e2e8f0 !important;
+}
+
+/* 7. Purchases — Warm Peach */
+[data-theme="dark"] .home-nav-card.purchases {
+  background: linear-gradient(160deg, rgba(194, 65, 12, 0.18) 0%, rgba(249, 115, 22, 0.1) 100%) !important;
+  border-color: rgba(253, 186, 116, 0.15) !important;
+}
+
+[data-theme="dark"] .home-nav-card.purchases .home-card-icon-wrapper {
+  background: linear-gradient(135deg, rgba(249, 115, 22, 0.85) 0%, rgba(251, 146, 60, 0.9) 100%) !important;
+  box-shadow: 0 6px 20px rgba(249, 115, 22, 0.3) !important;
+}
+
+[data-theme="dark"] .home-nav-card.purchases .home-card-title {
+  color: #fed7aa !important;
+}
+
+/* 8. Discounts & Vouchers — Soft Fuchsia */
+[data-theme="dark"] .home-nav-card.discounts,
+[data-theme="dark"] .home-nav-card.vouchers {
+  background: linear-gradient(160deg, rgba(162, 28, 175, 0.18) 0%, rgba(217, 70, 239, 0.1) 100%) !important;
+  border-color: rgba(240, 171, 252, 0.15) !important;
+}
+
+[data-theme="dark"] .home-nav-card.discounts .home-card-icon-wrapper,
+[data-theme="dark"] .home-nav-card.vouchers .home-card-icon-wrapper {
+  background: linear-gradient(135deg, rgba(217, 70, 239, 0.85) 0%, rgba(232, 121, 249, 0.9) 100%) !important;
+  box-shadow: 0 6px 20px rgba(217, 70, 239, 0.3) !important;
+}
+
+[data-theme="dark"] .home-nav-card.discounts .home-card-title,
+[data-theme="dark"] .home-nav-card.vouchers .home-card-title {
+  color: #f5d0fe !important;
+}
+
+/* 9. Notifications — Honey Amber */
+[data-theme="dark"] .home-nav-card.notifications {
+  background: linear-gradient(160deg, rgba(161, 98, 7, 0.18) 0%, rgba(202, 138, 4, 0.1) 100%) !important;
+  border-color: rgba(253, 224, 71, 0.15) !important;
+}
+
+[data-theme="dark"] .home-nav-card.notifications .home-card-icon-wrapper {
+  background: linear-gradient(135deg, rgba(234, 179, 8, 0.9) 0%, rgba(253, 224, 71, 0.85) 100%) !important;
+  box-shadow: 0 6px 20px rgba(234, 179, 8, 0.3) !important;
+}
+
+[data-theme="dark"] .home-nav-card.notifications .home-card-title {
+  color: #fef08a !important;
+}
+
+/* 10. Partners — Seafoam Teal */
+[data-theme="dark"] .home-nav-card.partners {
+  background: linear-gradient(160deg, rgba(13, 148, 136, 0.18) 0%, rgba(20, 184, 166, 0.1) 100%) !important;
+  border-color: rgba(94, 234, 212, 0.15) !important;
+}
+
+[data-theme="dark"] .home-nav-card.partners .home-card-icon-wrapper {
+  background: linear-gradient(135deg, rgba(20, 184, 166, 0.85) 0%, rgba(45, 212, 191, 0.9) 100%) !important;
+  box-shadow: 0 6px 20px rgba(20, 184, 166, 0.3) !important;
+}
+
+[data-theme="dark"] .home-nav-card.partners .home-card-title {
+  color: #99f6e4 !important;
+}
+
+/* ── DARK MODE: Description text ── */
+[data-theme="dark"] .home-nav-card .home-card-desc {
+  color: rgba(255, 255, 255, 0.45) !important;
+  font-weight: 500 !important;
+  font-size: 12.5px !important;
+}
+
+/* ── DARK MODE: Hover ── */
+[data-theme="dark"] .home-nav-card:hover {
+  transform: translateY(-6px) scale(1.018) !important;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 4px 16px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* ── SHARED: Icon wrapper sizing & hover animation ── */
+[data-theme="light"] .home-card-icon-wrapper,
+[data-theme="dark"] .home-card-icon-wrapper {
+  border-radius: 18px !important;
+  width: 68px !important;
+  height: 68px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 32px !important;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.3s ease !important;
+}
+
+/* ── SHARED: Icon hover float ── */
+.home-nav-card:hover .home-card-icon-wrapper {
+  transform: translateY(-6px) scale(1.12) !important;
+}
+
+
+/* ── LIGHT MODE: Each card gets a unique soft gradient background ── */
+
+/* 1. Cashier (POS) — Indigo/Blue */
+[data-theme="light"] .home-nav-card.pos {
+  background: linear-gradient(145deg, #eef2ff 0%, #e0e7ff 60%, #ede9fe 100%) !important;
+  border: 1.5px solid rgba(99, 102, 241, 0.2) !important;
+  box-shadow: 8px 8px 20px rgba(99, 102, 241, 0.1),
+    inset -6px -6px 12px rgba(99, 102, 241, 0.08),
+    inset 6px 6px 12px rgba(255, 255, 255, 0.95) !important;
+}
+
+[data-theme="light"] .home-nav-card.pos .home-card-icon-wrapper {
+  background: linear-gradient(135deg, #6366f1, #818cf8) !important;
+  box-shadow: 0 8px 24px rgba(99, 102, 241, 0.4) !important;
+  border: none !important;
+}
+
+[data-theme="light"] .home-nav-card.pos .home-card-title {
+  color: #3730a3 !important;
+}
+
+/* 2. Products/Inventory — Emerald Green */
+[data-theme="light"] .home-nav-card.products,
+[data-theme="light"] .home-nav-card.inventory {
+  background: linear-gradient(145deg, #ecfdf5 0%, #d1fae5 60%, #a7f3d0 100%) !important;
+  border: 1.5px solid rgba(16, 185, 129, 0.2) !important;
+  box-shadow: 8px 8px 20px rgba(16, 185, 129, 0.1),
+    inset -6px -6px 12px rgba(16, 185, 129, 0.08),
+    inset 6px 6px 12px rgba(255, 255, 255, 0.95) !important;
+}
+
+[data-theme="light"] .home-nav-card.products .home-card-icon-wrapper,
+[data-theme="light"] .home-nav-card.inventory .home-card-icon-wrapper {
+  background: linear-gradient(135deg, #10b981, #34d399) !important;
+  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.4) !important;
+  border: none !important;
+}
+
+[data-theme="light"] .home-nav-card.products .home-card-title,
+[data-theme="light"] .home-nav-card.inventory .home-card-title {
+  color: #065f46 !important;
+}
+
+/* 3. Customers & Debts — Sky Blue / Rose */
+[data-theme="light"] .home-nav-card.customers {
+  background: linear-gradient(145deg, #e0f2fe 0%, #bae6fd 60%, #e0f2fe 100%) !important;
+  border: 1.5px solid rgba(14, 165, 233, 0.2) !important;
+  box-shadow: 8px 8px 20px rgba(14, 165, 233, 0.1),
+    inset -6px -6px 12px rgba(14, 165, 233, 0.08),
+    inset 6px 6px 12px rgba(255, 255, 255, 0.95) !important;
+}
+
+[data-theme="light"] .home-nav-card.customers .home-card-icon-wrapper {
+  background: linear-gradient(135deg, #0ea5e9, #38bdf8) !important;
+  box-shadow: 0 8px 24px rgba(14, 165, 233, 0.4) !important;
+  border: none !important;
+}
+
+[data-theme="light"] .home-nav-card.customers .home-card-title {
+  color: #0c4a6e !important;
+}
+
+[data-theme="light"] .home-nav-card.debts {
+  background: linear-gradient(145deg, #fff1f2 0%, #fecdd3 60%, #ffe4e6 100%) !important;
+  border: 1.5px solid rgba(244, 63, 94, 0.2) !important;
+  box-shadow: 8px 8px 20px rgba(244, 63, 94, 0.1),
+    inset -6px -6px 12px rgba(244, 63, 94, 0.08),
+    inset 6px 6px 12px rgba(255, 255, 255, 0.95) !important;
+}
+
+[data-theme="light"] .home-nav-card.debts .home-card-icon-wrapper {
+  background: linear-gradient(135deg, #f43f5e, #fb7185) !important;
+  box-shadow: 0 8px 24px rgba(244, 63, 94, 0.4) !important;
+  border: none !important;
+}
+
+[data-theme="light"] .home-nav-card.debts .home-card-title {
+  color: #881337 !important;
+}
+
+/* 4. Reports / Dashboard — Violet */
+[data-theme="light"] .home-nav-card.reports,
+[data-theme="light"] .home-nav-card.dashboard {
+  background: linear-gradient(145deg, #f5f3ff 0%, #ede9fe 60%, #ddd6fe 100%) !important;
+  border: 1.5px solid rgba(139, 92, 246, 0.2) !important;
+  box-shadow: 8px 8px 20px rgba(139, 92, 246, 0.1),
+    inset -6px -6px 12px rgba(139, 92, 246, 0.08),
+    inset 6px 6px 12px rgba(255, 255, 255, 0.95) !important;
+}
+
+[data-theme="light"] .home-nav-card.reports .home-card-icon-wrapper,
+[data-theme="light"] .home-nav-card.dashboard .home-card-icon-wrapper {
+  background: linear-gradient(135deg, #8b5cf6, #a78bfa) !important;
+  box-shadow: 0 8px 24px rgba(139, 92, 246, 0.4) !important;
+  border: none !important;
+}
+
+[data-theme="light"] .home-nav-card.reports .home-card-title,
+[data-theme="light"] .home-nav-card.dashboard .home-card-title {
+  color: #4c1d95 !important;
+}
+
+/* 5. Settings — Cool Slate */
+[data-theme="light"] .home-nav-card.settings {
+  background: linear-gradient(145deg, #f8fafc 0%, #e2e8f0 60%, #cbd5e1 100%) !important;
+  border: 1.5px solid rgba(100, 116, 139, 0.2) !important;
+  box-shadow: 8px 8px 20px rgba(100, 116, 139, 0.1),
+    inset -6px -6px 12px rgba(100, 116, 139, 0.08),
+    inset 6px 6px 12px rgba(255, 255, 255, 0.95) !important;
+}
+
+[data-theme="light"] .home-nav-card.settings .home-card-icon-wrapper {
+  background: linear-gradient(135deg, #475569, #64748b) !important;
+  box-shadow: 0 8px 24px rgba(100, 116, 139, 0.4) !important;
+  border: none !important;
+}
+
+[data-theme="light"] .home-nav-card.settings .home-card-title {
+  color: #1e293b !important;
+}
+
+/* 6. Purchases — Warm Orange */
+[data-theme="light"] .home-nav-card.purchases {
+  background: linear-gradient(145deg, #fff7ed 0%, #fed7aa 60%, #fde68a 100%) !important;
+  border: 1.5px solid rgba(249, 115, 22, 0.2) !important;
+  box-shadow: 8px 8px 20px rgba(249, 115, 22, 0.1),
+    inset -6px -6px 12px rgba(249, 115, 22, 0.08),
+    inset 6px 6px 12px rgba(255, 255, 255, 0.95) !important;
+}
+
+[data-theme="light"] .home-nav-card.purchases .home-card-icon-wrapper {
+  background: linear-gradient(135deg, #f97316, #fb923c) !important;
+  box-shadow: 0 8px 24px rgba(249, 115, 22, 0.4) !important;
+  border: none !important;
+}
+
+[data-theme="light"] .home-nav-card.purchases .home-card-title {
+  color: #7c2d12 !important;
+}
+
+/* 7. Discounts / Vouchers — Pink Fuchsia */
+[data-theme="light"] .home-nav-card.discounts,
+[data-theme="light"] .home-nav-card.vouchers {
+  background: linear-gradient(145deg, #fdf2f8 0%, #fce7f3 60%, #fbcfe8 100%) !important;
+  border: 1.5px solid rgba(236, 72, 153, 0.2) !important;
+  box-shadow: 8px 8px 20px rgba(236, 72, 153, 0.1),
+    inset -6px -6px 12px rgba(236, 72, 153, 0.08),
+    inset 6px 6px 12px rgba(255, 255, 255, 0.95) !important;
+}
+
+[data-theme="light"] .home-nav-card.discounts .home-card-icon-wrapper,
+[data-theme="light"] .home-nav-card.vouchers .home-card-icon-wrapper {
+  background: linear-gradient(135deg, #ec4899, #f472b6) !important;
+  box-shadow: 0 8px 24px rgba(236, 72, 153, 0.4) !important;
+  border: none !important;
+}
+
+[data-theme="light"] .home-nav-card.discounts .home-card-title,
+[data-theme="light"] .home-nav-card.vouchers .home-card-title {
+  color: #831843 !important;
+}
+
+/* 8. Notifications — Amber Gold */
+[data-theme="light"] .home-nav-card.notifications {
+  background: linear-gradient(145deg, #fffbeb 0%, #fef3c7 60%, #fde68a 100%) !important;
+  border: 1.5px solid rgba(245, 158, 11, 0.2) !important;
+  box-shadow: 8px 8px 20px rgba(245, 158, 11, 0.1),
+    inset -6px -6px 12px rgba(245, 158, 11, 0.08),
+    inset 6px 6px 12px rgba(255, 255, 255, 0.95) !important;
+}
+
+[data-theme="light"] .home-nav-card.notifications .home-card-icon-wrapper {
+  background: linear-gradient(135deg, #f59e0b, #fbbf24) !important;
+  box-shadow: 0 8px 24px rgba(245, 158, 11, 0.4) !important;
+  border: none !important;
+}
+
+[data-theme="light"] .home-nav-card.notifications .home-card-title {
+  color: #78350f !important;
+}
+
+/* 9. Partners/Companies — Teal */
+[data-theme="light"] .home-nav-card.partners {
+  background: linear-gradient(145deg, #f0fdfa 0%, #ccfbf1 60%, #99f6e4 100%) !important;
+  border: 1.5px solid rgba(20, 184, 166, 0.2) !important;
+  box-shadow: 8px 8px 20px rgba(20, 184, 166, 0.1),
+    inset -6px -6px 12px rgba(20, 184, 166, 0.08),
+    inset 6px 6px 12px rgba(255, 255, 255, 0.95) !important;
+}
+
+[data-theme="light"] .home-nav-card.partners .home-card-icon-wrapper {
+  background: linear-gradient(135deg, #14b8a6, #2dd4bf) !important;
+  box-shadow: 0 8px 24px rgba(20, 184, 166, 0.4) !important;
+  border: none !important;
+}
+
+[data-theme="light"] .home-nav-card.partners .home-card-title {
+  color: #134e4a !important;
+}
+
+/* ── LIGHT MODE: Description text dark on all colored cards ── */
+[data-theme="light"] .home-nav-card .home-card-desc {
+  color: rgba(0, 0, 0, 0.5) !important;
+  font-weight: 600 !important;
+}
+
+/* ── LIGHT MODE: Card hover state — lift and deepen color ── */
+[data-theme="light"] .home-nav-card:hover {
+  transform: translateY(-8px) scale(1.025) !important;
+  filter: brightness(0.97) saturate(1.1) !important;
+}
+
+[data-theme="light"] .home-nav-card:hover .home-card-title {
+  filter: brightness(0.7) !important;
+  color: inherit !important;
+}
+
+/* ── DARK MODE: Each card gets a vivid glowing semi-transparent gradient ── */
+
+/* 1. POS — Indigo glow */
+[data-theme="dark"] .home-nav-card.pos {
+  background: linear-gradient(145deg, rgba(79, 70, 229, 0.22) 0%, rgba(99, 102, 241, 0.14) 100%) !important;
+  border: 1.5px solid rgba(99, 102, 241, 0.3) !important;
+  box-shadow: 10px 10px 24px rgba(0, 0, 0, 0.5), 0 0 30px rgba(99, 102, 241, 0.08), inset 6px 6px 12px rgba(255, 255, 255, 0.04) !important;
+}
+
+[data-theme="dark"] .home-nav-card.pos .home-card-icon-wrapper {
+  background: linear-gradient(135deg, #6366f1, #818cf8) !important;
+  box-shadow: 0 8px 28px rgba(99, 102, 241, 0.5) !important;
+}
+
+[data-theme="dark"] .home-nav-card.pos .home-card-title {
+  color: #c7d2fe !important;
+}
+
+/* 2. Products — Emerald glow */
+[data-theme="dark"] .home-nav-card.products,
+[data-theme="dark"] .home-nav-card.inventory {
+  background: linear-gradient(145deg, rgba(16, 185, 129, 0.2) 0%, rgba(5, 150, 105, 0.12) 100%) !important;
+  border: 1.5px solid rgba(16, 185, 129, 0.3) !important;
+  box-shadow: 10px 10px 24px rgba(0, 0, 0, 0.5), 0 0 30px rgba(16, 185, 129, 0.08), inset 6px 6px 12px rgba(255, 255, 255, 0.04) !important;
+}
+
+[data-theme="dark"] .home-nav-card.products .home-card-icon-wrapper,
+[data-theme="dark"] .home-nav-card.inventory .home-card-icon-wrapper {
+  background: linear-gradient(135deg, #10b981, #34d399) !important;
+  box-shadow: 0 8px 28px rgba(16, 185, 129, 0.5) !important;
+}
+
+[data-theme="dark"] .home-nav-card.products .home-card-title,
+[data-theme="dark"] .home-nav-card.inventory .home-card-title {
+  color: #6ee7b7 !important;
+}
+
+/* 3. Customers — Cyan glow */
+[data-theme="dark"] .home-nav-card.customers {
+  background: linear-gradient(145deg, rgba(14, 165, 233, 0.2) 0%, rgba(2, 132, 199, 0.12) 100%) !important;
+  border: 1.5px solid rgba(14, 165, 233, 0.3) !important;
+  box-shadow: 10px 10px 24px rgba(0, 0, 0, 0.5), 0 0 30px rgba(14, 165, 233, 0.08), inset 6px 6px 12px rgba(255, 255, 255, 0.04) !important;
+}
+
+[data-theme="dark"] .home-nav-card.customers .home-card-icon-wrapper {
+  background: linear-gradient(135deg, #0ea5e9, #38bdf8) !important;
+  box-shadow: 0 8px 28px rgba(14, 165, 233, 0.5) !important;
+}
+
+[data-theme="dark"] .home-nav-card.customers .home-card-title {
+  color: #7dd3fc !important;
+}
+
+/* 4. Debts — Rose/Red glow */
+[data-theme="dark"] .home-nav-card.debts {
+  background: linear-gradient(145deg, rgba(244, 63, 94, 0.2) 0%, rgba(190, 18, 60, 0.12) 100%) !important;
+  border: 1.5px solid rgba(244, 63, 94, 0.3) !important;
+  box-shadow: 10px 10px 24px rgba(0, 0, 0, 0.5), 0 0 30px rgba(244, 63, 94, 0.08), inset 6px 6px 12px rgba(255, 255, 255, 0.04) !important;
+}
+
+[data-theme="dark"] .home-nav-card.debts .home-card-icon-wrapper {
+  background: linear-gradient(135deg, #f43f5e, #fb7185) !important;
+  box-shadow: 0 8px 28px rgba(244, 63, 94, 0.5) !important;
+}
+
+[data-theme="dark"] .home-nav-card.debts .home-card-title {
+  color: #fda4af !important;
+}
+
+/* 5. Reports — Violet glow */
+[data-theme="dark"] .home-nav-card.reports,
+[data-theme="dark"] .home-nav-card.dashboard {
+  background: linear-gradient(145deg, rgba(139, 92, 246, 0.2) 0%, rgba(109, 40, 217, 0.12) 100%) !important;
+  border: 1.5px solid rgba(139, 92, 246, 0.3) !important;
+  box-shadow: 10px 10px 24px rgba(0, 0, 0, 0.5), 0 0 30px rgba(139, 92, 246, 0.08), inset 6px 6px 12px rgba(255, 255, 255, 0.04) !important;
+}
+
+[data-theme="dark"] .home-nav-card.reports .home-card-icon-wrapper,
+[data-theme="dark"] .home-nav-card.dashboard .home-card-icon-wrapper {
+  background: linear-gradient(135deg, #8b5cf6, #a78bfa) !important;
+  box-shadow: 0 8px 28px rgba(139, 92, 246, 0.5) !important;
+}
+
+[data-theme="dark"] .home-nav-card.reports .home-card-title,
+[data-theme="dark"] .home-nav-card.dashboard .home-card-title {
+  color: #c4b5fd !important;
+}
+
+/* 6. Settings — Slate glow */
+[data-theme="dark"] .home-nav-card.settings {
+  background: linear-gradient(145deg, rgba(100, 116, 139, 0.2) 0%, rgba(51, 65, 85, 0.15) 100%) !important;
+  border: 1.5px solid rgba(100, 116, 139, 0.3) !important;
+  box-shadow: 10px 10px 24px rgba(0, 0, 0, 0.5), 0 0 30px rgba(100, 116, 139, 0.08), inset 6px 6px 12px rgba(255, 255, 255, 0.04) !important;
+}
+
+[data-theme="dark"] .home-nav-card.settings .home-card-icon-wrapper {
+  background: linear-gradient(135deg, #64748b, #94a3b8) !important;
+  box-shadow: 0 8px 28px rgba(100, 116, 139, 0.5) !important;
+}
+
+[data-theme="dark"] .home-nav-card.settings .home-card-title {
+  color: #cbd5e1 !important;
+}
+
+/* 7. Purchases — Orange glow */
+[data-theme="dark"] .home-nav-card.purchases {
+  background: linear-gradient(145deg, rgba(249, 115, 22, 0.2) 0%, rgba(194, 65, 12, 0.12) 100%) !important;
+  border: 1.5px solid rgba(249, 115, 22, 0.3) !important;
+  box-shadow: 10px 10px 24px rgba(0, 0, 0, 0.5), 0 0 30px rgba(249, 115, 22, 0.08), inset 6px 6px 12px rgba(255, 255, 255, 0.04) !important;
+}
+
+[data-theme="dark"] .home-nav-card.purchases .home-card-icon-wrapper {
+  background: linear-gradient(135deg, #f97316, #fb923c) !important;
+  box-shadow: 0 8px 28px rgba(249, 115, 22, 0.5) !important;
+}
+
+[data-theme="dark"] .home-nav-card.purchases .home-card-title {
+  color: #fdba74 !important;
+}
+
+/* 8. Discounts/Vouchers — Pink glow */
+[data-theme="dark"] .home-nav-card.discounts,
+[data-theme="dark"] .home-nav-card.vouchers {
+  background: linear-gradient(145deg, rgba(236, 72, 153, 0.2) 0%, rgba(157, 23, 77, 0.12) 100%) !important;
+  border: 1.5px solid rgba(236, 72, 153, 0.3) !important;
+  box-shadow: 10px 10px 24px rgba(0, 0, 0, 0.5), 0 0 30px rgba(236, 72, 153, 0.08), inset 6px 6px 12px rgba(255, 255, 255, 0.04) !important;
+}
+
+[data-theme="dark"] .home-nav-card.discounts .home-card-icon-wrapper,
+[data-theme="dark"] .home-nav-card.vouchers .home-card-icon-wrapper {
+  background: linear-gradient(135deg, #ec4899, #f472b6) !important;
+  box-shadow: 0 8px 28px rgba(236, 72, 153, 0.5) !important;
+}
+
+[data-theme="dark"] .home-nav-card.discounts .home-card-title,
+[data-theme="dark"] .home-nav-card.vouchers .home-card-title {
+  color: #f9a8d4 !important;
+}
+
+/* 9. Notifications — Amber glow */
+[data-theme="dark"] .home-nav-card.notifications {
+  background: linear-gradient(145deg, rgba(245, 158, 11, 0.2) 0%, rgba(180, 83, 9, 0.12) 100%) !important;
+  border: 1.5px solid rgba(245, 158, 11, 0.3) !important;
+  box-shadow: 10px 10px 24px rgba(0, 0, 0, 0.5), 0 0 30px rgba(245, 158, 11, 0.08), inset 6px 6px 12px rgba(255, 255, 255, 0.04) !important;
+}
+
+[data-theme="dark"] .home-nav-card.notifications .home-card-icon-wrapper {
+  background: linear-gradient(135deg, #f59e0b, #fbbf24) !important;
+  box-shadow: 0 8px 28px rgba(245, 158, 11, 0.5) !important;
+}
+
+[data-theme="dark"] .home-nav-card.notifications .home-card-title {
+  color: #fcd34d !important;
+}
+
+/* 10. Partners — Teal glow */
+[data-theme="dark"] .home-nav-card.partners {
+  background: linear-gradient(145deg, rgba(20, 184, 166, 0.2) 0%, rgba(13, 148, 136, 0.12) 100%) !important;
+  border: 1.5px solid rgba(20, 184, 166, 0.3) !important;
+  box-shadow: 10px 10px 24px rgba(0, 0, 0, 0.5), 0 0 30px rgba(20, 184, 166, 0.08), inset 6px 6px 12px rgba(255, 255, 255, 0.04) !important;
+}
+
+[data-theme="dark"] .home-nav-card.partners .home-card-icon-wrapper {
+  background: linear-gradient(135deg, #14b8a6, #2dd4bf) !important;
+  box-shadow: 0 8px 28px rgba(20, 184, 166, 0.5) !important;
+}
+
+[data-theme="dark"] .home-nav-card.partners .home-card-title {
+  color: #5eead4 !important;
+}
+
+/* ── DARK MODE: Description text consistent ── */
+[data-theme="dark"] .home-nav-card .home-card-desc {
+  color: rgba(255, 255, 255, 0.55) !important;
+  font-weight: 600 !important;
+}
+
+/* ── SHARED: icon wrapper always has white emoji/icon rendered on colored bg ── */
+[data-theme="light"] .home-card-icon-wrapper,
+/* ── SHARED: Icon wrapper — NO background box, icon only ── */
+[data-theme="light"] .home-card-icon-wrapper,
+[data-theme="dark"] .home-card-icon-wrapper,
+.home-card-icon-wrapper {
+  background: none !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  border: none !important;
+  border-radius: 0 !important;
+  width: auto !important;
+  height: auto !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 44px !important;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+  padding: 0 !important;
+  margin-bottom: 8px !important;
+}
+
+/* Also override every per-card icon wrapper gradient */
+[data-theme="light"] .home-nav-card.pos .home-card-icon-wrapper,
+[data-theme="light"] .home-nav-card.products .home-card-icon-wrapper,
+[data-theme="light"] .home-nav-card.inventory .home-card-icon-wrapper,
+[data-theme="light"] .home-nav-card.customers .home-card-icon-wrapper,
+[data-theme="light"] .home-nav-card.debts .home-card-icon-wrapper,
+[data-theme="light"] .home-nav-card.reports .home-card-icon-wrapper,
+[data-theme="light"] .home-nav-card.dashboard .home-card-icon-wrapper,
+[data-theme="light"] .home-nav-card.settings .home-card-icon-wrapper,
+[data-theme="light"] .home-nav-card.purchases .home-card-icon-wrapper,
+[data-theme="light"] .home-nav-card.discounts .home-card-icon-wrapper,
+[data-theme="light"] .home-nav-card.vouchers .home-card-icon-wrapper,
+[data-theme="light"] .home-nav-card.notifications .home-card-icon-wrapper,
+[data-theme="light"] .home-nav-card.partners .home-card-icon-wrapper,
+[data-theme="light"] .home-nav-card.archive .home-card-icon-wrapper,
+[data-theme="dark"] .home-nav-card.pos .home-card-icon-wrapper,
+[data-theme="dark"] .home-nav-card.products .home-card-icon-wrapper,
+[data-theme="dark"] .home-nav-card.inventory .home-card-icon-wrapper,
+[data-theme="dark"] .home-nav-card.customers .home-card-icon-wrapper,
+[data-theme="dark"] .home-nav-card.debts .home-card-icon-wrapper,
+[data-theme="dark"] .home-nav-card.reports .home-card-icon-wrapper,
+[data-theme="dark"] .home-nav-card.dashboard .home-card-icon-wrapper,
+[data-theme="dark"] .home-nav-card.settings .home-card-icon-wrapper,
+[data-theme="dark"] .home-nav-card.purchases .home-card-icon-wrapper,
+[data-theme="dark"] .home-nav-card.discounts .home-card-icon-wrapper,
+[data-theme="dark"] .home-nav-card.vouchers .home-card-icon-wrapper,
+[data-theme="dark"] .home-nav-card.notifications .home-card-icon-wrapper,
+[data-theme="dark"] .home-nav-card.partners .home-card-icon-wrapper,
+[data-theme="dark"] .home-nav-card.archive .home-card-icon-wrapper {
+  background: none !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+/* ── SHARED: Icon hover float only ── */
+.home-nav-card:hover .home-card-icon-wrapper {
+  transform: translateY(-6px) scale(1.15) !important;
+}
+
+/* ==========================================
+   32. Home Header Logo — Icon Only (No Box)
+   ========================================== */
+.home-header-logo,
+[data-theme="light"] .home-header-logo,
+[data-theme="dark"] .home-header-logo {
+  background: none !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  border: none !important;
+  border-radius: 0 !important;
+  width: auto !important;
+  height: auto !important;
+  font-size: 54px !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+
+.home-header-logo:hover,
+[data-theme="light"] .home-header-logo:hover,
+[data-theme="dark"] .home-header-logo:hover {
+  transform: scale(1.18) rotate(-6deg) !important;
+  box-shadow: none !important;
+}
+
+/* ==========================================
+   33. Header Date-Time Pill — Claymorphism
+   Soft, puffy 3D clay look
+   ========================================== */
+
+/* ── DARK MODE ── */
+[data-theme="dark"] .header-time {
+  background: linear-gradient(145deg, #1e1a3a 0%, #18143a 100%) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.07) !important;
+  border-radius: 16px !important;
+  padding: 8px 18px !important;
+  font-size: 12.5px !important;
+  font-weight: 700 !important;
+  color: #a5b4fc !important;
+  box-shadow:
+    6px 6px 14px rgba(0, 0, 0, 0.5),
+    -4px -4px 10px rgba(255, 255, 255, 0.03),
+    inset 2px 2px 5px rgba(255, 255, 255, 0.04),
+    inset -2px -2px 5px rgba(0, 0, 0, 0.4) !important;
+  letter-spacing: 0.01em !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 7px !important;
+  cursor: default !important;
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+
+[data-theme="dark"] .header-time:hover {
+  box-shadow:
+    8px 8px 18px rgba(0, 0, 0, 0.55),
+    -4px -4px 10px rgba(255, 255, 255, 0.04),
+    inset 2px 2px 5px rgba(255, 255, 255, 0.05),
+    inset -2px -2px 5px rgba(0, 0, 0, 0.45) !important;
+  color: #c7d2fe !important;
+  transform: translateY(-1px) !important;
+  border-color: rgba(165, 180, 252, 0.15) !important;
+}
+
+/* ── LIGHT MODE ── */
+[data-theme="light"] .header-time {
+  background: linear-gradient(145deg, #f0f2ff 0%, #e8ecff 100%) !important;
+  border: 1.5px solid rgba(99, 102, 241, 0.12) !important;
+  border-radius: 16px !important;
+  padding: 8px 18px !important;
+  font-size: 12.5px !important;
+  font-weight: 700 !important;
+  color: #4338ca !important;
+  box-shadow:
+    6px 6px 14px rgba(99, 102, 241, 0.12),
+    -4px -4px 10px rgba(255, 255, 255, 0.95),
+    inset 2px 2px 5px rgba(255, 255, 255, 0.9),
+    inset -2px -2px 5px rgba(99, 102, 241, 0.08) !important;
+  letter-spacing: 0.01em !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 7px !important;
+  cursor: default !important;
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+
+[data-theme="light"] .header-time:hover {
+  box-shadow:
+    8px 8px 20px rgba(99, 102, 241, 0.16),
+    -4px -4px 10px rgba(255, 255, 255, 1),
+    inset 2px 2px 5px rgba(255, 255, 255, 0.95),
+    inset -2px -2px 6px rgba(99, 102, 241, 0.12) !important;
+  color: #3730a3 !important;
+  transform: translateY(-1px) !important;
+  border-color: rgba(99, 102, 241, 0.2) !important;
+}
+
+/* ── Active/Pressed clay effect ── */
+[data-theme="light"] .header-time:active,
+[data-theme="dark"] .header-time:active {
+  transform: translateY(1px) !important;
+  box-shadow:
+    2px 2px 6px rgba(0, 0, 0, 0.2),
+    inset 3px 3px 8px rgba(0, 0, 0, 0.15),
+    inset -2px -2px 5px rgba(255, 255, 255, 0.08) !important;
+}
+
+/* ── SVG icon inside the pill ── */
+[data-theme="light"] .header-time svg,
+[data-theme="dark"] .header-time svg {
+  opacity: 0.7 !important;
+  flex-shrink: 0 !important;
+}
+
+/* ==========================================
+   36. Theme Toggle Button — 3D Sun & Moon
+   ========================================== */
+
+/* Override header-icon-btn for theme toggle only */
+button.header-icon-btn[onclick="toggleTheme()"],
+button.header-icon-btn[title="تبديل المظهر"] {
+  padding: 6px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+  background: none !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+/* Sun icon styling when in dark mode (showing sun to switch to light) */
+button.header-icon-btn[onclick="toggleTheme()"] svg circle,
+button.header-icon-btn[onclick="toggleTheme()"] #sunCore {
+  filter: drop-shadow(0 3px 8px rgba(255, 214, 0, 0.5)) !important;
+}
+
+/* Drop shadow on the icons */
+button.header-icon-btn[onclick="toggleTheme()"] #theme-icon {
+  filter: drop-shadow(0 3px 8px rgba(255, 214, 0, 0.45)) !important;
+  transition: filter 0.3s ease !important;
+  display: inline-flex !important;
+  align-items: center !important;
+}
+
+/* Moon drop shadow */
+[data-theme="light"] button.header-icon-btn[onclick="toggleTheme()"] #theme-icon {
+  filter: drop-shadow(0 3px 10px rgba(99, 102, 241, 0.5)) !important;
+}
+
+/* Sun drop shadow in dark mode */
+[data-theme="dark"] button.header-icon-btn[onclick="toggleTheme()"] #theme-icon {
+  filter: drop-shadow(0 3px 10px rgba(255, 214, 0, 0.55)) !important;
+}
+
+/* Spin animation on hover */
+@keyframes theme-spin {
+  0%   { transform: rotate(0deg) scale(1); }
+  50%  { transform: rotate(180deg) scale(1.2); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+
+button.header-icon-btn[onclick="toggleTheme()"]:hover #theme-icon {
+  animation: theme-spin 0.5s ease !important;
+}
+
+
+/* Override the notifications-btn to remove old SVG sizing */
+#clay-bell-btn {
+  position: relative !important;
+  cursor: pointer !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 6px !important;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+
+/* The bell icon container */
+#clay-bell-btn .clay-bell-icon {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  filter: drop-shadow(0 4px 8px rgba(245, 158, 11, 0.4)) drop-shadow(0 2px 4px rgba(0,0,0,0.15)) !important;
+  transition: filter 0.3s ease, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+
+/* Ringing animation on hover */
+@keyframes bell-ring {
+  0%   { transform: rotate(0deg); }
+  10%  { transform: rotate(-18deg); }
+  25%  { transform: rotate(18deg); }
+  40%  { transform: rotate(-12deg); }
+  55%  { transform: rotate(12deg); }
+  70%  { transform: rotate(-6deg); }
+  85%  { transform: rotate(6deg); }
+  100% { transform: rotate(0deg); }
+}
+
+#clay-bell-btn:hover .clay-bell-icon {
+  animation: bell-ring 0.6s ease !important;
+  filter: drop-shadow(0 6px 16px rgba(245, 158, 11, 0.6)) drop-shadow(0 2px 6px rgba(0,0,0,0.2)) !important;
+  transform: scale(1.12) !important;
+}
+
+/* Light mode — hide old SVG stroke coloring that would conflict */
+[data-theme="light"] #clay-bell-btn svg,
+[data-theme="dark"] #clay-bell-btn svg {
+  stroke: none !important;
+}
+
+/* Badge position adjustment for the new larger bell */
+#clay-bell-btn .notif-badge {
+  position: absolute !important;
+  top: 2px !important;
+  right: 2px !important;
+  z-index: 2 !important;
+}
+
+/* Subtle bounce animation when there are new notifications */
+@keyframes bell-pulse {
+  0%, 100% { transform: scale(1); }
+  50%       { transform: scale(1.08); }
+}
+
+#clay-bell-btn.has-notif .clay-bell-icon {
+  animation: bell-pulse 2s ease-in-out infinite !important;
+}
+
+/* ==========================================
+   37. Ocean Blue Theme — Complete System
+   🌊 Deep ocean, cyan waves, seafoam glow
+   ========================================== */
+
+/* ── CSS Variables for Ocean Theme ── */
+[data-theme="ocean"],
+body.ocean-mode {
+  /* Core palette */
+  --primary:          #0ea5e9;
+  --primary-light:    #38bdf8;
+  --primary-dark:     #0369a1;
+  --secondary:        #06b6d4;
+  --accent:           #67e8f9;
+
+  /* Backgrounds */
+  --bg-app:           #0c1e35;
+  --bg-dark:          #0a1929;
+  --bg-card:          rgba(10, 30, 58, 0.88);
+  --bg-card-hover:    rgba(14, 165, 233, 0.08);
+  --bg-glass:         rgba(14, 165, 233, 0.08);
+  --bg-sidebar:       #071524;
+
+  /* Text */
+  --text-primary:     #e0f2fe;
+  --text-secondary:   #bae6fd;
+  --text-muted:       #7dd3fc;
+  --txt:              #e0f2fe;
+  --muted:            #7dd3fc;
+
+  /* Borders */
+  --border:           rgba(56, 189, 248, 0.18);
+  --border-glow:      rgba(56, 189, 248, 0.35);
+  --brd:              rgba(56, 189, 248, 0.18);
+
+  /* Status */
+  --success:          #34d399;
+  --danger:           #f87171;
+  --warning:          #fbbf24;
+  --info:             #38bdf8;
+
+  /* Clay variables */
+  --clay-app-bg: radial-gradient(at 0% 0%, rgba(6, 182, 212, 0.2) 0, transparent 50%),
+    radial-gradient(at 50% 0%, rgba(14, 165, 233, 0.15) 0, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(2, 132, 199, 0.18) 0, transparent 50%);
+  --clay-app-bg-color: #0a1929;
+
+  --clay-bg-purple: linear-gradient(135deg, rgba(14, 165, 233, 0.35), rgba(3, 105, 161, 0.2));
+  --clay-shadow-purple: 8px 8px 20px rgba(0,0,0,0.5),
+    inset -6px -6px 12px rgba(0,0,0,0.6),
+    inset 6px 6px 12px rgba(56,189,248,0.12);
+  --clay-shadow-purple-hover: 12px 12px 28px rgba(0,0,0,0.6),
+    inset -6px -6px 12px rgba(0,0,0,0.7),
+    inset 6px 6px 12px rgba(56,189,248,0.18);
+
+  --clay-bg-green: linear-gradient(135deg, rgba(52, 211, 153, 0.3), rgba(16, 185, 129, 0.18));
+  --clay-shadow-green: 8px 8px 20px rgba(0,0,0,0.5),
+    inset -6px -6px 12px rgba(0,0,0,0.6),
+    inset 6px 6px 12px rgba(52,211,153,0.1);
+
+  --clay-bg-orange: linear-gradient(135deg, rgba(251, 191, 36, 0.28), rgba(245, 158, 11, 0.18));
+  --clay-shadow-orange: 8px 8px 20px rgba(0,0,0,0.5),
+    inset -6px -6px 12px rgba(0,0,0,0.6),
+    inset 6px 6px 12px rgba(251,191,36,0.1);
+
+  --clay-bg-blue: linear-gradient(135deg, rgba(14, 165, 233, 0.35), rgba(3, 105, 161, 0.22));
+  --clay-shadow-blue: 8px 8px 20px rgba(0,0,0,0.5),
+    inset -6px -6px 12px rgba(0,0,0,0.6),
+    inset 6px 6px 12px rgba(14,165,233,0.15);
+
+  --clay-bg-red: linear-gradient(135deg, rgba(248, 113, 113, 0.3), rgba(239, 68, 68, 0.18));
+  --clay-shadow-red: 8px 8px 20px rgba(0,0,0,0.5),
+    inset -6px -6px 12px rgba(0,0,0,0.6),
+    inset 6px 6px 12px rgba(248,113,113,0.1);
+
+  --clay-bg-card: rgba(10, 30, 55, 0.9);
+  --clay-shadow-card: 10px 10px 24px rgba(0,0,0,0.5),
+    inset -8px -8px 16px rgba(0,0,0,0.55),
+    inset 8px 8px 16px rgba(56,189,248,0.06);
+  --clay-shadow-card-hover: 14px 14px 32px rgba(0,0,0,0.6),
+    inset -8px -8px 16px rgba(0,0,0,0.65),
+    inset 8px 8px 16px rgba(56,189,248,0.1);
+
+  --clay-bg-btn-primary: linear-gradient(135deg, #0ea5e9, #0369a1);
+  --clay-shadow-btn-primary: 6px 6px 14px rgba(0,0,0,0.45),
+    inset -4px -4px 8px rgba(3,105,161,0.5),
+    inset 4px 4px 8px rgba(125,211,252,0.3);
+  --clay-shadow-btn-primary-hover: 8px 8px 18px rgba(0,0,0,0.5),
+    inset -4px -4px 8px rgba(3,105,161,0.6),
+    inset 4px 4px 8px rgba(125,211,252,0.4);
+
+  --clay-bg-btn-secondary: rgba(10, 30, 55, 0.95);
+  --clay-shadow-btn-secondary: 6px 6px 12px rgba(0,0,0,0.5),
+    inset -4px -4px 8px rgba(0,0,0,0.5),
+    inset 4px 4px 8px rgba(56,189,248,0.06);
+  --clay-shadow-btn-secondary-hover: 8px 8px 16px rgba(0,0,0,0.55),
+    inset -4px -4px 8px rgba(0,0,0,0.6),
+    inset 4px 4px 8px rgba(56,189,248,0.1);
+
+  --clay-bg-btn-success: linear-gradient(135deg, #10b981, #059669);
+  --clay-shadow-btn-success: 6px 6px 14px rgba(0,0,0,0.4),
+    inset -4px -4px 8px rgba(0,0,0,0.5),
+    inset 4px 4px 8px rgba(255,255,255,0.2);
+
+  --clay-bg-btn-danger: linear-gradient(135deg, #ef4444, #dc2626);
+  --clay-shadow-btn-danger: 6px 6px 14px rgba(0,0,0,0.4),
+    inset -4px -4px 8px rgba(0,0,0,0.5),
+    inset 4px 4px 8px rgba(255,255,255,0.2);
+
+  --clay-bg-btn-warning: linear-gradient(135deg, #f59e0b, #d97706);
+  --clay-shadow-btn-warning: 6px 6px 14px rgba(0,0,0,0.4),
+    inset -4px -4px 8px rgba(0,0,0,0.5),
+    inset 4px 4px 8px rgba(255,255,255,0.2);
+
+  --clay-bg-input: rgba(8, 24, 48, 0.95);
+  --clay-shadow-input: inset 4px 4px 8px rgba(0,0,0,0.6),
+    inset -4px -4px 8px rgba(56,189,248,0.04);
+  --clay-shadow-input-focus: 0 0 0 3px rgba(56, 189, 248, 0.25),
+    inset 4px 4px 8px rgba(0,0,0,0.6),
+    inset -4px -4px 8px rgba(56,189,248,0.06);
+
+  --clay-btn-radius: 14px;
+}
+
+/* ── App background — deep ocean aurora ── */
+[data-theme="ocean"] body,
+body.ocean-mode {
+  background: var(--clay-app-bg-color) !important;
+  background-image: var(--clay-app-bg) !important;
+}
+
+[data-theme="ocean"] .app-container,
+body.ocean-mode .app-container {
+  background: var(--clay-app-bg-color) !important;
+  background-image:
+    radial-gradient(ellipse at 20% 20%, rgba(6,182,212,0.12) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 80%, rgba(14,165,233,0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 50%, rgba(2,132,199,0.05) 0%, transparent 70%) !important;
+}
+
+/* ── Sidebar ── */
+[data-theme="ocean"] .sidebar,
+body.ocean-mode .sidebar {
+  background: rgba(7, 21, 36, 0.97) !important;
+  border-color: rgba(56, 189, 248, 0.15) !important;
+  box-shadow: var(--clay-shadow-card) !important;
+}
+
+[data-theme="ocean"] .sidebar-nav .nav-item.active,
+body.ocean-mode .sidebar-nav .nav-item.active {
+  background: var(--clay-bg-btn-primary) !important;
+  box-shadow: var(--clay-shadow-btn-primary) !important;
+  color: white !important;
+}
+
+/* ── Header ── */
+[data-theme="ocean"] .top-header,
+body.ocean-mode .top-header {
+  background: rgba(7, 21, 36, 0.95) !important;
+  border-bottom-color: rgba(56, 189, 248, 0.15) !important;
+  box-shadow: var(--clay-shadow-card) !important;
+}
+
+[data-theme="ocean"] .header-title,
+body.ocean-mode .header-title {
+  color: #e0f2fe !important;
+}
+
+/* ── Cards ── */
+[data-theme="ocean"] .card,
+[data-theme="ocean"] .modal,
+[data-theme="ocean"] .modal-content,
+body.ocean-mode .card,
+body.ocean-mode .modal,
+body.ocean-mode .modal-content {
+  background: var(--clay-bg-card) !important;
+  box-shadow: var(--clay-shadow-card) !important;
+  border-color: rgba(56, 189, 248, 0.12) !important;
+  color: #e0f2fe !important;
+}
+
+/* ── Inputs ── */
+[data-theme="ocean"] input,
+[data-theme="ocean"] select,
+[data-theme="ocean"] textarea,
+body.ocean-mode input,
+body.ocean-mode select,
+body.ocean-mode textarea {
+  background: var(--clay-bg-input) !important;
+  box-shadow: var(--clay-shadow-input) !important;
+  border-color: rgba(56, 189, 248, 0.2) !important;
+  color: #e0f2fe !important;
+}
+
+[data-theme="ocean"] input:focus,
+[data-theme="ocean"] select:focus,
+[data-theme="ocean"] textarea:focus,
+body.ocean-mode input:focus,
+body.ocean-mode select:focus,
+body.ocean-mode textarea:focus {
+  box-shadow: var(--clay-shadow-input-focus) !important;
+  border-color: #38bdf8 !important;
+  outline: none !important;
+}
+
+[data-theme="ocean"] input::placeholder,
+body.ocean-mode input::placeholder {
+  color: #7dd3fc !important;
+  opacity: 0.7 !important;
+}
+
+/* ── Buttons ── */
+[data-theme="ocean"] .btn-primary,
+body.ocean-mode .btn-primary {
+  background: var(--clay-bg-btn-primary) !important;
+  box-shadow: var(--clay-shadow-btn-primary) !important;
+  color: white !important;
+  border: none !important;
+}
+[data-theme="ocean"] .btn-secondary,
+body.ocean-mode .btn-secondary {
+  background: var(--clay-bg-btn-secondary) !important;
+  box-shadow: var(--clay-shadow-btn-secondary) !important;
+  color: #bae6fd !important;
+  border: none !important;
+}
+
+/* ── Tables ── */
+[data-theme="ocean"] .data-table th,
+body.ocean-mode .data-table th {
+  background: var(--clay-bg-btn-primary) !important;
+  color: white !important;
+}
+[data-theme="ocean"] .data-table td,
+body.ocean-mode .data-table td {
+  color: #bae6fd !important;
+  border-color: rgba(56,189,248,0.1) !important;
+}
+[data-theme="ocean"] .data-table tbody tr:hover td,
+body.ocean-mode .data-table tbody tr:hover td {
+  background: rgba(14,165,233,0.06) !important;
+}
+
+/* ── Home Header Panel ── */
+[data-theme="ocean"] .home-header-panel,
+body.ocean-mode .home-header-panel {
+  background: linear-gradient(145deg, #0c2a4a 0%, #0a2040 50%, #071a35 100%) !important;
+  border: 1.5px solid rgba(56, 189, 248, 0.2) !important;
+  border-radius: 28px !important;
+  box-shadow:
+    12px 12px 32px rgba(0,0,0,0.65),
+    -6px -6px 16px rgba(255,255,255,0.02),
+    inset 2px 2px 8px rgba(56,189,248,0.06),
+    inset -3px -3px 8px rgba(0,0,0,0.5),
+    0 0 50px rgba(14,165,233,0.08) !important;
+}
+
+[data-theme="ocean"] .home-header-panel::before,
+body.ocean-mode .home-header-panel::before {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important; left: 0 !important; right: 0 !important;
+  height: 2px !important;
+  background: linear-gradient(90deg, transparent, #38bdf8, #67e8f9, #0ea5e9, transparent) !important;
+  border-radius: 28px 28px 0 0 !important;
+  opacity: 0.7 !important;
+}
+
+/* ── Home Nav Cards ── */
+[data-theme="ocean"] .home-nav-card,
+body.ocean-mode .home-nav-card {
+  background: linear-gradient(145deg, rgba(12, 40, 72, 0.9) 0%, rgba(8, 28, 55, 0.85) 100%) !important;
+  border: 1px solid rgba(56, 189, 248, 0.12) !important;
+  box-shadow:
+    8px 8px 20px rgba(0,0,0,0.5),
+    inset 4px 4px 8px rgba(56,189,248,0.04),
+    inset -4px -4px 8px rgba(0,0,0,0.5) !important;
+}
+
+[data-theme="ocean"] .home-nav-card:hover,
+body.ocean-mode .home-nav-card:hover {
+  transform: translateY(-6px) scale(1.018) !important;
+  box-shadow:
+    12px 12px 28px rgba(0,0,0,0.6),
+    0 0 30px rgba(14,165,233,0.12),
+    inset 4px 4px 8px rgba(56,189,248,0.06),
+    inset -4px -4px 8px rgba(0,0,0,0.55) !important;
+}
+
+/* ── Ocean theme button active state ── */
+#ocean-theme-btn {
+  padding: 6px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+  background: none !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+#ocean-theme-btn #ocean-theme-icon {
+  display: inline-flex !important;
+  filter: drop-shadow(0 3px 8px rgba(14, 165, 233, 0.35)) !important;
+  transition: filter 0.3s ease, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+
+#ocean-theme-btn:hover #ocean-theme-icon {
+  filter: drop-shadow(0 4px 14px rgba(14, 165, 233, 0.65)) !important;
+  transform: scale(1.15) !important;
+}
+
+/* Active state — glowing ring when ocean is ON */
+#ocean-theme-btn.active {
+  background: rgba(14, 165, 233, 0.12) !important;
+  border-radius: 12px !important;
+  box-shadow:
+    0 0 0 2px rgba(56, 189, 248, 0.5),
+    0 0 12px rgba(14, 165, 233, 0.3) !important;
+}
+
+#ocean-theme-btn.active #ocean-theme-icon {
+  filter: drop-shadow(0 4px 16px rgba(14, 165, 233, 0.8)) !important;
+}
+
+/* ── Ocean wave animation on hover ── */
+@keyframes ocean-wave {
+  0%   { transform: translateY(0) rotate(0deg); }
+  25%  { transform: translateY(-3px) rotate(-3deg); }
+  50%  { transform: translateY(0) rotate(0deg); }
+  75%  { transform: translateY(3px) rotate(3deg); }
+  100% { transform: translateY(0) rotate(0deg); }
+}
+
+#ocean-theme-btn:hover #ocean-theme-icon {
+  animation: ocean-wave 0.6s ease !important;
+}
+
+/* ── Scrollbar in ocean mode ── */
+[data-theme="ocean"] ::-webkit-scrollbar-track,
+body.ocean-mode ::-webkit-scrollbar-track {
+  background: #071524 !important;
+}
+[data-theme="ocean"] ::-webkit-scrollbar-thumb,
+body.ocean-mode ::-webkit-scrollbar-thumb {
+  background: rgba(56,189,248,0.3) !important;
+  border-radius: 3px !important;
+}
+[data-theme="ocean"] ::-webkit-scrollbar-thumb:hover,
+body.ocean-mode ::-webkit-scrollbar-thumb:hover {
+  background: rgba(56,189,248,0.55) !important;
+}
+
+/* ── Text overrides ── */
+[data-theme="ocean"] h1, [data-theme="ocean"] h2, [data-theme="ocean"] h3,
+body.ocean-mode h1, body.ocean-mode h2, body.ocean-mode h3 {
+  color: #e0f2fe !important;
+}
+[data-theme="ocean"] p, [data-theme="ocean"] span, [data-theme="ocean"] label,
+body.ocean-mode p, body.ocean-mode span, body.ocean-mode label {
+  color: #bae6fd !important;
+}
+
+/* ── Notification badge in ocean ── */
+[data-theme="ocean"] .notif-badge,
+body.ocean-mode .notif-badge {
+  background: #0ea5e9 !important;
+  box-shadow: 0 3px 8px rgba(14,165,233,0.5) !important;
+}
+
+/* ── Header time pill ── */
+[data-theme="ocean"] .header-time,
+body.ocean-mode .header-time {
+  background: rgba(14, 165, 233, 0.08) !important;
+  border: 1px solid rgba(56, 189, 248, 0.2) !important;
+  color: #7dd3fc !important;
+  border-radius: 12px !important;
+}
+

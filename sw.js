@@ -1,4 +1,4 @@
-const CACHE_NAME = 'supermarket-v13';
+const CACHE_NAME = 'supermarket-v14';
 const ASSETS = [
   './index.html',
   './admin.html',
@@ -37,9 +37,35 @@ self.addEventListener('activate', event => {
 });
 
 self.addEventListener('fetch', event => {
+  // Only handle GET requests
+  if (event.request.method !== 'GET') return;
+
+  const url = new URL(event.request.url);
+
+  // Exclude API requests and Firebase requests from caching
+  if (url.pathname.startsWith('/api/') || 
+      url.hostname.includes('firebase') || 
+      url.hostname.includes('googleapis') ||
+      !url.protocol.startsWith('http')) {
+    return;
+  }
+
+  // Network-First caching strategy
   event.respondWith(
-    caches.match(event.request).then(response => {
-      return response || fetch(event.request);
-    })
+    fetch(event.request)
+      .then(networkResponse => {
+        // If response is valid, update cache and return response
+        if (networkResponse.status === 200) {
+          const responseClone = networkResponse.clone();
+          caches.open(CACHE_NAME).then(cache => {
+            cache.put(event.request, responseClone);
+          });
+        }
+        return networkResponse;
+      })
+      .catch(() => {
+        // Fall back to cache if offline/network fails
+        return caches.match(event.request);
+      })
   );
 });
