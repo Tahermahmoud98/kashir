@@ -277,9 +277,54 @@
       padding: 10px 20px;
     }
 
-    .page:not(#page-pos) .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 30px rgba(167, 139, 250, 0.5);
+    .dash-prod-reports-actions button {
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      gap: 8px !important;
+      flex: 1 !important;
+      min-width: 160px !important;
+      height: 48px !important;
+      padding: 12px 20px !important;
+      font-size: 15px !important;
+      font-weight: 800 !important;
+      border: none !important;
+      cursor: pointer !important;
+      transition: all 0.25s ease !important;
+      font-family: 'Noto Kufi Arabic', sans-serif !important;
+      margin: 0 !important;
+      color: white !important;
+      border-radius: var(--clay-btn-radius, 14px) !important;
+    }
+
+    /* Print Report (Blue Claymorphism) */
+    .dash-prod-reports-actions .btn-primary {
+      background: var(--clay-bg-btn-primary, linear-gradient(135deg, #6366f1, #4f46e5)) !important;
+      box-shadow: var(--clay-shadow-btn-primary, 6px 6px 14px rgba(99, 102, 241, 0.2), inset -4px -4px 8px rgba(67, 56, 202, 0.4), inset 4px 4px 8px rgba(255, 255, 255, 0.4)) !important;
+    }
+    .dash-prod-reports-actions .btn-primary:hover {
+      box-shadow: var(--clay-shadow-btn-primary-hover, 8px 8px 18px rgba(99, 102, 241, 0.3), inset -4px -4px 8px rgba(67, 56, 202, 0.5), inset 4px 4px 8px rgba(255, 255, 255, 0.5)) !important;
+      transform: translateY(-2px) !important;
+    }
+
+    /* Export PDF (Red Claymorphism) */
+    .dash-prod-reports-actions .btn-danger {
+      background: var(--clay-bg-btn-danger, linear-gradient(135deg, #ef4444, #dc2626)) !important;
+      box-shadow: var(--clay-shadow-btn-danger, 6px 6px 12px rgba(239, 68, 68, 0.2), inset -4px -4px 8px rgba(185, 28, 28, 0.4), inset 4px 4px 8px rgba(255, 255, 255, 0.45)) !important;
+    }
+    .dash-prod-reports-actions .btn-danger:hover {
+      box-shadow: var(--clay-shadow-btn-danger, 8px 8px 16px rgba(239, 68, 68, 0.3), inset -4px -4px 8px rgba(185, 28, 28, 0.5), inset 4px 4px 8px rgba(255, 255, 255, 0.55)) !important;
+      transform: translateY(-2px) !important;
+    }
+
+    /* Send to WhatsApp (Green Claymorphism) */
+    .dash-prod-reports-actions .btn-success {
+      background: var(--clay-bg-btn-success, linear-gradient(135deg, #10b981, #059669)) !important;
+      box-shadow: var(--clay-shadow-btn-success, 6px 6px 12px rgba(16, 185, 129, 0.2), inset -4px -4px 8px rgba(4, 120, 87, 0.4), inset 4px 4px 8px rgba(255, 255, 255, 0.45)) !important;
+    }
+    .dash-prod-reports-actions .btn-success:hover {
+      box-shadow: var(--clay-shadow-btn-success, 8px 8px 16px rgba(16, 185, 129, 0.3), inset -4px -4px 8px rgba(4, 120, 87, 0.5), inset 4px 4px 8px rgba(255, 255, 255, 0.55)) !important;
+      transform: translateY(-2px) !important;
     }
 
     .page:not(#page-pos) .btn-outline {
@@ -658,6 +703,10 @@
             <span class="nav-icon">🏪</span>
             <span data-translate="cashier">الكاشير</span>
           </a>
+          <a href="#" class="nav-item" onclick="showPage('sales')" id="nav-sales">
+            <span class="nav-icon">🧾</span>
+            <span data-translate="المبيعات والأرشيف">المبيعات والأرشيف</span>
+          </a>
         </div>
 
         <!-- قسم إدارة المتجر -->
@@ -671,6 +720,10 @@
             <span class="nav-icon">👥</span>
             <span data-translate="customers">العملاء والديون</span>
             <span class="debt-nav-badge" id="debt-nav-count" style="display:none"></span>
+          </a>
+          <a href="#" class="nav-item" onclick="showPage('special-customers')" id="nav-special-customers">
+            <span class="nav-icon">👑</span>
+            <span data-translate="عملاء مخصصين">العملاء المخصصين</span>
           </a>
           <a href="#" class="nav-item" onclick="showPage('purchases')" id="nav-purchases">
             <span class="nav-icon">🛒</span>
@@ -732,6 +785,9 @@
 
         <!-- Right: Back button + Page Title -->
         <div class="header-right">
+          <button class="menu-toggle-btn" onclick="toggleSidebar()" id="btn-toggle-sidebar" title="القائمة الجانبية" style="margin-left: 8px;">
+            ☰
+          </button>
           <button class="btn-home-header" id="btn-back-home" onclick="showPage('home')" style="display:none;">
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
             <span data-translate="home">الرئيسية</span>
@@ -781,7 +837,7 @@
           <!-- 🔔 Notifications -->
           <div class="notifications-btn" onclick="toggleNotifications(event)" id="clay-bell-btn">
             <span class="clay-bell-icon" aria-hidden="true">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 56 60" width="32" height="34">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 56 60" width="32" height="34" class="golden-bell-svg">
                 <defs>
                   <radialGradient id="bg2" cx="50%" cy="45%" r="55%">
                     <stop offset="0%"   stop-color="#F5EFD8"/>
@@ -805,7 +861,7 @@
                 </defs>
 
                 <!-- Bell body — smooth, wide emoji-style dome -->
-                <path d="M28 6
+                <path class="bell-body-path" d="M28 6
                          C18 6  10 15  10 26
                          L8  42
                          Q8  45  11 45
@@ -816,19 +872,19 @@
                       fill="url(#bellBody)"/>
 
                 <!-- Rim bar -->
-                <rect x="8" y="43" width="40" height="5" rx="2.5" fill="url(#bellRim)"/>
+                <rect class="bell-rim-path" x="8" y="43" width="40" height="5" rx="2.5" fill="url(#bellRim)"/>
 
                 <!-- Clapper ball -->
-                <circle cx="28" cy="52" r="3.5" fill="#C47A00"/>
-                <circle cx="27" cy="51" r="1.3" fill="rgba(255,230,120,0.6)"/>
+                <circle class="bell-clapper-path" cx="28" cy="52" r="3.5" fill="#C47A00"/>
+                <circle class="bell-clapper-shine" cx="27" cy="51" r="1.3" fill="rgba(255,230,120,0.6)"/>
 
                 <!-- Hook at top -->
-                <path d="M25.5 7 Q25.5 3 28 3 Q30.5 3 30.5 7"
+                <path class="bell-hook-path" d="M25.5 7 Q25.5 3 28 3 Q30.5 3 30.5 7"
                       fill="none" stroke="#B07A00" stroke-width="2.2" stroke-linecap="round"/>
-                <circle cx="28" cy="3" r="1.6" fill="#C89010"/>
+                <circle class="bell-hook-knob" cx="28" cy="3" r="1.6" fill="#C89010"/>
 
                 <!-- Main shine oval — the key "glossy" look -->
-                <ellipse cx="22" cy="21" rx="7" ry="10"
+                <ellipse class="bell-shine-path" cx="22" cy="21" rx="7" ry="10"
                          fill="url(#shineSpot)"
                          transform="rotate(-20 22 21)"/>
               </svg>
@@ -884,6 +940,13 @@
               <div class="home-card-desc" data-translate="pos_desc">واجهة البيع السريع ونظام الفواتير</div>
             </div>
 
+            <!-- المبيعات والأرشيف (9) -->
+            <div class="home-nav-card archive" onclick="showPage('sales')">
+              <div class="home-card-icon-wrapper">🧾</div>
+              <div class="home-card-title" data-translate="المبيعات والأرشيف">المبيعات والأرشيف</div>
+              <div class="home-card-desc" data-translate="أرشيف الفواتير المباعة، المرتجعات، وتفاصيل الأرباح">أرشيف الفواتير المباعة، المرتجعات، وتفاصيل الأرباح</div>
+            </div>
+
             <!-- المنتجات والمخزون (2) -->
             <div class="home-nav-card products" onclick="showPage('products')">
               <div class="home-card-icon-wrapper">📦</div>
@@ -898,6 +961,13 @@
               <div class="home-card-icon-wrapper">👥</div>
               <div class="home-card-title" data-translate="customers">العملاء والديون</div>
               <div class="home-card-desc" data-translate="debts_desc">دليل العملاء، ديون العملاء، وتسجيل السداد</div>
+            </div>
+
+            <!-- عملاء مخصصين (10) -->
+            <div class="home-nav-card special-customers" onclick="showPage('special-customers')">
+              <div class="home-card-icon-wrapper">👑</div>
+              <div class="home-card-title" data-translate="عملاء مخصصين">عملاء مخصصين</div>
+              <div class="home-card-desc" data-translate="أرباح مخصصة للعملاء كبيع بسعر التكلفة أو نسبة ربح معينة">أرباح مخصصة للعملاء كبيع بسعر التكلفة أو نسبة ربح معينة</div>
             </div>
 
             <!-- المالية والتقارير (4) -->
@@ -1175,7 +1245,7 @@
             <div class="pcs-summary">
               <div class="pcs-summary-row">
                 <span data-translate class="pcs-label">المجموع الفرعي</span>
-                <span data-translate class="pcs-value" id="subtotal-iqd">0 د.ع</span>
+                <span class="pcs-value" id="subtotal-iqd">0 د.ع</span>
               </div>
 
               <div class="pcs-summary-row pcs-discount-row">
@@ -1187,7 +1257,7 @@
                     <option value="fixed-iqd" data-translate>د.ع</option>
                     <option value="fixed-usd">$</option>
                   </select>
-                  <span data-translate class="pcs-value pcs-neg" id="discount-amount">- 0 د.ع</span>
+                  <span class="pcs-value pcs-neg" id="discount-amount">- 0 د.ع</span>
                 </div>
               </div>
 
@@ -1195,19 +1265,19 @@
                 <span data-translate class="pcs-label">🎟️ كوبون</span>
                 <div class="pcs-discount-inputs">
                   <input type="text" id="coupon-code-input" data-translate placeholder="كود الكوبون" oninput="applyCouponCode()" class="pcs-input-txt">
-                  <span data-translate class="pcs-value pcs-neg" id="coupon-discount-amount">- 0 د.ع</span>
+                  <span class="pcs-value pcs-neg" id="coupon-discount-amount">- 0 د.ع</span>
                 </div>
               </div>
 
               <div class="pcs-summary-row pcs-tax-row">
-                <span data-translate class="pcs-label">الضريبة (<span id="tax-rate-display">0</span>%)</span>
-                <span data-translate class="pcs-value" id="tax-amount">0 د.ع</span>
+                <span class="pcs-label"><span data-translate>الضريبة</span> (<span id="tax-rate-display">0</span>%)</span>
+                <span class="pcs-value" id="tax-amount">0 د.ع</span>
               </div>
 
               <div class="pcs-total-strip">
                 <div data-translate class="pcs-total-label">الإجمالي</div>
                 <div class="pcs-total-numbers">
-                  <span data-translate class="pcs-total-iqd" id="total-iqd">0 د.ع</span>
+                  <span class="pcs-total-iqd" id="total-iqd">0 د.ع</span>
                   <span class="pcs-total-usd" id="total-usd">$0.00</span>
                 </div>
               </div>
@@ -1455,6 +1525,15 @@
               <span class="inv-stat-label" data-translate="نفد المخزون">نفد المخزون</span>
             </div>
           </div>
+          <div class="inv-stat-card warning">
+            <span class="inv-stat-icon" style="background: linear-gradient(135deg, rgba(217,119,6,0.2), rgba(217,119,6,0.1)); color: #d97706;">
+              <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+            </span>
+            <div>
+              <span class="inv-stat-value" id="inventory-expiring-soon-count">0</span>
+              <span class="inv-stat-label" data-translate="قريب الانتهاء">قريب الانتهاء</span>
+            </div>
+          </div>
         </div>
         <div class="products-table-container">
           <table class="data-table" id="inventory-table">
@@ -1522,7 +1601,7 @@
           </div>
 
         <!-- إحصائيات صفحة العملاء -->
-        <div id="customers-stats-strip" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 18px;">
+        <div id="customers-stats-strip" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-bottom: 18px;">
           <div style="background: linear-gradient(135deg, #e8edf3 0%, #dde6ef 100%); border: 1.5px solid #c8d6e5; border-radius: 16px; padding: 16px 18px; display: flex; align-items: center; gap: 14px;">
             <div style="width: 44px; height: 44px; border-radius: 12px; background: rgba(91,127,166,0.12); display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0;">👥</div>
             <div>
@@ -1549,6 +1628,43 @@
         <div class="customers-grid" id="customers-grid"></div>
         <div id="customer-detail-view-container" style="display: none; padding: 16px 0;">
           <!-- Customer detail view rendered here dynamically -->
+        </div>
+      </div>
+
+      <!-- Special Customers Page -->
+      <div id="page-special-customers" class="page">
+        <div class="page-header-bar" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:12px;">
+          <h3 data-translate style="margin:0; font-size:22px; font-weight:800; color:var(--text-primary);">العملاء المخصصين</h3>
+          <input type="text" class="search-input" data-translate placeholder="🔍 ابحث عن عميل مخصص..."
+            oninput="searchSpecialCustomers(this.value)" style="width:260px; max-width:100%; margin:0;">
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:18px; padding-bottom:10px; border-bottom:1px solid rgba(0,0,0,0.04);">
+          <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+            <button onclick="openAddSpecialCustomerModal()" style="display:inline-flex; align-items:center; gap:8px; padding:9px 18px; border-radius:30px; border:none; background:#7c3aed; color:#fff; font-weight:800; font-size:12.5px; font-family:inherit; cursor:pointer; transition:all 0.2s; box-shadow:0 2px 8px rgba(124,58,237,0.2);" onmouseover="this.style.background='#6d28d9'; this.style.transform='translateY(-1px)'" onmouseout="this.style.background='#7c3aed'; this.style.transform='none'">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="11" x2="23" y2="11"/><line x1="21" y1="9" x2="21" y2="13"/></svg>
+              <span data-translate="إضافة عميل مخصص">إضافة عميل مخصص</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="table-container" style="background:#fff; border-radius:18px; box-shadow:0 4px 15px rgba(0,0,0,0.02); overflow:hidden;">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th style="width: 50px;">#</th>
+                <th data-translate="العميل">العميل</th>
+                <th data-translate="رقم العميل">رقم العميل</th>
+                <th data-translate="رقم الهاتف">رقم الهاتف</th>
+                <th data-translate="العنوان">العنوان</th>
+                <th data-translate="نوع التسعير">نوع التسعير</th>
+                <th data-translate="العمليات" style="text-align: center; width: 120px;">العمليات</th>
+              </tr>
+            </thead>
+            <tbody id="special-customers-table-body">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
         </div>
       </div>
 
@@ -1638,29 +1754,14 @@
 
         <div class="archive-tabs-bar"
           >
-          <button class="archive-tab active" onclick="switchReportTable('table-top-products', this)"><span
-              data-translate="أكثر المنتجات مبيعاً">أكثر المنتجات مبيعاً</span></button>
-          <button class="archive-tab" onclick="switchReportTable('table-recent-invoices', this)"
+          <button class="archive-tab active" onclick="switchReportTable('table-recent-invoices', this)"
             data-translate="آخر الفواتير">آخر الفواتير</button>
           <button class="archive-tab" onclick="switchReportTable('table-purchases', this)"
             data-translate="المشتريات">المشتريات</button>
         </div>
 
         <div class="reports-tables">
-          <div class="report-table-card" id="table-top-products">
-            <h4 data-translate="أكثر المنتجات مبيعاً">أكثر المنتجات مبيعاً</h4>
-            <table class="data-table">
-              <thead>
-                <tr>
-                  <th data-translate="المنتج">المنتج</th>
-                  <th data-translate="الكمية">الكمية</th>
-                  <th data-translate="الإيراد">الإيراد</th>
-                </tr>
-              </thead>
-              <tbody id="top-products-tbody"></tbody>
-            </table>
-          </div>
-          <div class="report-table-card" id="table-recent-invoices" style="display:none;">
+          <div class="report-table-card" id="table-recent-invoices">
             <h4 data-translate="آخر الفواتير">آخر الفواتير</h4>
             <table class="data-table">
               <thead>
@@ -1733,7 +1834,7 @@
             </span>
             <div>
               <span class="inv-stat-value" id="dash-sales-today">0</span>
-              <span class="inv-stat-label" data-translate="مبيعات اليوم">مبيعات اليوم</span>
+              <span class="inv-stat-label" id="dash-sales-label" data-translate="مبيعات اليوم">مبيعات اليوم</span>
             </div>
           </div>
           <div class="inv-stat-card" style="border-right:3px solid var(--primary);">
@@ -1742,7 +1843,7 @@
             </span>
             <div>
               <span class="inv-stat-value" id="dash-profit-today" style="color:var(--primary);">0</span>
-              <span class="inv-stat-label" data-translate="أرباح اليوم">أرباح اليوم</span>
+              <span class="inv-stat-label" id="dash-profit-label" data-translate="أرباح اليوم">أرباح اليوم</span>
             </div>
           </div>
           <div class="inv-stat-card">
@@ -1751,52 +1852,223 @@
             </span>
             <div>
               <span class="inv-stat-value" id="dash-invoices-today">0</span>
-              <span class="inv-stat-label" data-translate="فواتير اليوم">فواتير اليوم</span>
-            </div>
-          </div>
-          <div class="inv-stat-card warning">
-            <span class="inv-stat-icon" style="background: linear-gradient(135deg, rgba(217,119,6,0.2), rgba(217,119,6,0.1)); color: #d97706;">
-              <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-            </span>
-            <div>
-              <span class="inv-stat-value" id="dash-low-stock">0</span>
-              <span class="inv-stat-label" data-translate="منتجات ناقصة">منتجات ناقصة</span>
-            </div>
-          </div>
-          <div class="inv-stat-card danger">
-            <span class="inv-stat-icon" style="background: linear-gradient(135deg, rgba(239,68,68,0.2), rgba(239,68,68,0.1)); color: #ef4444;">
-              <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-            </span>
-            <div>
-              <span class="inv-stat-value" id="dash-expiring-soon">0</span>
-              <span class="inv-stat-label" data-translate="قريب الانتهاء">قريب الانتهاء</span>
-            </div>
-          </div>
-          <div class="inv-stat-card">
-            <span class="inv-stat-icon" style="background: linear-gradient(135deg, rgba(99,102,241,0.2), rgba(99,102,241,0.1)); color: #6366f1;">
-              <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
-            </span>
-            <div>
-              <span class="inv-stat-value" id="dash-total-debts">0</span>
-              <span class="inv-stat-label" data-translate="ديون العملاء">ديون العملاء</span>
+              <span class="inv-stat-label" id="dash-invoices-label" data-translate="فواتير اليوم">فواتير اليوم</span>
             </div>
           </div>
         </div>
 
-        <!-- أكثر المنتجات مبيعاً -->
-        <div class="reports-tables">
-          <div class="report-table-card">
+        <!-- أزرار إجراءات التقارير -->
+        <div class="dash-prod-reports-actions" style="margin-bottom: 20px; display: flex; gap: 12px; flex-wrap: wrap; width: 100%;">
+          <button class="btn-primary" onclick="printDashboardReport()">
+            🖨️ <span data-translate="طبع التقرير">طبع التقرير</span>
+          </button>
+          <button class="btn-danger" onclick="exportDashboardReportPDF()">
+            📄 <span data-translate="تصدير PDF">تصدير PDF</span>
+          </button>
+          <button class="btn-success" onclick="sendDashboardReportWhatsApp()">
+            💬 <span data-translate="إرسال لواتساب">إرسال لواتساب</span>
+          </button>
+        </div>
+
+        <!-- تبويبات إحصائيات المنتجات الذكية -->
+        <div class="dash-products-tabs-bar">
+          <button class="dash-prod-tab active" onclick="switchDashProdTab('top-today', this)" data-translate="🏆 أكثر المنتجات مبيعاً اليوم">🏆 أكثر المنتجات مبيعاً اليوم</button>
+          <button class="dash-prod-tab" onclick="switchDashProdTab('least-today', this)" data-translate="📉 أقل المنتجات مبيعاً اليوم">📉 أقل المنتجات مبيعاً اليوم</button>
+          <button class="dash-prod-tab" onclick="switchDashProdTab('top-week', this)" data-translate="📅 أكثر المنتجات مبيعاً هذا الأسبوع">📅 أكثر المنتجات مبيعاً هذا الأسبوع</button>
+          <button class="dash-prod-tab" onclick="switchDashProdTab('least-week', this)" data-translate="💤 أقل المنتجات مبيعاً هذا الأسبوع">💤 أقل المنتجات مبيعاً هذا الأسبوع</button>
+          <button class="dash-prod-tab" onclick="switchDashProdTab('top-month', this)" data-translate="📊 أكثر المنتجات مبيعاً هذا الشهر">📊 أكثر المنتجات مبيعاً هذا الشهر</button>
+          <button class="dash-prod-tab" onclick="switchDashProdTab('least-month', this)" data-translate="📉 أقل المنتجات مبيعاً هذا الشهر">📉 أقل المنتجات مبيعاً هذا الشهر</button>
+          <button class="dash-prod-tab" onclick="switchDashProdTab('unsold-today', this)" data-translate="🚫 منتجات لم تُبع اليوم">🚫 منتجات لم تُبع اليوم</button>
+          <button class="dash-prod-tab" onclick="switchDashProdTab('unsold-week', this)" data-translate="⏳ منتجات لم تُبع هذا الأسبوع">⏳ منتجات لم تُبع هذا الأسبوع</button>
+          <button class="dash-prod-tab" onclick="switchDashProdTab('unsold-month', this)" data-translate="🚫 منتجات لم تُبع هذا الشهر">🚫 منتجات لم تُبع هذا الشهر</button>
+        </div>
+
+        <!-- حاوية القوائم الإحصائية المنفصلة (كل قائمة في صفحة مستقلة) -->
+        <div class="dash-prod-tabs-content">
+          <!-- 1. الأكثر مبيعاً اليوم -->
+          <div id="dash-prod-tab-top-today" class="dash-prod-tab-content report-table-card">
             <h4 data-translate="🏆 أكثر المنتجات مبيعاً اليوم">🏆 أكثر المنتجات مبيعاً اليوم</h4>
-            <table class="data-table">
-              <thead>
-                <tr>
-                  <th data-translate="المنتج">المنتج</th>
-                  <th data-translate="الكمية">الكمية</th>
-                  <th data-translate="الإيراد">الإيراد</th>
-                </tr>
-              </thead>
-              <tbody id="dash-top-products"></tbody>
-            </table>
+            <div class="table-wrapper" style="max-height: 450px; overflow-y: auto; overflow-x: auto;">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th data-translate="المنتج">المنتج</th>
+                    <th data-translate="المخزون">المخزون</th>
+                    <th data-translate="الكمية المباعة">الكمية المباعة</th>
+                    <th data-translate="سعر البيع">سعر البيع</th>
+                    <th data-translate="إجمالي المبيعات">إجمالي المبيعات</th>
+                    <th data-translate="الربح الفردي">الربح الفردي</th>
+                    <th data-translate="الأرباح">الأرباح</th>
+                  </tr>
+                </thead>
+                <tbody id="dash-top-products-today"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- 2. الأقل مبيعاً اليوم -->
+          <div id="dash-prod-tab-least-today" class="dash-prod-tab-content report-table-card" style="display: none;">
+            <h4 data-translate="📉 أقل المنتجات مبيعاً اليوم">📉 أقل المنتجات مبيعاً اليوم</h4>
+            <div class="table-wrapper" style="max-height: 450px; overflow-y: auto; overflow-x: auto;">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th data-translate="المنتج">المنتج</th>
+                    <th data-translate="المخزون">المخزون</th>
+                    <th data-translate="الكمية المباعة">الكمية المباعة</th>
+                    <th data-translate="سعر البيع">سعر البيع</th>
+                    <th data-translate="إجمالي المبيعات">إجمالي المبيعات</th>
+                    <th data-translate="الربح الفردي">الربح الفردي</th>
+                    <th data-translate="الأرباح">الأرباح</th>
+                  </tr>
+                </thead>
+                <tbody id="dash-least-products-today"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- 3. أكثر مبيعاً هذا الأسبوع -->
+          <div id="dash-prod-tab-top-week" class="dash-prod-tab-content report-table-card" style="display: none;">
+            <h4 data-translate="📅 أكثر المنتجات مبيعاً هذا الأسبوع">📅 أكثر المنتجات مبيعاً هذا الأسبوع</h4>
+            <div class="table-wrapper" style="max-height: 450px; overflow-y: auto; overflow-x: auto;">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th data-translate="المنتج">المنتج</th>
+                    <th data-translate="المخزون">المخزون</th>
+                    <th data-translate="الكمية المباعة">الكمية المباعة</th>
+                    <th data-translate="سعر البيع">سعر البيع</th>
+                    <th data-translate="إجمالي المبيعات">إجمالي المبيعات</th>
+                    <th data-translate="الربح الفردي">الربح الفردي</th>
+                    <th data-translate="الأرباح">الأرباح</th>
+                  </tr>
+                </thead>
+                <tbody id="dash-top-products-week"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- 4. أقل مبيعاً هذا الأسبوع -->
+          <div id="dash-prod-tab-least-week" class="dash-prod-tab-content report-table-card" style="display: none;">
+            <h4 data-translate="💤 أقل المنتجات مبيعاً هذا الأسبوع">💤 أقل المنتجات مبيعاً هذا الأسبوع</h4>
+            <div class="table-wrapper" style="max-height: 450px; overflow-y: auto; overflow-x: auto;">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th data-translate="المنتج">المنتج</th>
+                    <th data-translate="المخزون">المخزون</th>
+                    <th data-translate="الكمية المباعة">الكمية المباعة</th>
+                    <th data-translate="سعر البيع">سعر البيع</th>
+                    <th data-translate="إجمالي المبيعات">إجمالي المبيعات</th>
+                    <th data-translate="الربح الفردي">الربح الفردي</th>
+                    <th data-translate="الأرباح">الأرباح</th>
+                  </tr>
+                </thead>
+                <tbody id="dash-least-products-week"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- 5. لم تُبع اليوم -->
+          <div id="dash-prod-tab-unsold-today" class="dash-prod-tab-content report-table-card" style="display: none;">
+            <h4 data-translate="🚫 منتجات لم تُبع اليوم">🚫 منتجات لم تُبع اليوم</h4>
+            <div class="table-wrapper" style="max-height: 450px; overflow-y: auto; overflow-x: auto;">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th data-translate="المنتج">المنتج</th>
+                    <th data-translate="المخزون">المخزون</th>
+                    <th data-translate="سعر فردي">سعر فردي</th>
+                    <th data-translate="سعر اجمالي">سعر اجمالي</th>
+                    <th data-translate="سعر التكلفة">سعر التكلفة</th>
+                    <th data-translate="إجمالي الخسائر">إجمالي الخسائر</th>
+                  </tr>
+                </thead>
+                <tbody id="dash-unsold-products-today"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- 6. لم تُبع هذا الأسبوع -->
+          <div id="dash-prod-tab-unsold-week" class="dash-prod-tab-content report-table-card" style="display: none;">
+            <h4 data-translate="⏳ منتجات لم تُبع هذا الأسبوع">⏳ منتجات لم تُبع هذا الأسبوع</h4>
+            <div class="table-wrapper" style="max-height: 450px; overflow-y: auto; overflow-x: auto;">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th data-translate="المنتج">المنتج</th>
+                    <th data-translate="المخزون">المخزون</th>
+                    <th data-translate="سعر فردي">سعر فردي</th>
+                    <th data-translate="سعر اجمالي">سعر اجمالي</th>
+                    <th data-translate="سعر التكلفة">سعر التكلفة</th>
+                    <th data-translate="إجمالي الخسائر">إجمالي الخسائر</th>
+                  </tr>
+                </thead>
+                <tbody id="dash-unsold-products-week"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- 7. أكثر مبيعاً هذا الشهر -->
+          <div id="dash-prod-tab-top-month" class="dash-prod-tab-content report-table-card" style="display: none;">
+            <h4 data-translate="📊 أكثر المنتجات مبيعاً هذا الشهر">📊 أكثر المنتجات مبيعاً هذا الشهر</h4>
+            <div class="table-wrapper" style="max-height: 450px; overflow-y: auto; overflow-x: auto;">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th data-translate="المنتج">المنتج</th>
+                    <th data-translate="المخزون">المخزون</th>
+                    <th data-translate="الكمية المباعة">الكمية المباعة</th>
+                    <th data-translate="سعر البيع">سعر البيع</th>
+                    <th data-translate="إجمالي المبيعات">إجمالي المبيعات</th>
+                    <th data-translate="الربح الفردي">الربح الفردي</th>
+                    <th data-translate="الأرباح">الأرباح</th>
+                  </tr>
+                </thead>
+                <tbody id="dash-top-products-month"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- 8. أقل مبيعاً هذا الشهر -->
+          <div id="dash-prod-tab-least-month" class="dash-prod-tab-content report-table-card" style="display: none;">
+            <h4 data-translate="📉 أقل المنتجات مبيعاً هذا الشهر">📉 أقل المنتجات مبيعاً هذا الشهر</h4>
+            <div class="table-wrapper" style="max-height: 450px; overflow-y: auto; overflow-x: auto;">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th data-translate="المنتج">المنتج</th>
+                    <th data-translate="المخزون">المخزون</th>
+                    <th data-translate="الكمية المباعة">الكمية المباعة</th>
+                    <th data-translate="سعر البيع">سعر البيع</th>
+                    <th data-translate="إجمالي المبيعات">إجمالي المبيعات</th>
+                    <th data-translate="الربح الفردي">الربح الفردي</th>
+                    <th data-translate="الأرباح">الأرباح</th>
+                  </tr>
+                </thead>
+                <tbody id="dash-least-products-month"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- 9. لم تُبع هذا الشهر -->
+          <div id="dash-prod-tab-unsold-month" class="dash-prod-tab-content report-table-card" style="display: none;">
+            <h4 data-translate="🚫 منتجات لم تُبع هذا الشهر">🚫 منتجات لم تُبع هذا الشهر</h4>
+            <div class="table-wrapper" style="max-height: 450px; overflow-y: auto; overflow-x: auto;">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th data-translate="المنتج">المنتج</th>
+                    <th data-translate="المخزون">المخزون</th>
+                    <th data-translate="سعر فردي">سعر فردي</th>
+                    <th data-translate="سعر اجمالي">سعر اجمالي</th>
+                    <th data-translate="سعر التكلفة">سعر التكلفة</th>
+                    <th data-translate="إجمالي الخسائر">إجمالي الخسائر</th>
+                  </tr>
+                </thead>
+                <tbody id="dash-unsold-products-month"></tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
@@ -3384,32 +3656,54 @@
         <div id="bag-calculator-section"
           style="display:none; background: rgba(0,200,150,0.05); border: 1px dashed var(--primary); padding: 15px; border-radius: 8px; margin-bottom: 15px;">
           <h4 style="margin-top:0; margin-bottom:10px; color:var(--primary); font-size:14px;">📦 <span
-              data-translate="حاسبة الأكياس / الجملة (اختياري)">حاسبة الأكياس / الجملة (اختياري)</span></h4>
+              id="bc-title" data-translate="حاسبة الأكياس / الجملة (اختياري)">حاسبة الأكياس / الجملة (اختياري)</span></h4>
+          
+          <!-- Inner Unit Selector Row -->
+          <div class="form-row" id="bc-inner-unit-group" style="margin-bottom:10px; display:none;">
+            <div class="form-group">
+              <label style="font-size:12px;" data-translate="وحدة المحتوى الداخلي">وحدة المحتوى الداخلي</label>
+              <select id="bc-inner-unit" onchange="calculateBag()">
+                <option value="قطعة" data-translate="قطعة">قطعة</option>
+                <option value="كيلو" data-translate="كيلو">كيلو</option>
+                <option value="لتر" data-translate="لتر">لتر</option>
+                <option value="علبة" data-translate="علبة">علبة</option>
+                <option value="غرام" data-translate="غرام">غرام</option>
+              </select>
+            </div>
+          </div>
+
           <div class="form-row" style="margin-bottom:10px;">
             <div class="form-group">
-              <label style="font-size:12px;" data-translate="وزن الكيس (كيلو)">وزن الكيس (كيلو)</label>
-              <input type="number" id="bc-weight" data-translate placeholder="مثال: 5" data-translate="مثال: 5" min="0" step="0.1"
-                oninput="calculateBag()">
+              <label style="font-size:12px;" id="lbl-bc-weight" data-translate="وزن الكيس (كيلو)">وزن الكيس (كيلو)</label>
+              <input type="number" id="bc-weight" placeholder="مثال: 5" min="0" step="any"
+                oninput="calculateBag('weight')">
             </div>
             <div class="form-group">
-              <label style="font-size:12px;" data-translate="عدد الأكياس المشتراة">عدد الأكياس المشتراة</label>
-              <input type="number" id="bc-qty" data-translate placeholder="مثال: 10" data-translate="مثال: 10" min="0"
-                oninput="calculateBag()">
+              <label style="font-size:12px;" id="lbl-bc-qty" data-translate="عدد الأكياس المشتراة">عدد الأكياس المشتراة</label>
+              <input type="number" id="bc-qty" placeholder="مثال: 10" min="0"
+                oninput="calculateBag('weight')">
+            </div>
+          </div>
+          <div class="form-row" style="margin-bottom:10px;">
+            <div class="form-group">
+              <label style="font-size:12px;" id="lbl-bc-cost" data-translate="سعر شراء الكيس">سعر شراء الكيس</label>
+              <input type="number" id="bc-cost" placeholder="مثال: 25000" min="0"
+                oninput="calculateBag('cost')">
+            </div>
+            <div class="form-group">
+              <label style="font-size:12px;" id="lbl-bc-price" data-translate="سعر بيع الكيس كاملاً">سعر بيع الكيس كاملاً</label>
+              <input type="number" id="bc-price" placeholder="مثال: 28000" min="0"
+                oninput="calculateBag('package-price')">
             </div>
           </div>
           <div class="form-row" style="margin-bottom:0;">
             <div class="form-group">
-              <label style="font-size:12px;" data-translate="سعر شراء الكيس">سعر شراء الكيس</label>
-              <input type="number" id="bc-cost" data-translate placeholder="مثال: 25000" data-translate="مثال: 25000" min="0"
-                oninput="calculateBag()">
-            </div>
-            <div class="form-group">
-              <label style="font-size:12px;" data-translate="سعر بيع الكيس كاملاً">سعر بيع الكيس كاملاً</label>
-              <input type="number" id="bc-price" data-translate placeholder="مثال: 28000" data-translate="مثال: 28000" min="0"
-                oninput="calculateBag()">
+              <label style="font-size:12px;" id="lbl-bc-single-price" data-translate="سعر بيع المفرد (القطعة)">سعر بيع المفرد (القطعة)</label>
+              <input type="number" id="bc-single-price" placeholder="مثال: 1200" min="0"
+                oninput="calculateBag('single-price')">
             </div>
           </div>
-          <small style="color:var(--text-muted); display:block; margin-top:8px;"
+          <small style="color:var(--text-muted); display:block; margin-top:8px;" id="bc-note"
             data-translate="* سيتم حساب سعر الكيلو الإفرادي والمخزون الكلي (بالكيلو) تلقائياً بالأسفل.">* سيتم حساب سعر
             الكيلو الإفرادي والمخزون الكلي (بالكيلو) تلقائياً بالأسفل.</small>
         </div>
@@ -3527,6 +3821,16 @@
             data-translate="أدخل مبلغ الدين القديم">
         </div>
         <div class="form-group">
+          <label data-translate="نوع تسعير العميل (أرباح مخصصة)">نوع تسعير العميل (أرباح مخصصة)</label>
+          <select id="cm-profit-type">
+            <option value="normal" data-translate="أرباح كاملة (سعر البيع العادي)">أرباح كاملة (سعر البيع العادي)</option>
+            <option value="cost" data-translate="سعر التكلفة (0% أرباح)">سعر التكلفة (0% أرباح)</option>
+            <option value="quarter" data-translate="ربع الأرباح (25% أرباح)">ربع الأرباح (25% أرباح)</option>
+            <option value="half" data-translate="نصف الأرباح (50% أرباح)">نصف الأرباح (50% أرباح)</option>
+            <option value="three_quarters" data-translate="ثلاثة أرباع الأرباح (75% أرباح)">ثلاثة أرباع الأرباح (75% أرباح)</option>
+          </select>
+        </div>
+        <div class="form-group">
           <label data-translate="ملاحظات">ملاحظات</label>
           <textarea id="cm-notes" data-translate placeholder="ملاحظات" data-translate="ملاحظات"></textarea>
         </div>
@@ -3534,6 +3838,39 @@
       <div class="modal-footer">
         <button class="btn-secondary" onclick="closeModal('customer-modal')" data-translate="إلغاء">إلغاء</button>
         <button class="btn-primary" onclick="saveCustomer()" data-translate="💾 حفظ">💾 حفظ</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Special Customer Modal -->
+  <div class="modal-overlay" id="special-customer-modal" style="display:none;">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="special-customer-modal-title" data-translate="إضافة عميل مخصص">إضافة عميل مخصص</h3>
+        <button class="modal-close" onclick="closeModal('special-customer-modal')">✕</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="scm-id">
+        <div class="form-group">
+          <label data-translate="اختر العميل">اختر العميل</label>
+          <select id="scm-customer-select" style="width: 100%; padding: 10px; border-radius: 10px; border: 1px solid rgba(0,0,0,0.1); font-family: inherit; font-size: 14px;">
+            <!-- Populated dynamically -->
+          </select>
+        </div>
+        <div class="form-group">
+          <label data-translate="نوع تسعير العميل (أرباح مخصصة)">نوع تسعير العميل (أرباح مخصصة)</label>
+          <select id="scm-profit-type" style="width: 100%; padding: 10px; border-radius: 10px; border: 1px solid rgba(0,0,0,0.1); font-family: inherit; font-size: 14px;">
+            <option value="normal" data-translate="أرباح كاملة (سعر البيع العادي)">أرباح كاملة (سعر البيع العادي)</option>
+            <option value="cost" data-translate="سعر التكلفة (0% أرباح)">سعر التكلفة (0% أرباح)</option>
+            <option value="quarter" data-translate="ربع الأرباح (25% أرباح)">ربع الأرباح (25% أرباح)</option>
+            <option value="half" data-translate="نصف الأرباح (50% أرباح)">نصف الأرباح (50% أرباح)</option>
+            <option value="three_quarters" data-translate="ثلاثة أرباع الأرباح (75% أرباح)">ثلاثة أرباع الأرباح (75% أرباح)</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeModal('special-customer-modal')" data-translate="إلغاء">إلغاء</button>
+        <button class="btn-primary" onclick="saveSpecialCustomer()" data-translate="💾 حفظ">💾 حفظ</button>
       </div>
     </div>
   </div>

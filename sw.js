@@ -1,8 +1,13 @@
-const CACHE_NAME = 'supermarket-v14';
+const CACHE_NAME = 'supermarket-v15';
 const ASSETS = [
+  './',
   './index.html',
   './admin.html',
   './styles.css',
+  './pcs_styles.css',
+  './claymorphism.css',
+  './db.js',
+  './kbd.js',
   './app.js',
   './firebase-config.js',
   './firebase-sync.js',
@@ -42,7 +47,7 @@ self.addEventListener('fetch', event => {
 
   const url = new URL(event.request.url);
 
-  // Exclude API requests and Firebase requests from caching
+  // Exclude API requests and Firebase/Google API requests from caching
   if (url.pathname.startsWith('/api/') || 
       url.hostname.includes('firebase') || 
       url.hostname.includes('googleapis') ||
@@ -50,22 +55,23 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  // Network-First caching strategy
+  // Stale-While-Revalidate caching strategy for local POS assets
   event.respondWith(
-    fetch(event.request)
-      .then(networkResponse => {
-        // If response is valid, update cache and return response
-        if (networkResponse.status === 200) {
-          const responseClone = networkResponse.clone();
-          caches.open(CACHE_NAME).then(cache => {
-            cache.put(event.request, responseClone);
-          });
-        }
-        return networkResponse;
-      })
-      .catch(() => {
-        // Fall back to cache if offline/network fails
-        return caches.match(event.request);
-      })
+    caches.open(CACHE_NAME).then(cache => {
+      return cache.match(event.request).then(cachedResponse => {
+        const fetchPromise = fetch(event.request).then(networkResponse => {
+          if (networkResponse.status === 200) {
+            cache.put(event.request, networkResponse.clone());
+          }
+          return networkResponse;
+        }).catch(() => {
+          // Ignore network fetch errors if offline
+        });
+        
+        // Return cached response instantly if available, otherwise wait for network
+        return cachedResponse || fetchPromise;
+      });
+    })
   );
 });
+

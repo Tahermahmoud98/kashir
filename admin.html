@@ -282,7 +282,7 @@
 
     .sb {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 12px;
       padding: 16px 20px;
       background: var(--dark2)
@@ -754,6 +754,15 @@
     .dbr strong {
       font-size: 13px;
       color: var(--p)
+    }
+
+    @media(max-width:1024px) {
+      .mg {
+        grid-template-columns: 1fr;
+      }
+      .rp {
+        order: -1;
+      }
     }
 
     @media(max-width:768px) {

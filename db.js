@@ -1,34 +1,85 @@
-﻿const DB = {
+const _dbCache = {
+  products: null,
+  settings: null,
+  invoices: null,
+  customers: null,
+  categories: null,
+  debts: null,
+  deleteRequests: null,
+  archivedDebts: null,
+  archivedCustomers: null,
+  stockLog: null
+};
+
+const DB = {
+  clearCache: () => {
+    _dbCache.products = null;
+    _dbCache.settings = null;
+    _dbCache.invoices = null;
+    _dbCache.customers = null;
+    _dbCache.categories = null;
+    _dbCache.debts = null;
+    _dbCache.deleteRequests = null;
+    _dbCache.archivedDebts = null;
+    _dbCache.archivedCustomers = null;
+    _dbCache.stockLog = null;
+  },
   getProducts: () => { 
+    if (_dbCache.products) return _dbCache.products;
     try { 
       let data = JSON.parse(localStorage.getItem('pos_products'));
       if (data && !Array.isArray(data)) data = Object.values(data);
-      return data || []; 
+      _dbCache.products = data || []; 
+      return _dbCache.products;
     } catch(e){return []} 
   },
   getSettings: () => { 
+    if (_dbCache.settings) return _dbCache.settings;
     try { 
       const s = JSON.parse(localStorage.getItem('pos_settings')); 
-      return s ? { language: 'kbd', ...s } : { language: 'kbd' };
+      let settings = s ? { language: 'kbd', ...s } : { language: 'kbd', exchangeRate: 1500 };
+      
+      // Auto-normalize exchange rate if stored in shorthand formats (e.g. 154.25 or 154250)
+      if (settings.exchangeRate) {
+        let rate = parseFloat(settings.exchangeRate);
+        if (rate > 0) {
+          if (rate < 500) {
+            rate = rate * 10; // Convert 154.25 -> 1542.5
+          } else if (rate > 100000) {
+            rate = rate / 100; // Convert 154250 -> 1542.5
+          }
+          settings.exchangeRate = rate;
+        }
+      } else {
+        settings.exchangeRate = 1500;
+      }
+      
+      _dbCache.settings = settings;
+      return _dbCache.settings;
     } catch(e) { 
-      return { language: 'kbd' }; 
+      return { language: 'kbd', exchangeRate: 1500 }; 
     } 
   },
   getInvoices: () => { 
+    if (_dbCache.invoices) return _dbCache.invoices;
     try { 
       let data = JSON.parse(localStorage.getItem('pos_invoices'));
       if (data && !Array.isArray(data)) data = Object.values(data);
-      return data || []; 
+      _dbCache.invoices = data || []; 
+      return _dbCache.invoices;
     } catch(e){return []} 
   },
   getCustomers: () => { 
+    if (_dbCache.customers) return _dbCache.customers;
     try { 
       let data = JSON.parse(localStorage.getItem('pos_customers'));
       if (data && !Array.isArray(data)) data = Object.values(data);
-      return data || []; 
+      _dbCache.customers = data || []; 
+      return _dbCache.customers;
     } catch(e){return []} 
   },
   getCategories: () => { 
+    if (_dbCache.categories) return _dbCache.categories;
     try { 
       let cats = JSON.parse(localStorage.getItem('pos_categories'));
       if (cats && !Array.isArray(cats)) {
@@ -54,7 +105,8 @@
         ];
         localStorage.setItem('pos_categories', JSON.stringify(cats));
       }
-      return cats;
+      _dbCache.categories = cats;
+      return _dbCache.categories;
     } catch(e) { 
       return [
         { id: 'default_cat', name: 'عامة', icon: '📦' },
@@ -62,32 +114,85 @@
       ]; 
     } 
   },
-  getDebts: () => { try { return JSON.parse(localStorage.getItem('pos_debts') || '[]'); } catch(e){return []} },
-  getDeleteRequests: () => { try { return JSON.parse(localStorage.getItem('pos_delete_requests') || '[]'); } catch(e){return []} },
-  getArchivedDebts: () => { try { return JSON.parse(localStorage.getItem('pos_archived_debts') || '[]'); } catch(e){return []} },
-  getArchivedCustomers: () => { try { return JSON.parse(localStorage.getItem('pos_archived_customers') || '[]'); } catch(e){return []} },
-  getStockLog: () => { try { return JSON.parse(localStorage.getItem('pos_stock_log') || '[]'); } catch(e){return []} },
+  getDebts: () => { 
+    if (_dbCache.debts) return _dbCache.debts;
+    try { 
+      _dbCache.debts = JSON.parse(localStorage.getItem('pos_debts') || '[]'); 
+      return _dbCache.debts;
+    } catch(e){return []} 
+  },
+  getDeleteRequests: () => { 
+    if (_dbCache.deleteRequests) return _dbCache.deleteRequests;
+    try { 
+      _dbCache.deleteRequests = JSON.parse(localStorage.getItem('pos_delete_requests') || '[]'); 
+      return _dbCache.deleteRequests;
+    } catch(e){return []} 
+  },
+  getArchivedDebts: () => { 
+    if (_dbCache.archivedDebts) return _dbCache.archivedDebts;
+    try { 
+      _dbCache.archivedDebts = JSON.parse(localStorage.getItem('pos_archived_debts') || '[]'); 
+      return _dbCache.archivedDebts;
+    } catch(e){return []} 
+  },
+  getArchivedCustomers: () => { 
+    if (_dbCache.archivedCustomers) return _dbCache.archivedCustomers;
+    try { 
+      _dbCache.archivedCustomers = JSON.parse(localStorage.getItem('pos_archived_customers') || '[]'); 
+      return _dbCache.archivedCustomers;
+    } catch(e){return []} 
+  },
+  getStockLog: () => { 
+    if (_dbCache.stockLog) return _dbCache.stockLog;
+    try { 
+      _dbCache.stockLog = JSON.parse(localStorage.getItem('pos_stock_log') || '[]'); 
+      return _dbCache.stockLog;
+    } catch(e){return []} 
+  },
 
   saveProducts: (data) => {
+    _dbCache.products = data;
     localStorage.setItem('pos_products', JSON.stringify(data));
     if (typeof window.syncProductsToFirebase === 'function' && !window.isUpdatingFromFirebase) {
       window.syncProductsToFirebase(data);
     }
   },
-  saveInvoices: (data) => localStorage.setItem('pos_invoices', JSON.stringify(data)),
+  saveInvoices: (data) => {
+    _dbCache.invoices = data;
+    localStorage.setItem('pos_invoices', JSON.stringify(data));
+  },
   saveCategories: (data) => {
+    _dbCache.categories = data;
     localStorage.setItem('pos_categories', JSON.stringify(data));
     if (typeof window.syncCategoriesToFirebase === 'function' && !window.isUpdatingFromFirebase) {
       window.syncCategoriesToFirebase(data);
     }
   },
-  saveSettings: (data) => localStorage.setItem('pos_settings', JSON.stringify(data)),
-  saveDeleteRequests: (data) => localStorage.setItem('pos_delete_requests', JSON.stringify(data)),
+  saveSettings: (data) => {
+    if (data && data.exchangeRate) {
+      let rate = parseFloat(data.exchangeRate);
+      if (rate > 0) {
+        if (rate < 500) {
+          rate = rate * 10; // Convert 154.25 -> 1542.5
+        } else if (rate > 100000) {
+          rate = rate / 100; // Convert 154250 -> 1542.5
+        }
+        data.exchangeRate = rate;
+      }
+    }
+    _dbCache.settings = data;
+    localStorage.setItem('pos_settings', JSON.stringify(data));
+  },
+  saveDeleteRequests: (data) => {
+    _dbCache.deleteRequests = data;
+    localStorage.setItem('pos_delete_requests', JSON.stringify(data));
+  },
 
   addCustomer: (data) => {
     const list = DB.getCustomers();
     if (!data.id) data.id = 'CUST_' + Date.now() + Math.floor(Math.random()*1000);
     list.push(data);
+    _dbCache.customers = list;
     localStorage.setItem('pos_customers', JSON.stringify(list));
   },
   updateCustomer: (id, data) => {
@@ -95,12 +200,14 @@
     const idx = list.findIndex(c => c.id === id);
     if (idx !== -1) {
       list[idx] = { ...list[idx], ...data };
+      _dbCache.customers = list;
       localStorage.setItem('pos_customers', JSON.stringify(list));
     }
   },
   deleteCustomer: (id) => {
     const list = DB.getCustomers();
     const filtered = list.filter(c => c.id !== id);
+    _dbCache.customers = filtered;
     localStorage.setItem('pos_customers', JSON.stringify(filtered));
   },
 
@@ -137,11 +244,14 @@
     const list = DB.getDebts();
     if (!data.id) data.id = 'DEBT_' + Date.now();
     list.push(data);
+    _dbCache.debts = list;
     localStorage.setItem('pos_debts', JSON.stringify(list));
   },
   deleteDebt: (id) => {
     const list = DB.getDebts();
-    localStorage.setItem('pos_debts', JSON.stringify(list.filter(d => d.id !== id)));
+    const filtered = list.filter(d => d.id !== id);
+    _dbCache.debts = filtered;
+    localStorage.setItem('pos_debts', JSON.stringify(filtered));
   },
   addDebtPayment: (debtId, paymentData) => {
     const list = DB.getDebts();
@@ -156,6 +266,7 @@
         note: paymentData.note,
         date: new Date().toISOString()
       });
+      _dbCache.debts = list;
       localStorage.setItem('pos_debts', JSON.stringify(list));
       return debt;
     }
@@ -195,6 +306,7 @@
       user: localStorage.getItem('pos_current_user') || 'admin'
     });
     if (log.length > 1000) log.length = 1000;
+    _dbCache.stockLog = log;
     localStorage.setItem('pos_stock_log', JSON.stringify(log));
   },
   

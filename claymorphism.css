@@ -366,6 +366,17 @@ body {
   transform: translateY(-8px) scale(1.02) !important;
 }
 
+/* Special Customers card */
+.home-nav-card.special-customers {
+  background: var(--clay-bg-orange) !important;
+  box-shadow: var(--clay-shadow-orange) !important;
+}
+
+.home-nav-card.special-customers:hover {
+  box-shadow: var(--clay-shadow-purple-hover) !important;
+  transform: translateY(-8px) scale(1.02) !important;
+}
+
 /* Light Theme home-nav-card Specificity Overrides */
 [data-theme="light"] .home-nav-card.pos {
   background: var(--clay-bg-purple) !important;
@@ -410,6 +421,11 @@ body {
 [data-theme="light"] .home-nav-card.archive {
   background: var(--clay-bg-purple) !important;
   box-shadow: var(--clay-shadow-purple) !important;
+}
+
+[data-theme="light"] .home-nav-card.special-customers {
+  background: var(--clay-bg-orange) !important;
+  box-shadow: var(--clay-shadow-orange) !important;
 }
 
 [data-theme="light"] .home-nav-card:hover {
@@ -622,6 +638,7 @@ body.dark-mode .home-status-badge {
   background: var(--clay-bg-btn-success) !important;
   box-shadow: var(--clay-shadow-btn-success) !important;
   border: none !important;
+  color: white !important;
   transition: all 0.25s ease !important;
 }
 
@@ -643,6 +660,7 @@ body.dark-mode .home-status-badge {
   background: var(--clay-bg-btn-danger) !important;
   box-shadow: var(--clay-shadow-btn-danger) !important;
   border: none !important;
+  color: white !important;
   transition: all 0.25s ease !important;
 }
 
@@ -663,6 +681,7 @@ body.dark-mode .home-status-badge {
   background: var(--clay-bg-btn-warning) !important;
   box-shadow: var(--clay-shadow-btn-warning) !important;
   border: none !important;
+  color: white !important;
   transition: all 0.25s ease !important;
 }
 
@@ -688,10 +707,31 @@ body.dark-mode .home-status-badge {
 /* ------------------------------------------
    Tabs (Specific overrides matching light/dark specificity)
    ------------------------------------------ */
+.dash-products-tabs-bar {
+  background: rgba(255, 255, 255, 0.03) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.3) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  backdrop-filter: blur(12px) !important;
+  border-radius: 18px !important;
+  padding: 8px !important;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+[data-theme="light"] .dash-products-tabs-bar {
+  background: rgba(255, 255, 255, 0.6) !important;
+  border: 1.5px solid rgba(167, 139, 250, 0.15) !important;
+  box-shadow: inset 2px 2px 5px rgba(167, 139, 250, 0.1) !important;
+}
+
 .archive-tab,
 .tab-btn,
+.dash-prod-tab,
 [data-theme="light"] .archive-tab,
-[data-theme="light"] .tab-btn {
+[data-theme="light"] .tab-btn,
+[data-theme="light"] .dash-prod-tab {
   border-radius: var(--clay-btn-radius) !important;
   border: 1.5px solid rgba(167, 139, 250, 0.3) !important;
   background: rgba(255, 255, 255, 0.1) !important;
@@ -706,8 +746,10 @@ body.dark-mode .home-status-badge {
 
 .archive-tab:hover,
 .tab-btn:hover,
+.dash-prod-tab:hover,
 [data-theme="light"] .archive-tab:hover,
-[data-theme="light"] .tab-btn:hover {
+[data-theme="light"] .tab-btn:hover,
+[data-theme="light"] .dash-prod-tab:hover {
   background: rgba(167, 139, 250, 0.15) !important;
   transform: translateY(-2px) !important;
 }
@@ -716,9 +758,12 @@ body.dark-mode .home-status-badge {
 .ftb.ac,
 .archive-tab.active,
 .tab-btn.active,
+.dash-prod-tab.active,
 [data-theme="light"] .archive-tab.active,
 [data-theme="light"] .tab-btn.active,
-[data-theme="light"] .archive-tabs-bar .archive-tab.active {
+[data-theme="light"] .dash-prod-tab.active,
+[data-theme="light"] .archive-tabs-bar .archive-tab.active,
+[data-theme="light"] .dash-products-tabs-bar .dash-prod-tab.active {
   background: var(--clay-bg-btn-primary) !important;
   box-shadow: var(--clay-shadow-btn-primary) !important;
   border: none !important;
@@ -5002,4 +5047,54 @@ body.ocean-mode .header-time {
   color: #7dd3fc !important;
   border-radius: 12px !important;
 }
+
+/* ── Golden Bell Custom Styling to Prevent Theme Overrides ── */
+.golden-bell-svg {
+  stroke: none !important;
+  fill: none !important;
+}
+
+.golden-bell-svg .bell-body-path {
+  fill: url(#bellBody) !important;
+  stroke: none !important;
+}
+
+.golden-bell-svg .bell-rim-path {
+  fill: url(#bellRim) !important;
+  stroke: none !important;
+}
+
+.golden-bell-svg .bell-clapper-path {
+  fill: #C47A00 !important;
+  stroke: none !important;
+}
+
+.golden-bell-svg .bell-clapper-shine {
+  fill: rgba(255, 230, 120, 0.6) !important;
+  stroke: none !important;
+}
+
+.golden-bell-svg .bell-hook-path {
+  fill: none !important;
+  stroke: #B07A00 !important;
+  stroke-width: 2.2px !important;
+  stroke-linecap: round !important;
+}
+
+.golden-bell-svg .bell-hook-knob {
+  fill: #C89010 !important;
+  stroke: none !important;
+}
+
+.golden-bell-svg .bell-shine-path {
+  fill: url(#shineSpot) !important;
+  stroke: none !important;
+}
+
+/* Disable hover stroke overrides on notification button for this SVG */
+.notifications-btn:hover .golden-bell-svg,
+.notifications-btn .golden-bell-svg {
+  stroke: none !important;
+}
+
 
